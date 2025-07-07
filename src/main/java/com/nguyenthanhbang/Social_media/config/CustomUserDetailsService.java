@@ -19,7 +19,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        com.nguyenthanhbang.Social_media.model.User user = userRepository.findByEmail(username);
+        com.nguyenthanhbang.Social_media.model.User user = userRepository.findByEmailAndActiveTrue(username);
         if(user == null) {
             throw new UsernameNotFoundException("user not found");
         }
