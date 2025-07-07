@@ -5,8 +5,7 @@ import com.nguyenthanhbang.Social_media.enumeration.Gender;
 import com.nguyenthanhbang.Social_media.enumeration.Role;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,8 +13,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-@SQLDelete(sql = "UPDATE users SET active = false WHERE id = ?")
-@Where(clause = "active = true")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,7 +25,8 @@ public class User extends BaseModel{
     private String password;
     private String fullName;
     private String avatar;
-    @Column(columnDefinition = "MEDIUMTEXT")
+    private Boolean active;
+    @Column(columnDefinition = "TEXT")
     private String refreshToken;
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
