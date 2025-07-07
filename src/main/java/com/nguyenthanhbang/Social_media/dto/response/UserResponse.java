@@ -20,8 +20,6 @@ public class UserResponse {
     private String avatar;
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
-    @Enumerated(value = EnumType.STRING)
-    private Role role;
     private LocalDate dateOfBirth;
     private String coverPhoto;
 }

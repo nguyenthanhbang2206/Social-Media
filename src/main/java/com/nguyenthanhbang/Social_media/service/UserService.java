@@ -2,6 +2,7 @@ package com.nguyenthanhbang.Social_media.service;
 
 import com.nguyenthanhbang.Social_media.dto.request.CreateUserRequest;
 import com.nguyenthanhbang.Social_media.dto.request.UpdateUserRequest;
+import com.nguyenthanhbang.Social_media.dto.response.UserResponse;
 import com.nguyenthanhbang.Social_media.model.User;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface UserService {
     User getUserLogin();
     User updateProfile(UpdateUserRequest request);
     List<User> getAllUsers(Boolean active);
-    List<User> getActiveUsers();
+    List<UserResponse> getActiveUsers();
     User changeStatus(Long id);
-    User getUserById(Long id);
+    UserResponse getUserById(Long id);
 }
