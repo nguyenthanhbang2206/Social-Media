@@ -3,6 +3,7 @@ package com.nguyenthanhbang.Social_media.model;
 import com.nguyenthanhbang.Social_media.enumeration.ReactionType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
@@ -10,6 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Where(clause = "active = true")
 public class CommentLike extends BaseModel {
     @Enumerated(EnumType.STRING)
     private ReactionType reactionType = ReactionType.LIKE;

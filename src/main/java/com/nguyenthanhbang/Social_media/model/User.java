@@ -25,7 +25,6 @@ public class User extends BaseModel{
     private String password;
     private String fullName;
     private String avatar;
-    private Boolean active;
     @Column(columnDefinition = "TEXT")
     private String refreshToken;
     @Enumerated(value = EnumType.STRING)

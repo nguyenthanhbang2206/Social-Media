@@ -2,6 +2,7 @@ package com.nguyenthanhbang.Social_media.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Where;
 
 
 @Entity
@@ -10,6 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Where(clause = "active = true")
 public class PostShare extends BaseModel{
     @Column(columnDefinition = "TEXT")
     private String shareContent;

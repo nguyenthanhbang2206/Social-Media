@@ -11,6 +11,7 @@ import org.hibernate.annotations.Where;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Where(clause = "active = true")
 public class Block extends BaseModel{
 
     private String reason;
