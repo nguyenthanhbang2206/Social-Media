@@ -20,6 +20,8 @@ public abstract class BaseModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Boolean active = true;
+
     @CreatedDate
     private Instant createdDate;
 

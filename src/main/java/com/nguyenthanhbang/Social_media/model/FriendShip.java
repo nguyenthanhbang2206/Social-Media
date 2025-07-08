@@ -3,6 +3,7 @@ package com.nguyenthanhbang.Social_media.model;
 import com.nguyenthanhbang.Social_media.enumeration.FriendShipStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Where(clause = "active = true")
 public class FriendShip extends BaseModel{
     @Enumerated(EnumType.STRING)
     private FriendShipStatus status = FriendShipStatus.PENDING;

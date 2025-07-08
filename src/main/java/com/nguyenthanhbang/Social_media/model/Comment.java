@@ -10,7 +10,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "comments")
-@SQLDelete(sql = "UPDATE comments SET active = false WHERE id = ?")
 @Where(clause = "active = true")
 @Getter
 @Setter
@@ -20,7 +19,6 @@ import java.util.List;
 public class Comment extends BaseModel{
     @Column(columnDefinition = "TEXT")
     private String content;
-    private Boolean active = true;
 
     // Relationships
     @ManyToOne

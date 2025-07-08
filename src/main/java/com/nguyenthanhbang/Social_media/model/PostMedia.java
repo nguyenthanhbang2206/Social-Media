@@ -3,6 +3,7 @@ package com.nguyenthanhbang.Social_media.model;
 import com.nguyenthanhbang.Social_media.enumeration.MediaType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Where;
 
 @Entity
 @NoArgsConstructor
@@ -10,6 +11,7 @@ import lombok.*;
 @Builder
 @Getter
 @Setter
+@Where(clause = "active = true")
 public class PostMedia extends BaseModel{
 
         @Column(name = "media_url", nullable = false)
@@ -24,7 +26,7 @@ public class PostMedia extends BaseModel{
 
         // Relationships
         @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "post_id", nullable = false)
+       @JoinColumn(name = "post_id")
         private Post post;
 
 }

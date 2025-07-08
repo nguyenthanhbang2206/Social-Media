@@ -11,7 +11,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "posts")
-@SQLDelete(sql = "UPDATE posts SET active = false WHERE id = ?")
 @Where(clause = "active = true")
 @Getter
 @Setter
@@ -23,7 +22,6 @@ public class Post extends BaseModel{
     private String content;
     @Enumerated(EnumType.STRING)
     private PrivacyLevel privacy = PrivacyLevel.PUBLIC;
-    private Boolean active = true;
     // Relationships
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

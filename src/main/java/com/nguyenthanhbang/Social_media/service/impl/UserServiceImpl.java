@@ -2,7 +2,6 @@ package com.nguyenthanhbang.Social_media.service.impl;
 
 import com.nguyenthanhbang.Social_media.dto.request.CreateUserRequest;
 import com.nguyenthanhbang.Social_media.dto.request.UpdateUserRequest;
-import com.nguyenthanhbang.Social_media.dto.response.UserResponse;
 import com.nguyenthanhbang.Social_media.mapper.UserMapper;
 import com.nguyenthanhbang.Social_media.model.User;
 import com.nguyenthanhbang.Social_media.repository.UserRepository;
@@ -22,7 +21,6 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserMapper userMapper;
 
     @Override
     public void updateTokenOfUser(String email, String refreshToken) {
@@ -97,9 +95,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponse> getActiveUsers() {
+    public List<User> getActiveUsers() {
         List<User> users = userRepository.findByActiveTrue();
-        return userMapper.toUserResponses(users);
+        return users;
     }
 
     @Override
@@ -111,9 +109,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse getUserById(Long id) {
+    public User getUserById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
-        return userMapper.toUserResponse(user);
+        return user;
     }
 
 
