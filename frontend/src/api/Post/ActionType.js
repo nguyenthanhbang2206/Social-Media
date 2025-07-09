@@ -1,0 +1,49 @@
+//Create post action types
+export const CREATE_POST_REQUEST = "CREATE_POST_REQUEST";
+export const CREATE_POST_SUCCESS = "CREATE_POST_SUCCESS";
+export const CREATE_POST_FAILURE = "CREATE_POST_FAILURE";
+
+// Update post action types
+export const UPDATE_POST_REQUEST = "UPDATE_POST_REQUEST";
+export const UPDATE_POST_SUCCESS = "UPDATE_POST_SUCCESS";
+export const UPDATE_POST_FAILURE = "UPDATE_POST_FAILURE";
+
+// Get posts action types
+export const GET_POSTS_REQUEST = "GET_POSTS_REQUEST";
+export const GET_POSTS_SUCCESS = "GET_POSTS_SUCCESS";
+export const GET_POSTS_FAILURE = "GET_POSTS_FAILURE";
+
+// get post by user_id action types
+export const GET_POST_BY_USER_ID_REQUEST = "GET_POST_BY_USER_ID_REQUEST";
+export const GET_POST_BY_USER_ID_SUCCESS = "GET_POST_BY_USER_ID_SUCCESS";
+export const GET_POST_BY_USER_ID_FAILURE = "GET_POST_BY_USER_ID_FAILURE";
+
+// Delete post action types
+export const DELETE_POST_REQUEST = "DELETE_POST_REQUEST";
+export const DELETE_POST_SUCCESS = "DELETE_POST_SUCCESS";
+export const DELETE_POST_FAILURE = "DELETE_POST_FAILURE";
+
+// get post by id action types
+export const GET_POST_BY_ID_REQUEST = "GET_POST_BY_ID_REQUEST";
+export const GET_POST_BY_ID_SUCCESS = "GET_POST_BY_ID_SUCCESS";
+export const GET_POST_BY_ID_FAILURE = "GET_POST_BY_ID_FAILURE";
+
+// upload files
+export const UPLOAD_FILES_REQUEST = "UPLOAD_FILES_REQUEST";
+export const UPLOAD_FILES_SUCCESS = "UPLOAD_FILES_SUCCESS";
+export const UPLOAD_FILES_FAILURE = "UPLOAD_FILES_FAILURE";
+
+// react post action types
+export const REACT_POST_REQUEST = "REACT_POST_REQUEST";
+export const REACT_POST_SUCCESS = "REACT_POST_SUCCESS";
+export const REACT_POST_FAILURE = "REACT_POST_FAILURE";
+
+// unreact post action types
+export const UNREACT_POST_REQUEST = "UNREACT_POST_REQUEST";
+export const UNREACT_POST_SUCCESS = "UNREACT_POST_SUCCESS";
+export const UNREACT_POST_FAILURE = "UNREACT_POST_FAILURE";
+
+// get react post by me and post id action types
+export const GET_REACT_POST_BY_ME_AND_POST_ID_REQUEST = "GET_REACT_POST_BY_ME_AND_POST_ID_REQUEST";
+export const GET_REACT_POST_BY_ME_AND_POST_ID_SUCCESS = "GET_REACT_POST_BY_ME_AND_POST_ID_SUCCESS";
+export const GET_REACT_POST_BY_ME_AND_POST_ID_FAILURE = "GET_REACT_POST_BY_ME_AND_POST_ID_FAILURE";
