@@ -16,4 +16,7 @@ public class PostResponse extends BaseResponse {
     private String content;
     private PrivacyLevel privacy;
     private List<PostMediaResponse> media;
+    private Long totalReactions;
+    private Long totalComments;
+    private Long totalShares;
 }

@@ -21,16 +21,18 @@ import {
   UPLOAD_FILES_REQUEST,
   UPLOAD_FILES_SUCCESS,
   UPLOAD_FILES_FAILURE,
-    REACT_POST_REQUEST,
-    REACT_POST_SUCCESS,
-    REACT_POST_FAILURE,
-    UNREACT_POST_REQUEST,
-    UNREACT_POST_SUCCESS,
-    UNREACT_POST_FAILURE,
-    GET_REACT_POST_BY_ME_AND_POST_ID_REQUEST,
-    GET_REACT_POST_BY_ME_AND_POST_ID_SUCCESS,
-    GET_REACT_POST_BY_ME_AND_POST_ID_FAILURE,
-
+  REACT_POST_REQUEST,
+  REACT_POST_SUCCESS,
+  REACT_POST_FAILURE,
+  UNREACT_POST_REQUEST,
+  UNREACT_POST_SUCCESS,
+  UNREACT_POST_FAILURE,
+  GET_REACT_POST_BY_ME_AND_POST_ID_REQUEST,
+  GET_REACT_POST_BY_ME_AND_POST_ID_SUCCESS,
+  GET_REACT_POST_BY_ME_AND_POST_ID_FAILURE,
+  GET_REACTIONS_OF_POST_REQUEST,
+  GET_REACTIONS_OF_POST_SUCCESS,
+  GET_REACTIONS_OF_POST_FAILURE,
 } from "./ActionType";
 
 // Get all posts
@@ -134,7 +136,7 @@ export const deletePost = (id) => async (dispatch) => {
     });
   }
 };
-  export const uploadFiles = (files, folder) => async (dispatch) => {
+export const uploadFiles = (files, folder) => async (dispatch) => {
   dispatch({ type: UPLOAD_FILES_REQUEST });
   try {
     const formData = new FormData();
@@ -192,19 +194,37 @@ export const unreactPost = (postId) => async (dispatch) => {
     });
   }
 };
-// Get my reaction for a post
+export const getReactionsOfPost = (postId) => async (dispatch) => {
+  dispatch({ type: GET_REACTIONS_OF_POST_REQUEST });
+  try {
+    const res = await api.get(`/posts/${postId}/reactions`);
+    dispatch({
+      type: GET_REACTIONS_OF_POST_SUCCESS,
+      payload: res.data.data,
+    });
+    return res.data.data; // ✅ Thêm dòng này
+  } catch (error) {
+    dispatch({
+      type: GET_REACTIONS_OF_POST_FAILURE,
+      payload: error.response?.data?.message || error.message,
+    });
+    throw error; // ✅ Cũng nên throw nếu muốn xử lý trong component
+  }
+};
 export const getReactPostByMeAndPostId = (postId) => async (dispatch) => {
   dispatch({ type: GET_REACT_POST_BY_ME_AND_POST_ID_REQUEST });
   try {
     const res = await api.get(`/posts/${postId}/me`);
     dispatch({
       type: GET_REACT_POST_BY_ME_AND_POST_ID_SUCCESS,
-      payload: res.data.data, // PostLikeResponse
+      payload: res.data.data,
     });
+    return res.data.data; // ✅ Trả về dữ liệu
   } catch (error) {
     dispatch({
       type: GET_REACT_POST_BY_ME_AND_POST_ID_FAILURE,
       payload: error.response?.data?.message || error.message,
     });
+    throw error; // ✅ Cho phép bắt lỗi ở component
   }
 };

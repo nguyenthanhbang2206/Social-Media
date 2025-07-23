@@ -8,4 +8,5 @@ import lombok.Setter;
 @Setter
 public class PostLikeResponse extends BaseResponse{
     private ReactionType reactionType;
+    private String username;
 }
