@@ -51,7 +51,7 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/posts")
-    public ResponseEntity<ApiResponse<List<PostResponse>>> getPostByUser(){
+    public ResponseEntity<ApiResponse<List<PostResponse>>> getAllPosts(){
         List<Post> posts = postService.getNewsFeed();
         ApiResponse response = ApiResponse.builder()
                 .message("Get posts successfully")

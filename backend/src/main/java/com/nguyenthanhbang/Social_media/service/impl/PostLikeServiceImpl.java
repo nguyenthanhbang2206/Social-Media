@@ -11,6 +11,7 @@ import com.nguyenthanhbang.Social_media.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -50,5 +51,11 @@ public class PostLikeServiceImpl implements PostLikeService {
             return postLike.get();
         }
         return null;
+    }
+
+    @Override
+    public List<PostLike> getReactByPost(Long postId) {
+        Post post = postService.getPostById(postId);
+        return postLikeRepository.findByPostId(postId);
     }
 }

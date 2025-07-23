@@ -20,15 +20,18 @@ import {
   UPLOAD_FILES_REQUEST,
   UPLOAD_FILES_SUCCESS,
   UPLOAD_FILES_FAILURE,
-    REACT_POST_REQUEST,
-    REACT_POST_SUCCESS,
-    REACT_POST_FAILURE,
-    UNREACT_POST_REQUEST,
-    UNREACT_POST_SUCCESS,
-    UNREACT_POST_FAILURE,
-    GET_REACT_POST_BY_ME_AND_POST_ID_REQUEST,
-    GET_REACT_POST_BY_ME_AND_POST_ID_SUCCESS,
-    GET_REACT_POST_BY_ME_AND_POST_ID_FAILURE,
+  REACT_POST_REQUEST,
+  REACT_POST_SUCCESS,
+  REACT_POST_FAILURE,
+  UNREACT_POST_REQUEST,
+  UNREACT_POST_SUCCESS,
+  UNREACT_POST_FAILURE,
+  GET_REACT_POST_BY_ME_AND_POST_ID_REQUEST,
+  GET_REACT_POST_BY_ME_AND_POST_ID_SUCCESS,
+  GET_REACT_POST_BY_ME_AND_POST_ID_FAILURE,
+  GET_REACTIONS_OF_POST_REQUEST,
+  GET_REACTIONS_OF_POST_SUCCESS,
+  GET_REACTIONS_OF_POST_FAILURE,
 } from "./ActionType";
 
 // Initial state
@@ -43,10 +46,12 @@ const initialState = {
   uploadLoading: false,
   uploadError: null,
   uploadedFiles: [],
-  myReact: null, // This can be used to store user's reactions to posts
+  myReact: null, // user's reaction for current post
+  reactLoading: false,
+  reactError: null,
+  reactionsOfPost: {}, // { [postId]: [PostLikeResponse] }
 };
 
-// Post reducer
 const postReducer = (state = initialState, action) => {
   switch (action.type) {
     // Get all posts
@@ -213,7 +218,8 @@ const postReducer = (state = initialState, action) => {
         uploadError: action.payload,
         uploadedFiles: [],
       };
-       // React post
+
+    // React post
     case REACT_POST_REQUEST:
       return {
         ...state,
@@ -233,7 +239,8 @@ const postReducer = (state = initialState, action) => {
         reactLoading: false,
         reactError: action.payload,
       };
- // Unreact post
+
+    // Unreact post
     case UNREACT_POST_REQUEST:
       return {
         ...state,
@@ -253,7 +260,8 @@ const postReducer = (state = initialState, action) => {
         reactLoading: false,
         reactError: action.payload,
       };
-       // Get react post by me and post id
+
+    // Get react post by me and post id
     case GET_REACT_POST_BY_ME_AND_POST_ID_REQUEST:
       return {
         ...state,
@@ -274,6 +282,30 @@ const postReducer = (state = initialState, action) => {
         reactLoading: false,
         reactError: action.payload,
         myReact: null,
+      };
+
+    // Get all reactions of a post
+    case GET_REACTIONS_OF_POST_REQUEST:
+      return {
+        ...state,
+        reactLoading: true,
+        reactError: null,
+      };
+    case GET_REACTIONS_OF_POST_SUCCESS:
+      return {
+        ...state,
+        reactLoading: false,
+        reactError: null,
+        reactionsOfPost: {
+          ...state.reactionsOfPost,
+          [action.postId]: action.payload, // List<PostLikeResponse>
+        },
+      };
+    case GET_REACTIONS_OF_POST_FAILURE:
+      return {
+        ...state,
+        reactLoading: false,
+        reactError: action.payload,
       };
 
     default:

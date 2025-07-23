@@ -21,6 +21,12 @@ public class Post extends BaseEntity {
     private String content;
     @Enumerated(EnumType.STRING)
     private PrivacyLevel privacy = PrivacyLevel.PUBLIC;
+    @Column(name = "total_reactions")
+    private Long totalReactions;
+    @Column(name = "total_comments")
+    private Long totalComments;
+    @Column(name = "total_shares")
+    private Long totalShares;
     // Relationships
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

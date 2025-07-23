@@ -34,6 +34,16 @@ public class PostLikeController {
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+    @GetMapping("/posts/{postId}/reactions")
+    public ResponseEntity<ApiResponse<List<PostLikeResponse>>> getReactionsOfPost(@PathVariable Long postId) {
+        List<PostLike> postLikes = postLikeService.getReactByPost(postId);
+        ApiResponse response = ApiResponse.builder()
+                .message("Get react post successfully")
+                .status(HttpStatus.OK.value())
+                .data(postLikeMapper.toPostLikeResponses(postLikes))
+                .build();
+        return ResponseEntity.ok(response);
+    }
 
 
     @GetMapping("/posts/{postId}/me")
@@ -50,7 +60,7 @@ public class PostLikeController {
     public ResponseEntity<ApiResponse<Void>> deleteReactPost(@PathVariable Long postId){
         postLikeService.deleteReactPost(postId);
         ApiResponse response = ApiResponse.builder()
-                .message("Delete react post successfully")
+                .message("Delete react post successfu lly")
                 .status(HttpStatus.OK.value())
                 .data(null)
                 .build();

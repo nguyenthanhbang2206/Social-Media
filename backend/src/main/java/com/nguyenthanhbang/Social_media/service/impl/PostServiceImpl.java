@@ -3,12 +3,10 @@ package com.nguyenthanhbang.Social_media.service.impl;
 import com.nguyenthanhbang.Social_media.dto.request.CreatePostRequest;
 import com.nguyenthanhbang.Social_media.dto.request.PostMediaRequest;
 import com.nguyenthanhbang.Social_media.dto.request.UpdatePostRequest;
-import com.nguyenthanhbang.Social_media.repository.PostLikeRepository;
+import com.nguyenthanhbang.Social_media.repository.*;
 import com.nguyenthanhbang.Social_media.model.Post;
 import com.nguyenthanhbang.Social_media.model.PostMedia;
 import com.nguyenthanhbang.Social_media.model.User;
-import com.nguyenthanhbang.Social_media.repository.PostMediaRepository;
-import com.nguyenthanhbang.Social_media.repository.PostRepository;
 import com.nguyenthanhbang.Social_media.service.PostService;
 import com.nguyenthanhbang.Social_media.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -29,6 +27,8 @@ public class PostServiceImpl implements PostService {
     private final UserService userService;
     private final PostMediaRepository postMediaRepository;
     private final PostLikeRepository postLikeRepository;
+    private final PostShareRepository postShareRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public Post createPost(CreatePostRequest request) {
@@ -93,7 +93,14 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<Post> getNewsFeed() {
-        return postRepository.findAll();
+        List<Post> posts = postRepository.findAll();
+        posts.stream().map(post -> {
+            post.setTotalComments(commentRepository.countByPostId(post.getId()));
+            post.setTotalShares(postShareRepository.countByPostId(post.getId()));
+            post.setTotalReactions(postLikeRepository.countByPostId(post.getId()));
+            return post;
+        }).collect(Collectors.toList());
+        return posts;
     }
 
     @Override

@@ -9,6 +9,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface PostLikeMapper {
+    @Mapping(source = "user.fullName", target = "username")
     PostLikeResponse toPostLikeResponse(PostLike postLike);
     List<PostLikeResponse> toPostLikeResponses(List<PostLike> postLikes);
 }
