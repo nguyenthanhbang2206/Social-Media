@@ -115,5 +115,10 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    @Override
+    public List<User> searchUser(String keyword) {
+        return userRepository.search(keyword);
+    }
+
 
 }

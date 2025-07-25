@@ -14,11 +14,9 @@ import java.time.LocalDate;
 
 @Setter
 @Getter
-@Builder
-public class UserResponse {
+public class UserResponse extends BaseResponse {
     private String fullName;
     private String avatar;
-    @Enumerated(value = EnumType.STRING)
     private Gender gender;
     private LocalDate dateOfBirth;
     private String coverPhoto;
