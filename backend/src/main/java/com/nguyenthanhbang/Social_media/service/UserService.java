@@ -17,4 +17,5 @@ public interface UserService {
     List<User> getActiveUsers();
     User changeStatus(Long id);
     User getUserById(Long id);
+    List<User> searchUser(String keyword);
 }
