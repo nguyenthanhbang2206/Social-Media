@@ -40,22 +40,22 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/users/profile")
-    public ResponseEntity<ApiResponse<User>> getProfile(){
+    public ResponseEntity<ApiResponse<UserResponse>> getProfile(){
         User user = userService.getUserLogin();
         ApiResponse response = ApiResponse.builder()
                 .message("Get profile successfully")
                 .status(HttpStatus.OK.value())
-                .data(user)
+                .data(userMapper.toUserResponse(user))
                 .build();
         return ResponseEntity.ok(response);
     }
     @PutMapping("/users/profile")
-    public ResponseEntity<ApiResponse<User>> updateProfile(@RequestBody UpdateUserRequest request){
+    public ResponseEntity<ApiResponse<UserResponse>> updateProfile(@RequestBody UpdateUserRequest request){
         User user = userService.updateProfile(request);
         ApiResponse response = ApiResponse.builder()
                 .message("Update profile successfully")
                 .status(HttpStatus.OK.value())
-                .data(user)
+                .data(userMapper.toUserResponse(user))
                 .build();
         return ResponseEntity.ok(response);
     }

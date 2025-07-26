@@ -11,7 +11,7 @@ public interface FriendShipService {
     FriendShip sendRequest(Long userId);
     void cancelRequest(Long userId);
     FriendShip acceptFriend(Long userId);
-    FriendShip refuseFriend(Long userId);
+    void refuseFriend(Long userId);
     void unfriend(Long userId);
     List<User> getFriends(Long userId);
     List<FriendShip> getFriendRequestsReceived();

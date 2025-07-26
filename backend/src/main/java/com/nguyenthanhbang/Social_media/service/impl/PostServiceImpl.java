@@ -94,19 +94,26 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> getNewsFeed() {
         List<Post> posts = postRepository.findAll();
-        posts.stream().map(post -> {
-            post.setTotalComments(commentRepository.countByPostId(post.getId()));
-            post.setTotalShares(postShareRepository.countByPostId(post.getId()));
-            post.setTotalReactions(postLikeRepository.countByPostId(post.getId()));
-            return post;
-        }).collect(Collectors.toList());
+//        posts.stream().map(post -> {
+//            post.setTotalComments(commentRepository.countByPostId(post.getId()));
+//            post.setTotalShares(postShareRepository.countByPostId(post.getId()));
+//            post.setTotalReactions(postLikeRepository.countByPostId(post.getId()));
+//            return postRepository.save(post);
+//        }).collect(Collectors.toList());
         return posts;
     }
 
     @Override
     public List<Post> getPostByUserId(Long userId) {
         User user = userService.getUserById(userId);
-        return postRepository.findByUserId(userId);
+        List<Post> posts = postRepository.findByUserId(userId);
+//        posts.stream().map(post -> {
+//            post.setTotalComments(commentRepository.countByPostId(post.getId()));
+//            post.setTotalShares(postShareRepository.countByPostId(post.getId()));
+//            post.setTotalReactions(postLikeRepository.countByPostId(post.getId()));
+//            return postRepository.save(post);
+//        }).collect(Collectors.toList());
+        return posts;
     }
 
     @Override

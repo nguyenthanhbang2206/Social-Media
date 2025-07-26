@@ -58,12 +58,12 @@ public class FriendShipController {
         return ResponseEntity.ok(response);
     }
     @PutMapping("/friend-requests/{userId}/refuse")
-    public ResponseEntity<ApiResponse<FriendShipResponse>> refuseFriend(@PathVariable Long userId) {
-        FriendShip friendShip = friendShipService.refuseFriend(userId);
+    public ResponseEntity<ApiResponse<Void>> refuseFriend(@PathVariable Long userId) {
+        friendShipService.refuseFriend(userId);
         ApiResponse response = ApiResponse.builder()
                 .message("Refuse friend successfully")
                 .status(HttpStatus.OK.value())
-                .data(friendShipMapper.toFriendShipResponse(friendShip))
+                .data(null)
                 .build();
         return ResponseEntity.ok(response);
     }
