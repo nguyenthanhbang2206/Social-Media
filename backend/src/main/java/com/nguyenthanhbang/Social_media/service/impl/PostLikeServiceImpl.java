@@ -5,6 +5,7 @@ import com.nguyenthanhbang.Social_media.repository.PostLikeRepository;
 import com.nguyenthanhbang.Social_media.model.Post;
 import com.nguyenthanhbang.Social_media.model.PostLike;
 import com.nguyenthanhbang.Social_media.model.User;
+import com.nguyenthanhbang.Social_media.repository.PostRepository;
 import com.nguyenthanhbang.Social_media.service.PostLikeService;
 import com.nguyenthanhbang.Social_media.service.PostService;
 import com.nguyenthanhbang.Social_media.service.UserService;
@@ -20,6 +21,8 @@ public class PostLikeServiceImpl implements PostLikeService {
     private final PostLikeRepository postLikeRepository;
     private final PostService postService;
     private final UserService userService;
+    private final PostRepository postRepository;
+
     @Override
     public PostLike reactPost(PostLikeRequest request, Long postId) {
         User user = userService.getUserLogin();
@@ -33,6 +36,7 @@ public class PostLikeServiceImpl implements PostLikeService {
         }else {
             postLike.setReactionType(request.getReactionType());
         }
+        post.setTotalReactions(post.getTotalReactions() + 1);
         return postLikeRepository.save(postLike);
     }
 
@@ -41,6 +45,8 @@ public class PostLikeServiceImpl implements PostLikeService {
         Post post = postService.getPostById(postId);
         PostLike postLike = this.getReactByUserIdAndPostId(postId);
         postLikeRepository.delete(postLike);
+        post.setTotalReactions(post.getTotalReactions() - 1);
+        postRepository.save(post);
     }
 
     @Override

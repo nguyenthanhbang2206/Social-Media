@@ -9,6 +9,9 @@ import {
   getReactPostByMeAndPostId,
   getReactionsOfPost,
 } from "../api/Post/Action";
+import UserSearch from "./UserSearch";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const BASE_FILE_URL = "http://localhost:8080/images/post-media/";
 
@@ -23,7 +26,10 @@ const REACTION_EMOJIS = {
 };
 
 export default function Home() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [friends, setFriends] = useState([]);
+  const [loadingFriends, setLoadingFriends] = useState(false);
   const { posts, loading, error, createSuccess, uploadLoading, uploadedFiles } =
     useSelector((state) => state.post);
 
@@ -35,7 +41,9 @@ export default function Home() {
   const [modalReactions, setModalReactions] = useState([]);
   const [modalPostId, setModalPostId] = useState(null);
   const fileInputRef = useRef();
+  const { user } = useSelector((state) => state.auth);
 
+  const token = localStorage.getItem("token");
   useEffect(() => {
     dispatch(getPosts());
   }, [dispatch, createSuccess]);
@@ -55,6 +63,29 @@ export default function Home() {
       setMedia((prev) => [...prev, ...uploadedFiles]);
     }
   }, [uploadedFiles]);
+  useEffect(() => {
+    console.log(user);
+
+    const fetchFriends = async () => {
+      if (!user || !user.id) return;
+      setLoadingFriends(true);
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/v1/friends/${user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setFriends(res.data.data || []);
+      } catch (err) {
+        setFriends([]);
+      }
+      setLoadingFriends(false);
+    };
+    fetchFriends();
+  }, [user, token]);
 
   // Lấy media url đầy đủ
   const getFullMediaUrl = (mediaUrl) => {
@@ -156,53 +187,115 @@ export default function Home() {
     setModalPostId(null);
   };
 
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const handleNavbarSearch = (e) => {
+    e.preventDefault();
+    if (searchKeyword.trim()) {
+      navigate(`/search?keyword=${encodeURIComponent(searchKeyword.trim())}`);
+    }
+  };
+
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <div className="bg-gray-100 min-h-screen font-sans">
       {/* Navbar */}
-      <nav className="bg-white shadow px-4 py-2 flex items-center justify-between fixed w-full z-10">
+      <nav className="bg-white shadow px-4 py-2 flex items-center justify-between fixed w-full z-20">
         <div className="flex items-center space-x-2">
           <img
             src="https://static.xx.fbcdn.net/rsrc.php/yo/r/iRmz9lCMBD2.ico"
             alt="Logo"
             className="w-8 h-8"
           />
-          <span className="text-blue-600 font-bold text-xl">Facebook</span>
+          <span className="text-blue-600 font-bold text-2xl tracking-tight">
+            facebook
+          </span>
         </div>
         <div className="flex items-center space-x-4">
-          <input
-            type="text"
-            placeholder="Tìm kiếm trên Facebook"
-            className="px-3 py-1 rounded-full bg-gray-100 border border-gray-300 focus:outline-none"
-          />
+          <form onSubmit={handleNavbarSearch} className="flex items-center">
+            <input
+              type="text"
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+              placeholder="Tìm kiếm người dùng"
+              className="px-3 py-1 border rounded-l-full focus:outline-none bg-gray-100"
+              style={{ width: 200 }}
+            />
+            <button
+              type="submit"
+              className="bg-blue-500 text-white px-3 py-1 rounded-r-full hover:bg-blue-600"
+            >
+              <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+                <path
+                  d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </form>
           <img
             src="https://randomuser.me/api/portraits/men/32.jpg"
             alt="Avatar"
-            className="w-8 h-8 rounded-full"
+            className="w-8 h-8 rounded-full border-2 border-blue-500"
           />
         </div>
       </nav>
 
       {/* Main Content */}
-      <div className="flex pt-16 max-w-7xl mx-auto">
+      <div className="flex pt-20 max-w-7xl mx-auto">
         {/* Left Sidebar */}
         <aside className="w-1/4 hidden md:block p-4">
-          {/* ...sidebar code... */}
+          <div className="bg-white rounded-lg shadow p-4 sticky top-24">
+            <div className="flex flex-col items-center">
+              <img
+                src="https://randomuser.me/api/portraits/men/32.jpg"
+                alt="Avatar"
+                className="w-16 h-16 rounded-full mb-2"
+              />
+              <span className="font-semibold text-lg">Xin chào, User!</span>
+            </div>
+            <ul className="mt-6 space-y-2 text-gray-700">
+              <li className="hover:bg-gray-100 rounded px-2 py-1 cursor-pointer">
+                Bảng tin
+              </li>
+              <li
+                onClick={() => navigate("/friend-list")}
+                className="hover:bg-gray-100 rounded px-2 py-1 cursor-pointer"
+              >
+                Bạn bè
+              </li>
+              <li className="hover:bg-gray-100 rounded px-2 py-1 cursor-pointer">
+                Nhóm
+              </li>
+              <li className="hover:bg-gray-100 rounded px-2 py-1 cursor-pointer">
+                Marketplace
+              </li>
+              <li className="hover:bg-gray-100 rounded px-2 py-1 cursor-pointer">
+                Kỷ niệm
+              </li>
+            </ul>
+          </div>
         </aside>
 
         {/* Feed */}
         <main className="w-full md:w-2/4 p-4 space-y-4">
           {/* Create Post */}
-          <form
-            onSubmit={handleSubmit}
-            className="bg-white rounded-lg shadow p-4 mb-4"
-          >
-            <input
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="Bạn đang nghĩ gì?"
-              className="w-full border rounded px-3 py-2 mb-2"
-              required
-            />
+          <div className="bg-white rounded-lg shadow p-4 mb-4">
+            <div className="flex items-center mb-3">
+              <img
+                src="https://randomuser.me/api/portraits/men/32.jpg"
+                alt="Avatar"
+                className="w-10 h-10 rounded-full mr-3"
+              />
+              <input
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Bạn đang nghĩ gì?"
+                className="flex-1 border rounded-full px-4 py-2 bg-gray-100 focus:outline-none"
+                required
+              />
+            </div>
             {/* Upload file */}
             <div className="mb-2 flex items-center space-x-2">
               <input
@@ -254,12 +347,13 @@ export default function Home() {
             </div>
             <button
               type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              onClick={handleSubmit}
+              className="w-full bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 font-semibold"
               disabled={loading}
             >
               {loading ? "Đang đăng..." : "Đăng"}
             </button>
-          </form>
+          </div>
 
           {/* Hiển thị bài viết từ database */}
           {loading && <div>Đang tải bài viết...</div>}
@@ -384,19 +478,6 @@ export default function Home() {
                       <span className="text-sm">Chia sẻ</span>
                     </button>
                   </div>
-
-                  {/* Debug info */}
-                  {/* <div className="mt-2 p-2 bg-gray-50 rounded text-xs text-gray-600">
-                    <div>Post ID: {post.id}</div>
-                    <div>
-                      Reactions loaded:{" "}
-                      {(postReactionsData[post.id] || []).length}
-                    </div>
-                    <div>
-                      My reaction:{" "}
-                      {myReactionsData[post.id]?.reactionType || "None"}
-                    </div>
-                  </div> */}
                 </div>
               );
             })}
@@ -444,9 +525,77 @@ export default function Home() {
           )}
         </main>
 
-        {/* Right Sidebar */}
+        {/* Right Sidebar: Danh sách bạn bè */}
         <aside className="w-1/4 hidden lg:block p-4">
-          {/* ...right sidebar code... */}
+          <div className="bg-white rounded-lg shadow p-4 sticky top-24">
+            <div className="font-semibold mb-3 text-lg text-blue-600 flex items-center gap-2">
+              <svg
+                width="22"
+                height="22"
+                fill="none"
+                viewBox="0 0 24 24"
+                className="inline-block mr-1 text-blue-500"
+              >
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+                <path
+                  d="M8 15c0-1.657 2.686-2 4-2s4 .343 4 2v1H8v-1Z"
+                  fill="currentColor"
+                />
+                <circle cx="12" cy="10" r="3" fill="currentColor" />
+              </svg>
+              Bạn bè
+            </div>
+            {loadingFriends ? (
+              <div className="text-center text-gray-500 py-4">
+                Đang tải danh sách bạn bè...
+              </div>
+            ) : friends.length === 0 ? (
+              <div className="text-center text-gray-500 py-4">
+                Chưa có bạn bè nào.
+              </div>
+            ) : (
+              <ul className="space-y-3 max-h-[400px] overflow-y-auto">
+                {friends.map((friend) => (
+                  <li
+                    key={friend.id}
+                    className="flex items-center gap-3 hover:bg-gray-50 rounded px-2 py-2 cursor-pointer"
+                  >
+                    <img
+                      src={
+                        friend.avatar ||
+                        "https://static.xx.fbcdn.net/rsrc.php/yo/r/iRmz9lCMBD2.ico"
+                      }
+                      alt="avatar"
+                      className="w-10 h-10 rounded-full object-cover border"
+                    />
+                    <div>
+                      <div className="font-semibold">{friend.fullName}</div>
+                      <div className="text-xs text-gray-500">
+                        {friend.gender === "MALE"
+                          ? "Nam"
+                          : friend.gender === "FEMALE"
+                          ? "Nữ"
+                          : "Khác"}
+                        {friend.dateOfBirth && (
+                          <>
+                            {" "}
+                            ·{" "}
+                            {new Date(friend.dateOfBirth).toLocaleDateString()}
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </aside>
       </div>
     </div>

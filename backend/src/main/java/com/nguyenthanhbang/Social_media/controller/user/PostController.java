@@ -44,7 +44,7 @@ public class PostController {
     public ResponseEntity<ApiResponse<List<PostResponse>>> getPostByUser(@PathVariable Long userId){
         List<Post> posts = postService.getPostByUserId(userId);
         ApiResponse response = ApiResponse.builder()
-                .message("Get post successfully")
+                .message("Get post by user successfully")
                 .status(HttpStatus.OK.value())
                 .data(postMapper.toPostResponses(posts))
                 .build();

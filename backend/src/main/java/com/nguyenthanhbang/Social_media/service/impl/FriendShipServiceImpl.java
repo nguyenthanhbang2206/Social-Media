@@ -57,12 +57,11 @@ public class FriendShipServiceImpl implements FriendShipService {
     }
 
     @Override
-    public FriendShip refuseFriend(Long userId) {
+    public void refuseFriend(Long userId) {
         User currentUser = userService.getUserLogin();
         User user = userService.getUserById(userId);
         FriendShip friendShip = friendShipRepository.findBySenderIdAndReceiverId(userId, currentUser.getId()).orElseThrow(()->new EntityNotFoundException("Not found"));
-        friendShip.setStatus(FriendShipStatus.DECLINED);
-        return friendShipRepository.save(friendShip);
+        friendShipRepository.delete(friendShip);
     }
 
     @Override
