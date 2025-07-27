@@ -12,6 +12,7 @@ import {
 import UserSearch from "./UserSearch";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import PostModal from "../components/PostModal";
 
 const BASE_FILE_URL = "http://localhost:8080/images/post-media/";
 
@@ -32,6 +33,7 @@ export default function Home() {
   const [loadingFriends, setLoadingFriends] = useState(false);
   const { posts, loading, error, createSuccess, uploadLoading, uploadedFiles } =
     useSelector((state) => state.post);
+  const [openPost, setOpenPost] = useState(null);
 
   const [content, setContent] = useState("");
   const [media, setMedia] = useState([]);
@@ -470,14 +472,23 @@ export default function Home() {
                       </div>
                     )}
                     <button className="flex items-center space-x-1 px-3 py-2 rounded-lg hover:bg-gray-100 text-gray-600">
-                      <span>💬</span>
-                      <span className="text-sm">Bình luận</span>
+                      <button onClick={() => setOpenPost(post)}>
+                        💬 Bình luận
+                      </button>
+                      {openPost && (
+                        <PostModal
+                          post={openPost}
+                          open={!!openPost}
+                          onClose={() => setOpenPost(null)}
+                        />
+                      )}{" "}
                     </button>
                     <button className="flex items-center space-x-1 px-3 py-2 rounded-lg hover:bg-gray-100 text-gray-600">
                       <span>↗️</span>
                       <span className="text-sm">Chia sẻ</span>
                     </button>
                   </div>
+                  {/* <CommentBox postId={post.id} /> */}
                 </div>
               );
             })}

@@ -62,8 +62,6 @@ public class CommentServiceImpl implements CommentService {
         parentComment.getReplies().add(comment);
         return commentRepository.save(comment);
     }
-
-
     @Override
     public List<Comment> getReliesOfComment(Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(()-> new EntityNotFoundException("Comment not found"));
