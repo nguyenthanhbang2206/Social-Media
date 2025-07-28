@@ -1,0 +1,14 @@
+package com.nguyenthanhbang.Social_media.repository;
+
+import com.nguyenthanhbang.Social_media.model.Group;
+import com.nguyenthanhbang.Social_media.model.GroupMember;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+
+public interface GroupMemberRepository extends JpaRepository<GroupMember, Long> {
+    @Query("SELECT gm.group FROM GroupMember gm WHERE gm.user.id = :userId")
+    List<Group> myGroups(@Param("userId") Long userId);
+}
