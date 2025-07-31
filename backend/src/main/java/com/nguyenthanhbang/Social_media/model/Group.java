@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "groups")
 @Where(clause = "active = true")
 public class Group extends BaseEntity{
     private String name;

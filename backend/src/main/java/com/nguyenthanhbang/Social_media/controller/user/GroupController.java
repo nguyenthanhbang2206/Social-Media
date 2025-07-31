@@ -23,7 +23,7 @@ public class GroupController {
     private final GroupMapper groupMapper;
 
     @PostMapping("/groups")
-    public ResponseEntity<ApiResponse<GroupResponse>> getPostByUser(@RequestBody GroupRequest request){
+    public ResponseEntity<ApiResponse<GroupResponse>> createGroup(@RequestBody GroupRequest request){
         Group group = groupService.createGroup(request);
         ApiResponse response = ApiResponse.builder()
                 .message("Creat group successfully")

@@ -1,6 +1,7 @@
 package com.nguyenthanhbang.Social_media.service.impl;
 
 import com.nguyenthanhbang.Social_media.dto.request.GroupRequest;
+import com.nguyenthanhbang.Social_media.enumeration.GroupMembershipStatus;
 import com.nguyenthanhbang.Social_media.enumeration.GroupRole;
 import com.nguyenthanhbang.Social_media.model.Group;
 import com.nguyenthanhbang.Social_media.model.GroupMember;
@@ -12,6 +13,7 @@ import com.nguyenthanhbang.Social_media.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,12 +35,15 @@ public class GroupServiceImpl implements GroupService {
         newGroup.setCoverImage(request.getCoverImage());
         newGroup.setPrivacy(request.getPrivacy());
         newGroup.setCreator(user);
-        GroupMember member = new GroupMember();
-        member.setUser(user);
-        member.setGroup(newGroup);
-        member.setRole(GroupRole.ADMIN);
-        member.setJoinedAt(LocalDateTime.now());
-        newGroup.getMembers().add(member);
+        GroupMember groupMember = GroupMember.builder()
+                .user(user)
+                .group(newGroup)
+                .role(GroupRole.ADMIN)
+                .joinedAt(LocalDateTime.now())
+                .status(GroupMembershipStatus.ADMIN)
+                .isApproved(true)
+                .build();
+        newGroup.getMembers().add(groupMember);
         return groupRepository.save(newGroup);
     }
 
