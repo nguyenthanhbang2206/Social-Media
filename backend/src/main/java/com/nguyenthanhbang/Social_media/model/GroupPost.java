@@ -16,7 +16,7 @@ public class GroupPost extends BaseEntity{
     private String content;
 
     @Column(name = "is_approved")
-    private Boolean isApproved = true;
+    private Boolean isApproved;
 
 
     // Relationships

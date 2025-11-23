@@ -29,13 +29,16 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     public void joinGroup(Long groupId) {
         User user = userService.getUserLogin();
         Group group = groupService.getGroupById(groupId);
-        if(groupMemberRepository.existsByGroupIdAndUserId(groupId, user.getId())) {
+        if(groupMemberRepository.existsByGroupIdAndUserIdAndStatus(groupId, user.getId(), GroupMembershipStatus.APPROVED)) {
             throw new IllegalStateException("User already joined the group");
+        }
+        if(groupMemberRepository.existsByGroupIdAndUserIdAndStatus(groupId, user.getId(), GroupMembershipStatus.PENDING)) {
+            throw new IllegalStateException("Wait for accepting by admin");
         }
         GroupMembershipStatus status = GroupMembershipStatus.PENDING;
         Boolean isApproved = false;
         if(group.getPrivacy().equals(GroupPrivacy.PUBLIC)){
-            status = GroupMembershipStatus.MEMBER;
+            status = GroupMembershipStatus.APPROVED;
             isApproved = true;
         }
         GroupMember groupMember = GroupMember.builder()
@@ -58,6 +61,9 @@ public class GroupMemberServiceImpl implements GroupMemberService {
         if(group.getCreator().getId().equals(user.getId())){
             throw new RuntimeException("Admin can not leave group");
         }
+        if(groupMember.getStatus() != GroupMembershipStatus.APPROVED){
+            throw new RuntimeException("Group member is not in this group");
+        }
         group.getMembers().remove(groupMember);
         groupMemberRepository.delete(groupMember);
     }
@@ -69,9 +75,28 @@ public class GroupMemberServiceImpl implements GroupMemberService {
             throw new AccessDeniedException("You do not have permission to approve this member");
         }
         GroupMember groupMember = groupMemberRepository.findByGroupIdAndUserId(groupId, userId).orElseThrow(()-> new EntityNotFoundException("Member not found"));
+        if(groupMember.getStatus() != GroupMembershipStatus.PENDING){
+            throw new IllegalStateException("Group member is not in pending status");
+        }
         groupMember.setJoinedAt(LocalDateTime.now());
         groupMember.setIsApproved(true);
-        groupMember.setStatus(GroupMembershipStatus.MEMBER);
+        groupMember.setStatus(GroupMembershipStatus.APPROVED);
+        groupMemberRepository.save(groupMember);
+    }
+
+    @Override
+    public void rejectMember(Long groupId, Long userId) {
+        User user = userService.getUserLogin();
+        if(!this.isAdmin(groupId, user.getId())) {
+            throw new AccessDeniedException("You do not have permission to reject this member");
+        }
+        GroupMember groupMember = groupMemberRepository.findByGroupIdAndUserId(groupId, userId).orElseThrow(()-> new EntityNotFoundException("Member not found"));
+        if(groupMember.getStatus() != GroupMembershipStatus.PENDING){
+            throw new IllegalStateException("Group member is not in pending status");
+        }
+        groupMember.setRejectedAt(LocalDateTime.now());
+        groupMember.setIsApproved(false);
+        groupMember.setStatus(GroupMembershipStatus.REJECTED);
         groupMemberRepository.save(groupMember);
     }
 
@@ -87,14 +112,21 @@ public class GroupMemberServiceImpl implements GroupMemberService {
         if(group.getCreator().getId().equals(user.getId())){
             throw new RuntimeException("Can not delete admin");
         }
+        if(groupMember.getStatus() != GroupMembershipStatus.APPROVED){
+            throw new RuntimeException("Group member is not in this group");
+        }
         group.getMembers().remove(groupMember);
         groupMemberRepository.delete(groupMember);
     }
 
     @Override
     public GroupMember changeRole(Long groupId, Long userId, GroupRole role) {
-        GroupMember groupMember = groupMemberRepository.findByGroupIdAndUserIdAndStatusIn(groupId, userId, Arrays.asList(GroupMembershipStatus.ADMIN, GroupMembershipStatus.MEMBER)).orElseThrow(()-> new EntityNotFoundException("Group member not found"));
+        GroupMember groupMember = groupMemberRepository.findByGroupIdAndUserIdAndRoleIn(groupId, userId, Arrays.asList(GroupRole.ADMIN, GroupRole.MEMBER)).orElseThrow(()-> new EntityNotFoundException("Group member not found"));
         User user = userService.getUserLogin();
+        Group group = groupService.getGroupById(groupId);
+        if(!group.getCreator().getId().equals(user.getId())){
+            throw new IllegalStateException("You are not owner of this group");
+        }
         groupMember.setRole(role);
         groupMemberRepository.save(groupMember);
         return groupMember;
@@ -103,8 +135,27 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     @Override
     public List<GroupMember> getMembers(Long groupId) {
         Group group = groupService.getGroupById(groupId);
-        return groupMemberRepository.findByGroupIdAndStatusIn(groupId, Arrays.asList(GroupMembershipStatus.MEMBER, GroupMembershipStatus.ADMIN ));
+        return groupMemberRepository.findByGroupIdAndStatus(groupId, GroupMembershipStatus.APPROVED);
     }
+
+    @Override
+    public List<GroupMember> getPendingMembers(Long groupId) {
+        User user = userService.getUserLogin();
+        if(!this.isAdmin(groupId, user.getId())) {
+            throw new IllegalStateException("You can not view pending member");
+        }
+        List<GroupMember> pendingMembers = groupMemberRepository.findByGroupIdAndStatus(groupId, GroupMembershipStatus.PENDING);
+        return pendingMembers;
+    }
+
+    @Override
+    public GroupMembershipStatus getMembershipStatus(Long groupId) {
+        User user  = userService.getUserLogin();
+        Group group = groupService.getGroupById(groupId);
+        GroupMember groupMember = groupMemberRepository.findByGroupIdAndUserId(groupId, user.getId()).orElseThrow(()-> new EntityNotFoundException("Group member not found"));
+        return groupMember.getStatus();
+    }
+
 
     private boolean isAdmin(Long groupId, Long userId) {
         return groupMemberRepository.existsByGroupIdAndUserIdAndRole(groupId, userId, GroupRole.ADMIN);

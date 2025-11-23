@@ -40,7 +40,7 @@ public class GroupServiceImpl implements GroupService {
                 .group(newGroup)
                 .role(GroupRole.ADMIN)
                 .joinedAt(LocalDateTime.now())
-                .status(GroupMembershipStatus.ADMIN)
+                .status(GroupMembershipStatus.APPROVED)
                 .isApproved(true)
                 .build();
         newGroup.getMembers().add(groupMember);
@@ -60,6 +60,10 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group updateGroup(Long id, GroupRequest request) {
         Group group = getGroupById(id);
+        User user = userService.getUserLogin();
+        if(!group.getCreator().getId().equals(user.getId())) {
+            throw new IllegalStateException("You can not update this group");
+        }
         group.setName(request.getName());
         group.setDescription(request.getDescription());
         group.setCoverImage(request.getCoverImage());
