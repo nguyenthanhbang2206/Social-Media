@@ -3,6 +3,7 @@ package com.nguyenthanhbang.Social_media.controller.user;
 import com.nguyenthanhbang.Social_media.dto.request.UpdateGroupMemberRequest;
 import com.nguyenthanhbang.Social_media.dto.response.ApiResponse;
 import com.nguyenthanhbang.Social_media.dto.response.GroupMemberResponse;
+import com.nguyenthanhbang.Social_media.enumeration.GroupMembershipStatus;
 import com.nguyenthanhbang.Social_media.enumeration.GroupRole;
 import com.nguyenthanhbang.Social_media.mapper.GroupMemberMapper;
 import com.nguyenthanhbang.Social_media.model.Group;
@@ -42,11 +43,31 @@ public class GroupMemberController {
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+    @PostMapping("/groups/{groupId}/pending-members")
+    public ResponseEntity<ApiResponse<List<GroupMemberResponse>>> getPendingMembers(@PathVariable Long groupId) {
+        List<GroupMember> members = groupMemberService.getPendingMembers(groupId);
+        ApiResponse response = ApiResponse.builder()
+                .message("Get pending members successfully")
+                .status(HttpStatus.OK.value())
+                .data(groupMemberMapper.toGroupMemberResponses(members))
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
     @PostMapping("/groups/{groupId}/members/{userId}/approve")
     public ResponseEntity<ApiResponse<Void>> approveMember(@PathVariable Long groupId, @PathVariable Long userId) {
         groupMemberService.approveMember(groupId, userId);
         ApiResponse response = ApiResponse.builder()
                 .message("Approve member successfully")
+                .status(HttpStatus.CREATED.value())
+                .data(null)
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+    @PostMapping("/groups/{groupId}/members/{userId}/reject")
+    public ResponseEntity<ApiResponse<Void>> rejectMember(@PathVariable Long groupId, @PathVariable Long userId) {
+        groupMemberService.approveMember(groupId, userId);
+        ApiResponse response = ApiResponse.builder()
+                .message("Reject member successfully")
                 .status(HttpStatus.CREATED.value())
                 .data(null)
                 .build();
@@ -69,6 +90,16 @@ public class GroupMemberController {
                 .message("Get members successfully")
                 .status(HttpStatus.OK.value())
                 .data(groupMemberMapper.toGroupMemberResponses(groupMembers))
+                .build();
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/groups/{groupId}/members/status")
+    public ResponseEntity<ApiResponse<GroupMembershipStatus>> getStatus(@PathVariable Long groupId) {
+        GroupMembershipStatus status = groupMemberService.getMembershipStatus(groupId);
+        ApiResponse response = ApiResponse.builder()
+                .message("Get member status successfully")
+                .status(HttpStatus.OK.value())
+                .data(status)
                 .build();
         return ResponseEntity.ok(response);
     }

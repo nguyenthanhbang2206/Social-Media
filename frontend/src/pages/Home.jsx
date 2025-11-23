@@ -34,7 +34,10 @@ export default function Home() {
   const { posts, loading, error, createSuccess, uploadLoading, uploadedFiles } =
     useSelector((state) => state.post);
   const [openPost, setOpenPost] = useState(null);
+  // ...existing code...
+  const [selectedReactionType, setSelectedReactionType] = useState("");
 
+  // ...existing code...
   const [content, setContent] = useState("");
   const [media, setMedia] = useState([]);
   const [postReactionsData, setPostReactionsData] = useState({});
@@ -267,7 +270,10 @@ export default function Home() {
               >
                 Bạn bè
               </li>
-              <li className="hover:bg-gray-100 rounded px-2 py-1 cursor-pointer">
+              <li
+                onClick={() => navigate("/groups")}
+                className="hover:bg-gray-100 rounded px-2 py-1 cursor-pointer"
+              >
                 Nhóm
               </li>
               <li className="hover:bg-gray-100 rounded px-2 py-1 cursor-pointer">
@@ -438,51 +444,51 @@ export default function Home() {
                     </span>
                   </div>
 
-                  {/* Action Buttons */}
                   <div className="flex items-center pt-2 border-t border-gray-200 space-x-4">
-                    {/* Like/Unreact Button */}
-                    {myReaction && myReaction.reactionType ? (
+                    {/* Reaction Select giữ nguyên */}
+                    <form
+                      onChange={async (e) => {
+                        const value = e.target.value;
+                        if (value) {
+                          await handleReact(post.id, value);
+                        }
+                      }}
+                    >
+                      <select
+                        className="border rounded-full px-3 py-1 text-sm bg-gray-100"
+                        value={myReaction?.reactionType || ""}
+                      >
+                        <option value="">Chọn cảm xúc</option>
+                        {REACTION_ORDER.map((reactionType) => (
+                          <option key={reactionType} value={reactionType}>
+                            {REACTION_EMOJIS[reactionType]} {reactionType}
+                          </option>
+                        ))}
+                      </select>
+                    </form>
+                    {/* Unreact Button nếu đã có reaction */}
+                    {myReaction && myReaction.reactionType && (
                       <button
-                        className="flex items-center space-x-1 px-3 py-2 rounded-lg bg-gray-100 text-blue-600"
+                        className="ml-2 text-xs text-blue-600 hover:underline"
                         onClick={() => handleUnreact(post.id)}
                       >
-                        <span className="text-lg">
-                          {REACTION_EMOJIS[myReaction.reactionType]}
-                        </span>
-                        <span className="text-sm">
-                          Bỏ {myReaction.reactionType.toLowerCase()}
-                        </span>
+                        Bỏ cảm xúc
                       </button>
-                    ) : (
-                      <div className="flex space-x-1">
-                        {REACTION_ORDER.map((reactionType) => (
-                          <button
-                            key={reactionType}
-                            className="flex items-center px-2 py-1 rounded hover:bg-gray-100"
-                            onClick={() => handleReact(post.id, reactionType)}
-                          >
-                            <span className="text-lg">
-                              {REACTION_EMOJIS[reactionType]}
-                            </span>
-                            <span className="text-xs ml-1">
-                              {reactionType.toLowerCase()}
-                            </span>
-                          </button>
-                        ))}
-                      </div>
                     )}
-                    <button className="flex items-center space-x-1 px-3 py-2 rounded-lg hover:bg-gray-100 text-gray-600">
-                      <button onClick={() => setOpenPost(post)}>
-                        💬 Bình luận
-                      </button>
-                      {openPost && (
-                        <PostModal
-                          post={openPost}
-                          open={!!openPost}
-                          onClose={() => setOpenPost(null)}
-                        />
-                      )}{" "}
+                    <button
+                      className="flex items-center space-x-1 px-3 py-2 rounded-lg hover:bg-gray-100 text-gray-600"
+                      onClick={() => setOpenPost(post)}
+                    >
+                      💬 Bình luận
                     </button>
+                    {openPost && (
+                      <PostModal
+                        post={openPost}
+                        open={!!openPost}
+                        onClose={() => setOpenPost(null)}
+                      />
+                    )}
+                    {/* Chia sẻ */}
                     <button className="flex items-center space-x-1 px-3 py-2 rounded-lg hover:bg-gray-100 text-gray-600">
                       <span>↗️</span>
                       <span className="text-sm">Chia sẻ</span>
