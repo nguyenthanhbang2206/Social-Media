@@ -10,5 +10,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CommentLikeResponse extends BaseResponse{
-    private ReactionType reactionType = ReactionType.LIKE;
+    private ReactionType reactionType;
 }

@@ -65,7 +65,7 @@ public class GroupMemberController {
     }
     @PostMapping("/groups/{groupId}/members/{userId}/reject")
     public ResponseEntity<ApiResponse<Void>> rejectMember(@PathVariable Long groupId, @PathVariable Long userId) {
-        groupMemberService.approveMember(groupId, userId);
+        groupMemberService.rejectMember(groupId, userId);
         ApiResponse response = ApiResponse.builder()
                 .message("Reject member successfully")
                 .status(HttpStatus.CREATED.value())

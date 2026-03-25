@@ -15,9 +15,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,28 +31,42 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     public void joinGroup(Long groupId) {
         User user = userService.getUserLogin();
         Group group = groupService.getGroupById(groupId);
-        if(groupMemberRepository.existsByGroupIdAndUserIdAndStatus(groupId, user.getId(), GroupMembershipStatus.APPROVED)) {
-            throw new IllegalStateException("User already joined the group");
+        Optional<GroupMember> optionalGroupMember = groupMemberRepository.findByGroupIdAndUserId(groupId, user.getId());
+        if(optionalGroupMember.isPresent()) {
+            GroupMember existingGroupMember = optionalGroupMember.get();
+            if(existingGroupMember.getStatus() != null){
+                if(existingGroupMember.getStatus() == GroupMembershipStatus.APPROVED){
+                    throw new IllegalStateException("User already joined the group");
+                }else if(existingGroupMember.getStatus() == GroupMembershipStatus.PENDING){
+                    throw new IllegalStateException("Wait for accepting by admin");
+                }
+                existingGroupMember.setStatus(GroupMembershipStatus.PENDING);
+                existingGroupMember.setRequestedAt(LocalDateTime.now());
+                existingGroupMember.setRole(GroupRole.MEMBER);
+                groupMemberRepository.save(existingGroupMember);
+            }
         }
-        if(groupMemberRepository.existsByGroupIdAndUserIdAndStatus(groupId, user.getId(), GroupMembershipStatus.PENDING)) {
-            throw new IllegalStateException("Wait for accepting by admin");
+        else {
+            GroupMembershipStatus status = GroupMembershipStatus.PENDING;
+            Boolean isApproved = false;
+            if(group.getPrivacy().equals(GroupPrivacy.PUBLIC)){
+                status = GroupMembershipStatus.APPROVED;
+                isApproved = true;
+            }
+
+            GroupMember groupMember = GroupMember.builder()
+                    .group(group)
+                    .user(user)
+                    .role(GroupRole.MEMBER)
+                    .requestedAt(LocalDateTime.now())
+                    .status(status)
+                    .joinedAt(isApproved ? LocalDateTime.now() : null)
+                    .isApproved(isApproved)
+                    .build();
+            groupMemberRepository.save(groupMember);
         }
-        GroupMembershipStatus status = GroupMembershipStatus.PENDING;
-        Boolean isApproved = false;
-        if(group.getPrivacy().equals(GroupPrivacy.PUBLIC)){
-            status = GroupMembershipStatus.APPROVED;
-            isApproved = true;
-        }
-        GroupMember groupMember = GroupMember.builder()
-                .group(group)
-                .user(user)
-                .role(GroupRole.MEMBER)
-                .requestedAt(LocalDateTime.now())
-                .status(status)
-                .joinedAt(isApproved ? LocalDateTime.now() : null)
-                .isApproved(isApproved)
-                .build();
-        groupMemberRepository.save(groupMember);
+
+
     }
 
     @Override

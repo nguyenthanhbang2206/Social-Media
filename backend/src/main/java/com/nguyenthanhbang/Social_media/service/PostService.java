@@ -8,8 +8,11 @@ import com.nguyenthanhbang.Social_media.model.PostLike;
 import java.util.List;
 
 public interface PostService {
-    Post createPost(CreatePostRequest request);
-    Post updatePost(Long postId, UpdatePostRequest request);
+    Post createPost(Long groupId, CreatePostRequest request);
+    Post updatePost(Long groupId, Long postId, UpdatePostRequest request);
+    List<Post> getPostApprovedForGroup(Long groupId);
+    List<Post> getPostPending(Long groupId);
+    void approvePost(Long groupId, Long postId);
     List<Post> getNewsFeed();
     List<Post> getPostByUserId(Long userId);
     Post getPostById(Long postId);
