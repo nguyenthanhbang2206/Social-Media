@@ -22,7 +22,7 @@ public class PostController {
     private final PostMapper postMapper;
     @PostMapping("/posts")
     public ResponseEntity<ApiResponse<PostResponse>> createPost(@RequestBody CreatePostRequest request){
-        Post post = postService.createPost(request);
+        Post post = postService.createPost(null, request);
         ApiResponse response = ApiResponse.builder()
                 .message("Create post successfully")
                 .status(HttpStatus.CREATED.value())
@@ -32,7 +32,7 @@ public class PostController {
     }
     @PutMapping("/posts/{id}")
     public ResponseEntity<ApiResponse<PostResponse>> updatePost(@RequestBody UpdatePostRequest request, @PathVariable Long id){
-        Post post = postService.updatePost(id, request);
+        Post post = postService.updatePost(null, id, request);
         ApiResponse response = ApiResponse.builder()
                 .message("Update post successfully")
                 .status(HttpStatus.OK.value())
