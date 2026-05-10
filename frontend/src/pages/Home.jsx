@@ -9,9 +9,9 @@ import {
   getReactPostByMeAndPostId,
   getReactionsOfPost,
 } from "../api/Post/Action";
-import UserSearch from "./UserSearch";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import api from "../config/api";
 import PostModal from "../components/PostModal";
 
 const BASE_FILE_URL = "http://localhost:8080/images/post-media/";
@@ -35,16 +35,12 @@ export default function Home() {
     useSelector((state) => state.post);
   const [openPost, setOpenPost] = useState(null);
   // ...existing code...
-  const [selectedReactionType, setSelectedReactionType] = useState("");
-
   // ...existing code...
   const [content, setContent] = useState("");
   const [media, setMedia] = useState([]);
-  const [postReactionsData, setPostReactionsData] = useState({});
   const [myReactionsData, setMyReactionsData] = useState({});
   const [showReactionModal, setShowReactionModal] = useState(false);
   const [modalReactions, setModalReactions] = useState([]);
-  const [modalPostId, setModalPostId] = useState(null);
   const fileInputRef = useRef();
   const { user } = useSelector((state) => state.auth);
 
@@ -149,26 +145,28 @@ export default function Home() {
     await loadPostReactions(postId);
   };
 
+  const handleShare = async (postId) => {
+    const shareContent = window.prompt("Nội dung chia sẻ (tùy chọn):", "");
+    if (shareContent === null) return;
+    try {
+      await api.post(`/posts/${postId}/shares`, { shareContent });
+      dispatch(getPosts());
+    } catch (err) {
+      alert("Lỗi chia sẻ: " + (err?.response?.data?.message || "Vui lòng thử lại"));
+    }
+  };
+
   // Lấy tất cả reactions và reaction của mình cho post
   const loadPostReactions = async (postId) => {
     try {
       const reactions = await dispatch(getReactionsOfPost(postId));
       const myReaction = await dispatch(getReactPostByMeAndPostId(postId));
 
-      setPostReactionsData((prev) => ({
-        ...prev,
-        [postId]: Array.isArray(reactions) ? reactions : [],
-      }));
-
       setMyReactionsData((prev) => ({
         ...prev,
         [postId]: myReaction || null,
       }));
     } catch (error) {
-      setPostReactionsData((prev) => ({
-        ...prev,
-        [postId]: [],
-      }));
       setMyReactionsData((prev) => ({
         ...prev,
         [postId]: null,
@@ -176,7 +174,6 @@ export default function Home() {
     }
   };
   const handleShowReactionsModal = async (postId) => {
-    setModalPostId(postId);
     setShowReactionModal(true);
     try {
       const reactions = await dispatch(getReactionsOfPost(postId));
@@ -189,7 +186,6 @@ export default function Home() {
   const handleCloseModal = () => {
     setShowReactionModal(false);
     setModalReactions([]);
-    setModalPostId(null);
   };
 
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -489,7 +485,10 @@ export default function Home() {
                       />
                     )}
                     {/* Chia sẻ */}
-                    <button className="flex items-center space-x-1 px-3 py-2 rounded-lg hover:bg-gray-100 text-gray-600">
+                    <button
+                      className="flex items-center space-x-1 px-3 py-2 rounded-lg hover:bg-gray-100 text-gray-600"
+                      onClick={() => handleShare(post.id)}
+                    >
                       <span>↗️</span>
                       <span className="text-sm">Chia sẻ</span>
                     </button>

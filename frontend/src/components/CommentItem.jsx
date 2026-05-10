@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function CommentItem({
@@ -8,14 +8,51 @@ export default function CommentItem({
   reloadComments,
   currentUserId, // truyền vào nếu muốn kiểm tra quyền sửa/xóa
 }) {
+  const REACTION_ORDER = ["LIKE", "LOVE", "HAHA", "WOW", "SAD", "ANGRY"];
+  const REACTION_EMOJIS = {
+    LIKE: "👍",
+    LOVE: "❤️",
+    HAHA: "😂",
+    WOW: "😮",
+    SAD: "😢",
+    ANGRY: "😠",
+  };
   const [showReply, setShowReply] = useState(false);
   const [replyContent, setReplyContent] = useState("");
   const [editMode, setEditMode] = useState(false);
   const [editContent, setEditContent] = useState(comment.content);
+  const [myReaction, setMyReaction] = useState(null);
+  const [reactions, setReactions] = useState([]);
+  const [reactionLoading, setReactionLoading] = useState(false);
   const token = localStorage.getItem("token");
 
   // Lấy replies của comment này
   const children = allComments.filter((c) => c.parentCommentId === comment.id);
+
+  const fetchReactions = async () => {
+    setReactionLoading(true);
+    try {
+      const [meRes, listRes] = await Promise.all([
+        axios.get(`http://localhost:8080/api/v1/comments/${comment.id}/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get(`http://localhost:8080/api/v1/comments/${comment.id}/reactions`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
+      setMyReaction(meRes.data.data || null);
+      setReactions(listRes.data.data || []);
+    } catch (err) {
+      setMyReaction(null);
+      setReactions([]);
+    }
+    setReactionLoading(false);
+  };
+
+  useEffect(() => {
+    fetchReactions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [comment.id]);
 
   // Gửi reply
   const handleReply = async (e) => {
@@ -51,6 +88,24 @@ export default function CommentItem({
       headers: { Authorization: `Bearer ${token}` },
     });
     reloadComments && reloadComments();
+  };
+
+  const handleReact = async (reactionType) => {
+    if (!reactionType) return;
+    await axios.post(
+      `http://localhost:8080/api/v1/comments/${comment.id}/react`,
+      { reactionType },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    fetchReactions();
+  };
+
+  const handleUnreact = async () => {
+    await axios.delete(
+      `http://localhost:8080/api/v1/comments/${comment.id}/un-react`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    fetchReactions();
   };
 
   return (
@@ -114,6 +169,33 @@ export default function CommentItem({
             >
               Trả lời
             </button>
+            <div className="flex items-center gap-2">
+              <select
+                className="border rounded-full px-2 py-0.5 text-xs bg-gray-100"
+                value={myReaction?.reactionType || ""}
+                onChange={(e) => handleReact(e.target.value)}
+                disabled={reactionLoading}
+              >
+                <option value="">Cảm xúc</option>
+                {REACTION_ORDER.map((reactionType) => (
+                  <option key={reactionType} value={reactionType}>
+                    {REACTION_EMOJIS[reactionType]} {reactionType}
+                  </option>
+                ))}
+              </select>
+              {myReaction?.reactionType && (
+                <button
+                  className="hover:underline font-medium text-blue-600"
+                  onClick={handleUnreact}
+                  disabled={reactionLoading}
+                >
+                  Bỏ cảm xúc
+                </button>
+              )}
+              <span className="text-xs text-gray-400">
+                {reactions.length} cảm xúc
+              </span>
+            </div>
             {/* Chỉ cho phép sửa/xóa nếu là chủ comment */}
             {(currentUserId === comment.user?.id ||
               comment.user?.id === currentUserId) && (

@@ -1,4 +1,3 @@
-import axios from "axios";
 import {
   GET_USER_PROFILE_SUCCESS,
   GET_USER_PROFILE_REQUEST,
@@ -10,9 +9,6 @@ import {
   LOGOUT,
   LOGIN_FAILURE,
   GET_USER_PROFILE_FAILURE,
-  UPDATE_USER_PROFILE_REQUEST,
-  UPDATE_USER_PROFILE_SUCCESS,
-  UPDATE_USER_PROFILE_FAILURE,
 } from "./ActionType";
 import api from "../../config/api";
 
@@ -51,8 +47,8 @@ export const login =
       localStorage.setItem("user", JSON.stringify(data.data.user));
 
       // Điều hướng dựa trên vai trò của người dùng
-      if (data.data.user.role === "RESTAURANT_OWNER") {
-        navigate("/admin/restaurant");
+      if (data.data.user.role === "ADMIN") {
+        navigate("/admin");
       } else {
         navigate("/");
       }
@@ -98,31 +94,14 @@ export const getProfile = (token) => async (dispatch) => {
   }
 };
 
-export const logout = () => (dispatch) => {
+export const logout = () => async (dispatch) => {
+  try {
+    await api.post("/auth/logout");
+  } catch (error) {
+    // Ignore logout errors and still clear client state
+  }
   localStorage.removeItem("token");
   localStorage.removeItem("user");
   dispatch({ type: LOGOUT });
 };
-export const updateUserProfile = (profileData) => async (dispatch) => {
-  dispatch({ type: UPDATE_USER_PROFILE_REQUEST });
-  try {
-    const token = localStorage.getItem("token");
-    const { data } = await api.put(
-      "/users/profile",
-      profileData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    // Lưu thông tin user mới vào localStorage
-    localStorage.setItem("user", JSON.stringify(data.data));
-    dispatch({ type: UPDATE_USER_PROFILE_SUCCESS, payload: data.data });
-  } catch (error) {
-    const errorMessage =
-      error.response?.data?.message || "Failed to update profile. Please try again.";
-    dispatch({ type: UPDATE_USER_PROFILE_FAILURE, payload: errorMessage });
-    console.error("Update Profile Error:", errorMessage);
-  }
-};
+// eslint-disable-next-line no-unused-vars
