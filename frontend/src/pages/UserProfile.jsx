@@ -9,6 +9,7 @@ import {
   reactPost,
   unreactPost,
 } from "../api/Post/Action";
+import { getProfile } from "../api/Auth/Action";
 import axios from "axios";
 
 const BASE_FILE_URL = "http://localhost:8080/images/post-media/";
@@ -27,18 +28,23 @@ export default function UserProfile() {
   const dispatch = useDispatch();
   const { posts, loading } = useSelector((state) => state.post);
   const { user: userLogin } = useSelector((state) => state.auth);
-  const [postReactionsData, setPostReactionsData] = useState({});
   const [myReactionsData, setMyReactionsData] = useState({});
   const [showReactionModal, setShowReactionModal] = useState(false);
   const [modalReactions, setModalReactions] = useState([]);
-  const [modalPostId, setModalPostId] = useState(null);
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editFullName, setEditFullName] = useState("");
+  const [editGender, setEditGender] = useState("OTHER");
+  const [updateLoading, setUpdateLoading] = useState(false);
 
   // Friend status
   const [friendStatus, setFriendStatus] = useState(null);
   const [friendShipId, setFriendShipId] = useState(null);
+  const [friendShip, setFriendShip] = useState(null);
   const [friendActionLoading, setFriendActionLoading] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [blockLoading, setBlockLoading] = useState(false);
 
   const token = localStorage.getItem("token");
 
@@ -51,24 +57,31 @@ export default function UserProfile() {
     }
   }, [posts]);
 
-  useEffect(() => {
-    // Lấy thông tin user
-    const fetchUser = async () => {
-      setLoadingUser(true);
-      try {
-        const res = await api.get(`/users/${userId}`);
-        setUser(res.data.data);
-      } catch (err) {
-        setUser(null);
-      }
-      setLoadingUser(false);
-    };
+  const fetchUser = async () => {
+    setLoadingUser(true);
+    try {
+      const res = await api.get(`/users/${userId}`);
+      setUser(res.data.data);
+    } catch (err) {
+      setUser(null);
+    }
+    setLoadingUser(false);
+  };
 
+  useEffect(() => {
     fetchUser();
     dispatch(getPostsByUser(userId));
     fetchFriendStatus();
+    fetchBlockStatus();
     // eslint-disable-next-line
   }, [userId, dispatch]);
+
+  useEffect(() => {
+    if (user && userLogin && userLogin.id === Number(userId)) {
+      setEditFullName(user.fullName || "");
+      setEditGender(user.gender || "OTHER");
+    }
+  }, [user, userLogin, userId]);
 
   // Lấy trạng thái bạn bè
   const fetchFriendStatus = async () => {
@@ -81,11 +94,25 @@ export default function UserProfile() {
           },
         }
       );
+      setFriendShip(res.data.data || null);
       setFriendStatus(res.data.data?.status || null);
       setFriendShipId(res.data.data?.id || null);
     } catch (err) {
       setFriendStatus(null);
       setFriendShipId(null);
+      setFriendShip(null);
+    }
+  };
+
+  const fetchBlockStatus = async () => {
+    try {
+      const res = await api.get("/blocks");
+      const blockedList = res.data.data || [];
+      setIsBlocked(
+        blockedList.some((item) => Number(item?.blocked?.id) === Number(userId))
+      );
+    } catch (err) {
+      setIsBlocked(false);
     }
   };
 
@@ -170,8 +197,48 @@ export default function UserProfile() {
         },
       });
       await fetchFriendStatus();
+
+          const handleUpdateProfile = async (e) => {
+            e.preventDefault();
+            if (!userLogin || userLogin.id !== Number(userId)) return;
+            setUpdateLoading(true);
+            try {
+                      const res = await api.put("/users/profile", {
+                        fullName: editFullName,
+                        gender: editGender,
+                      });
+                      if (res?.data?.data) {
+                        localStorage.setItem("user", JSON.stringify(res.data.data));
+                      }
+                      dispatch(getProfile(token));
+              await fetchUser();
+              setIsEditing(false);
+            } catch (err) {}
+            setUpdateLoading(false);
+          };
     } catch (err) {}
     setFriendActionLoading(false);
+  };
+
+  const handleBlock = async () => {
+    if (!userLogin || userLogin.id === Number(userId)) return;
+    const reason = window.prompt("Lý do chặn (tùy chọn):") || "";
+    setBlockLoading(true);
+    try {
+      await api.post(`/blocks/${userId}`, reason ? { reason } : {});
+      await fetchBlockStatus();
+    } catch (err) {}
+    setBlockLoading(false);
+  };
+
+  const handleUnblock = async () => {
+    if (!userLogin || userLogin.id === Number(userId)) return;
+    setBlockLoading(true);
+    try {
+      await api.delete(`/blocks/${userId}`);
+      await fetchBlockStatus();
+    } catch (err) {}
+    setBlockLoading(false);
   };
 
   // Gọi API react
@@ -186,25 +253,27 @@ export default function UserProfile() {
     await loadPostReactions(postId);
   };
 
+  const handleShare = async (postId) => {
+    const shareContent = window.prompt("Nội dung chia sẻ (tùy chọn):", "");
+    if (shareContent === null) return;
+    try {
+      await api.post(`/posts/${postId}/shares`, { shareContent });
+      dispatch(getPostsByUser(userId));
+    } catch (err) {
+      alert("Lỗi chia sẻ: " + (err?.response?.data?.message || "Vui lòng thử lại"));
+    }
+  };
+
   const loadPostReactions = async (postId) => {
     try {
       const reactions = await dispatch(getReactionsOfPost(postId));
       const myReaction = await dispatch(getReactPostByMeAndPostId(postId));
-
-      setPostReactionsData((prev) => ({
-        ...prev,
-        [postId]: Array.isArray(reactions) ? reactions : [],
-      }));
 
       setMyReactionsData((prev) => ({
         ...prev,
         [postId]: myReaction || null,
       }));
     } catch (error) {
-      setPostReactionsData((prev) => ({
-        ...prev,
-        [postId]: [],
-      }));
       setMyReactionsData((prev) => ({
         ...prev,
         [postId]: null,
@@ -213,7 +282,6 @@ export default function UserProfile() {
   };
 
   const handleShowReactionsModal = async (postId) => {
-    setModalPostId(postId);
     setShowReactionModal(true);
     try {
       const reactions = await dispatch(getReactionsOfPost(postId));
@@ -226,7 +294,6 @@ export default function UserProfile() {
   const handleCloseModal = () => {
     setShowReactionModal(false);
     setModalReactions([]);
-    setModalPostId(null);
   };
 
   // Lấy media url đầy đủ
@@ -251,46 +318,34 @@ export default function UserProfile() {
           </button>
         );
       case "PENDING":
-        // Nếu userLogin là người gửi thì cho phép hủy lời mời, nếu là người nhận thì cho phép chấp nhận/từ chối
-        // Để xác định, cần so sánh sender.id === userLogin.id
+        if (!friendShipId) return null;
+        if (friendShip?.sender?.id === userLogin.id) {
+          return (
+            <button
+              className="px-4 py-2 rounded bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300 transition"
+              disabled={friendActionLoading}
+              onClick={handleCancelRequest}
+            >
+              {friendActionLoading ? "Đang xử lý..." : "Hủy lời mời kết bạn"}
+            </button>
+          );
+        }
         return (
           <>
-            {userLogin.id === user?.id
-              ? null
-              : friendShipId && (
-                  <>
-                    {userLogin.id === userId /* always true, fix below */ ? (
-                      // Nếu là người gửi lời mời
-                      <button
-                        className="px-4 py-2 rounded bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300 transition"
-                        disabled={friendActionLoading}
-                        onClick={handleCancelRequest}
-                      >
-                        {friendActionLoading
-                          ? "Đang xử lý..."
-                          : "Hủy lời mời kết bạn"}
-                      </button>
-                    ) : (
-                      // Nếu là người nhận lời mời
-                      <>
-                        <button
-                          className="px-4 py-2 rounded bg-blue-500 text-white font-semibold hover:bg-blue-600 transition mr-2"
-                          disabled={friendActionLoading}
-                          onClick={handleAccept}
-                        >
-                          {friendActionLoading ? "Đang xử lý..." : "Chấp nhận"}
-                        </button>
-                        <button
-                          className="px-4 py-2 rounded bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300 transition"
-                          disabled={friendActionLoading}
-                          onClick={handleRefuse}
-                        >
-                          Từ chối
-                        </button>
-                      </>
-                    )}
-                  </>
-                )}
+            <button
+              className="px-4 py-2 rounded bg-blue-500 text-white font-semibold hover:bg-blue-600 transition mr-2"
+              disabled={friendActionLoading}
+              onClick={handleAccept}
+            >
+              {friendActionLoading ? "Đang xử lý..." : "Chấp nhận"}
+            </button>
+            <button
+              className="px-4 py-2 rounded bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300 transition"
+              disabled={friendActionLoading}
+              onClick={handleRefuse}
+            >
+              Từ chối
+            </button>
           </>
         );
       case "DECLINED":
@@ -349,7 +404,75 @@ export default function UserProfile() {
                 <> · {new Date(user.dateOfBirth).toLocaleDateString()}</>
               )}
             </div>
-            <div className="mt-4">{renderFriendButton()}</div>
+            {userLogin && userLogin.id === Number(userId) && (
+              <div className="mt-3 w-full max-w-md">
+                {isEditing ? (
+                  <form
+                    onSubmit={handleUpdateProfile}
+                    className="flex flex-col gap-2"
+                  >
+                    <input
+                      className="border rounded px-3 py-2"
+                      value={editFullName}
+                      onChange={(e) => setEditFullName(e.target.value)}
+                      placeholder="Họ và tên"
+                      required
+                    />
+                    <select
+                      className="border rounded px-3 py-2"
+                      value={editGender}
+                      onChange={(e) => setEditGender(e.target.value)}
+                    >
+                      <option value="MALE">Nam</option>
+                      <option value="FEMALE">Nữ</option>
+                      <option value="OTHER">Khác</option>
+                    </select>
+                    <div className="flex gap-2">
+                      <button
+                        className="px-4 py-2 rounded bg-blue-500 text-white font-semibold"
+                        disabled={updateLoading}
+                      >
+                        {updateLoading ? "Đang lưu..." : "Lưu"}
+                      </button>
+                      <button
+                        type="button"
+                        className="px-4 py-2 rounded bg-gray-200 text-gray-700 font-semibold"
+                        onClick={() => setIsEditing(false)}
+                      >
+                        Hủy
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <button
+                    className="px-4 py-2 rounded bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300"
+                    onClick={() => setIsEditing(true)}
+                  >
+                    Chỉnh sửa hồ sơ
+                  </button>
+                )}
+              </div>
+            )}
+            <div className="mt-4 flex items-center gap-2">
+              {renderFriendButton()}
+              {userLogin && userLogin.id !== Number(userId) && (
+                <button
+                  className={`px-4 py-2 rounded font-semibold transition ${
+                    isBlocked
+                      ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                      : "bg-red-500 text-white hover:bg-red-600"
+                  }`}
+                  disabled={blockLoading}
+                  onClick={isBlocked ? handleUnblock : handleBlock}
+                >
+                  {blockLoading
+                    ? "Đang xử lý..."
+                    : isBlocked
+                    ? "Bỏ chặn"
+                    : "Chặn"}
+                </button>
+              )}
+            </div>
           </>
         ) : (
           <div className="text-red-500">Không tìm thấy người dùng.</div>
@@ -474,7 +597,10 @@ export default function UserProfile() {
                       <span>💬</span>
                       <span className="text-sm">Bình luận</span>
                     </button>
-                    <button className="flex items-center space-x-1 px-3 py-2 rounded-lg hover:bg-gray-100 text-gray-600">
+                    <button
+                      className="flex items-center space-x-1 px-3 py-2 rounded-lg hover:bg-gray-100 text-gray-600"
+                      onClick={() => handleShare(post.id)}
+                    >
                       <span>↗️</span>
                       <span className="text-sm">Chia sẻ</span>
                     </button>
