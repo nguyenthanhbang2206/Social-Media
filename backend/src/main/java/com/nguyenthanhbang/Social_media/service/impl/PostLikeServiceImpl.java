@@ -9,8 +9,10 @@ import com.nguyenthanhbang.Social_media.repository.PostRepository;
 import com.nguyenthanhbang.Social_media.service.PostLikeService;
 import com.nguyenthanhbang.Social_media.service.PostService;
 import com.nguyenthanhbang.Social_media.service.UserService;
+import com.nguyenthanhbang.Social_media.service.BlockService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import jakarta.persistence.EntityNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,30 +24,38 @@ public class PostLikeServiceImpl implements PostLikeService {
     private final PostService postService;
     private final UserService userService;
     private final PostRepository postRepository;
+    private final BlockService blockService;
 
     @Override
     public PostLike reactPost(PostLikeRequest request, Long postId) {
         User user = userService.getUserLogin();
         Post post = postService.getPostById(postId);
+        blockService.ensureNotBlocked(post.getUser().getId());
         PostLike postLike = this.getReactByUserIdAndPostId(postId);
-        if(postLike == null) {
+        boolean isNewReaction = postLike == null;
+        if(isNewReaction) {
             postLike = new PostLike();
-            postLike.setReactionType(request.getReactionType());
             postLike.setUser(user);
             postLike.setPost(post);
-        }else {
-            postLike.setReactionType(request.getReactionType());
         }
-        post.setTotalReactions(post.getTotalReactions() + 1);
+        postLike.setReactionType(request.getReactionType());
+        if (isNewReaction) {
+            post.setTotalReactions(post.getTotalReactions() + 1);
+            postRepository.save(post);
+        }
         return postLikeRepository.save(postLike);
     }
 
     @Override
     public void deleteReactPost(Long postId) {
         Post post = postService.getPostById(postId);
+        blockService.ensureNotBlocked(post.getUser().getId());
         PostLike postLike = this.getReactByUserIdAndPostId(postId);
+        if (postLike == null) {
+            throw new EntityNotFoundException("Reaction not found");
+        }
         postLikeRepository.delete(postLike);
-        post.setTotalReactions(post.getTotalReactions() - 1);
+        post.setTotalReactions(Math.max(0L, post.getTotalReactions() - 1));
         postRepository.save(post);
     }
 

@@ -7,7 +7,7 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {UserMapper.class})
+@Mapper(componentModel = "spring", uses = {UserMapper.class, CommentLikeMapper.class})
 public interface CommentMapper {
     @Mapping(source = "parentComment.id", target = "parentCommentId")
     CommentResponse toCommentResponse(Comment comment);

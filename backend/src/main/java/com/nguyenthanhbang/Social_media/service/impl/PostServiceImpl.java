@@ -39,10 +39,12 @@ public class PostServiceImpl implements PostService {
         User user = userService.getUserLogin();
         Post post = new Post();
         post.setContent(request.getContent());
-        post.setPrivacy(request.getPostType()==PostType.USER_POST ? request.getPrivacy() : PrivacyLevel.PUBLIC);
+        PrivacyLevel privacy = request.getPrivacy() == null ? PrivacyLevel.PUBLIC : request.getPrivacy();
+        post.setPrivacy(isUserPost(request.getPostType()) ? privacy : PrivacyLevel.PUBLIC);
         post.setUser(user);
         List<PostMedia> postMediaList = new ArrayList<>();
-        for(PostMediaRequest item : request.getMedia()) {
+        List<PostMediaRequest> mediaRequests = request.getMedia() == null ? new ArrayList<>() : request.getMedia();
+        for(PostMediaRequest item : mediaRequests) {
             PostMedia postMedia = PostMedia.builder()
                     .mediaUrl(item.getMediaUrl())
                     .mediaType(item.getMediaType())
@@ -71,7 +73,7 @@ public class PostServiceImpl implements PostService {
             }else {
                 post.setIsApproved(true);
             }
-        }else if(request.getPostType() != null && request.getPostType() == PostType.USER_POST){
+        }else if(isUserPost(request.getPostType())){
             post.setPostType(PostType.USER_POST);
         }
         return postRepository.save(post);
@@ -88,11 +90,13 @@ public class PostServiceImpl implements PostService {
         if (post.getMedia() == null) {
             post.setMedia(new ArrayList<>());
         }
-        post.setPrivacy(request.getPostType()==PostType.USER_POST ? request.getPrivacy() : PrivacyLevel.PUBLIC);
+        PrivacyLevel privacy = request.getPrivacy() == null ? PrivacyLevel.PUBLIC : request.getPrivacy();
+        post.setPrivacy(isUserPost(request.getPostType()) ? privacy : PrivacyLevel.PUBLIC);
         post.setContent(request.getContent());
         List<PostMedia> postMediaList = post.getMedia(); // old
         Iterator<PostMedia> currentMediaIterator = postMediaList.iterator(); //old
-        List<String> urls = request.getMedia().stream().map(item -> item.getMediaUrl()).collect(Collectors.toList()); //request
+        List<PostMediaRequest> mediaRequests = request.getMedia() == null ? new ArrayList<>() : request.getMedia();
+        List<String> urls = mediaRequests.stream().map(item -> item.getMediaUrl()).collect(Collectors.toList()); //request
         while(currentMediaIterator.hasNext()){
             PostMedia item = currentMediaIterator.next();
             if(!urls.contains(item.getMediaUrl())){
@@ -100,7 +104,7 @@ public class PostServiceImpl implements PostService {
             }
         }
         List<String> currentUrls = postMediaList.stream().map(item -> item.getMediaUrl()).collect(Collectors.toList()); // sau khi xóa
-        for(PostMediaRequest item : request.getMedia()){
+        for(PostMediaRequest item : mediaRequests){
             if(!currentUrls.contains(item.getMediaUrl())){
                 PostMedia postMedia = PostMedia.builder()
                         .mediaType(item.getMediaType())
@@ -129,7 +133,7 @@ public class PostServiceImpl implements PostService {
             }else{
                 post.setIsApproved(true);
             }
-        }else if(request.getPostType() != null && request.getPostType() == PostType.USER_POST){
+        }else if(isUserPost(request.getPostType())){
             post.setPostType(PostType.USER_POST);
         }
         return postRepository.save(post);
@@ -183,16 +187,36 @@ public class PostServiceImpl implements PostService {
         postRepository.save(post);
     }
 
+    @Override
+    public void pinPost(Long groupId, Long postId) {
+        Post post = postRepository.findByGroupIdAndId(groupId, postId)
+                .orElseThrow(() -> new EntityNotFoundException("Post not found"));
+        GroupMember groupMember = groupMemberRepository.findByGroupIdAndUserId(groupId, userService.getUserLogin().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Group member not found"));
+        if (groupMember.getStatus() != GroupMembershipStatus.APPROVED || groupMember.getRole() != GroupRole.ADMIN) {
+            throw new IllegalStateException("You can not pin post");
+        }
+        post.setIsPinned(true);
+        postRepository.save(post);
+    }
+
+    @Override
+    public void unpinPost(Long groupId, Long postId) {
+        Post post = postRepository.findByGroupIdAndId(groupId, postId)
+                .orElseThrow(() -> new EntityNotFoundException("Post not found"));
+        GroupMember groupMember = groupMemberRepository.findByGroupIdAndUserId(groupId, userService.getUserLogin().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Group member not found"));
+        if (groupMember.getStatus() != GroupMembershipStatus.APPROVED || groupMember.getRole() != GroupRole.ADMIN) {
+            throw new IllegalStateException("You can not unpin post");
+        }
+        post.setIsPinned(false);
+        postRepository.save(post);
+    }
 
     @Override
     public List<Post> getNewsFeed() {
         List<Post> posts = postRepository.findAll();
-//        posts.stream().map(post -> {
-//            post.setTotalComments(commentRepository.countByPostId(post.getId()));
-//            post.setTotalShares(postShareRepository.countByPostId(post.getId()));
-//            post.setTotalReactions(postLikeRepository.countByPostId(post.getId()));
-//            return postRepository.save(post);
-//        }).collect(Collectors.toList());
+        posts.forEach(this::populatePostTotals);
         return posts;
     }
 
@@ -200,18 +224,14 @@ public class PostServiceImpl implements PostService {
     public List<Post> getPostByUserId(Long userId) {
         User user = userService.getUserById(userId);
         List<Post> posts = postRepository.findByUserId(userId);
-//        posts.stream().map(post -> {
-//            post.setTotalComments(commentRepository.countByPostId(post.getId()));
-//            post.setTotalShares(postShareRepository.countByPostId(post.getId()));
-//            post.setTotalReactions(postLikeRepository.countByPostId(post.getId()));
-//            return postRepository.save(post);
-//        }).collect(Collectors.toList());
+        posts.forEach(this::populatePostTotals);
         return posts;
     }
 
     @Override
     public Post getPostById(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("Post not found"));
+        populatePostTotals(post);
         return post;
     }
 
@@ -224,5 +244,15 @@ public class PostServiceImpl implements PostService {
             item.setActive(false);
             postMediaRepository.save(item);
         });
+    }
+
+    private boolean isUserPost(PostType postType) {
+        return postType == null || postType == PostType.USER_POST;
+    }
+
+    private void populatePostTotals(Post post) {
+        post.setTotalComments(commentRepository.countByPostId(post.getId()));
+        post.setTotalReactions(postLikeRepository.countByPostId(post.getId()));
+        post.setTotalShares(postShareRepository.countByPostId(post.getId()));
     }
 }

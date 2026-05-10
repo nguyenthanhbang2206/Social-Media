@@ -67,7 +67,7 @@ public class GroupServiceImpl implements GroupService {
         group.setName(request.getName());
         group.setDescription(request.getDescription());
         group.setCoverImage(request.getCoverImage());
-        group.setGroupImage(group.getCoverImage());
+        group.setGroupImage(request.getGroupImage());
         group.setPrivacy(request.getPrivacy());
         return groupRepository.save(group);
     }
@@ -76,6 +76,7 @@ public class GroupServiceImpl implements GroupService {
     public void deleteGroup(Long id) {
         Group group = getGroupById(id);
         group.setActive(false);
+        groupRepository.save(group);
     }
 
     @Override

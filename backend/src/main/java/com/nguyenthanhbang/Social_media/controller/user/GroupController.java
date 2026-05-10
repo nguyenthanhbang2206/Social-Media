@@ -138,5 +138,26 @@ public class GroupController {
                 .build();
         return ResponseEntity.ok(response);
     }
+    @PutMapping("/groups/{groupId}/posts/{postId}/pin")
+    public ResponseEntity<ApiResponse<Void>> pinPost(@PathVariable Long groupId, @PathVariable Long postId) {
+        postService.pinPost(groupId, postId);
+        ApiResponse response = ApiResponse.builder()
+                .message("Pin post successfully")
+                .status(HttpStatus.OK.value())
+                .data(null)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/groups/{groupId}/posts/{postId}/unpin")
+    public ResponseEntity<ApiResponse<Void>> unpinPost(@PathVariable Long groupId, @PathVariable Long postId) {
+        postService.unpinPost(groupId, postId);
+        ApiResponse response = ApiResponse.builder()
+                .message("Unpin post successfully")
+                .status(HttpStatus.OK.value())
+                .data(null)
+                .build();
+        return ResponseEntity.ok(response);
+    }
 
 }
