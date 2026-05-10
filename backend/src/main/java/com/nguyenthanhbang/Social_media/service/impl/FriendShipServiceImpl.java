@@ -9,6 +9,7 @@ import com.nguyenthanhbang.Social_media.repository.FriendShipRepository;
 import com.nguyenthanhbang.Social_media.repository.UserRepository;
 import com.nguyenthanhbang.Social_media.service.FriendShipService;
 import com.nguyenthanhbang.Social_media.service.UserService;
+import com.nguyenthanhbang.Social_media.service.BlockService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,9 +25,11 @@ public class FriendShipServiceImpl implements FriendShipService {
     private final UserService userService;
     private final FriendShipRepository friendShipRepository;
     private final UserRepository userRepository;
+    private final BlockService blockService;
 
     @Override
     public FriendShip sendRequest(Long userId) {
+        blockService.ensureNotBlocked(userId);
         User currentUser = userService.getUserLogin();
         User user = userService.getUserById(userId);
         FriendShip friendShip = new FriendShip();
@@ -40,6 +43,7 @@ public class FriendShipServiceImpl implements FriendShipService {
 
     @Override
     public void cancelRequest(Long userId) {
+        blockService.ensureNotBlocked(userId);
         User currentUser = userService.getUserLogin();
         User user = userService.getUserById(userId);
         FriendShip friendShip = friendShipRepository.findBySenderIdAndReceiverId(currentUser.getId(), userId).orElseThrow(()->new EntityNotFoundException("Not found"));
@@ -48,6 +52,7 @@ public class FriendShipServiceImpl implements FriendShipService {
 
     @Override
     public FriendShip acceptFriend(Long userId) {
+        blockService.ensureNotBlocked(userId);
         User currentUser = userService.getUserLogin();
         User user = userService.getUserById(userId);
         FriendShip friendShip = friendShipRepository.findBySenderIdAndReceiverId(userId, currentUser.getId()).orElseThrow(()->new EntityNotFoundException("Not found"));
@@ -58,6 +63,7 @@ public class FriendShipServiceImpl implements FriendShipService {
 
     @Override
     public void refuseFriend(Long userId) {
+        blockService.ensureNotBlocked(userId);
         User currentUser = userService.getUserLogin();
         User user = userService.getUserById(userId);
         FriendShip friendShip = friendShipRepository.findBySenderIdAndReceiverId(userId, currentUser.getId()).orElseThrow(()->new EntityNotFoundException("Not found"));
@@ -66,6 +72,7 @@ public class FriendShipServiceImpl implements FriendShipService {
 
     @Override
     public void unfriend(Long userId) {
+        blockService.ensureNotBlocked(userId);
         User currentUser = userService.getUserLogin();
         User user = userService.getUserById(userId);
         FriendShip friendShip = this.findFriendshipBetween(currentUser.getId(), user.getId());

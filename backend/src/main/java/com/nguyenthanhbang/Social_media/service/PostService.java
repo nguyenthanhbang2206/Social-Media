@@ -13,6 +13,8 @@ public interface PostService {
     List<Post> getPostApprovedForGroup(Long groupId);
     List<Post> getPostPending(Long groupId);
     void approvePost(Long groupId, Long postId);
+    void pinPost(Long groupId, Long postId);
+    void unpinPost(Long groupId, Long postId);
     List<Post> getNewsFeed();
     List<Post> getPostByUserId(Long userId);
     Post getPostById(Long postId);
