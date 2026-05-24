@@ -6,7 +6,6 @@ import {
   uploadFiles,
   reactPost,
   unreactPost,
-  getReactPostByMeAndPostId,
   getReactionsOfPost,
 } from "../api/Post/Action";
 import { useNavigate } from "react-router-dom";
@@ -38,7 +37,6 @@ export default function Home() {
   // ...existing code...
   const [content, setContent] = useState("");
   const [media, setMedia] = useState([]);
-  const [myReactionsData, setMyReactionsData] = useState({});
   const [showReactionModal, setShowReactionModal] = useState(false);
   const [modalReactions, setModalReactions] = useState([]);
   const fileInputRef = useRef();
@@ -48,16 +46,6 @@ export default function Home() {
   useEffect(() => {
     dispatch(getPosts());
   }, [dispatch, createSuccess]);
-
-  // Load reactions for all posts after posts loaded
-  useEffect(() => {
-    if (posts && posts.length > 0) {
-      posts.forEach((post) => {
-        console.log(post.id);
-        loadPostReactions(post.id);
-      });
-    }
-  }, [posts]);
 
   useEffect(() => {
     if (uploadedFiles && uploadedFiles.length > 0) {
@@ -77,7 +65,7 @@ export default function Home() {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         setFriends(res.data.data || []);
       } catch (err) {
@@ -109,7 +97,7 @@ export default function Home() {
         content,
         privacy: "PUBLIC",
         media: postMedia,
-      })
+      }),
     );
 
     setContent("");
@@ -135,14 +123,14 @@ export default function Home() {
   const handleReact = async (postId, reactionType) => {
     console.log(postId, reactionType);
     await dispatch(reactPost(postId, reactionType));
-    await loadPostReactions(postId);
+    await dispatch(getPosts());
   };
 
   // Gọi API unreact
   const handleUnreact = async (postId) => {
     console.log(postId);
     await dispatch(unreactPost(postId));
-    await loadPostReactions(postId);
+    await dispatch(getPosts());
   };
 
   const handleShare = async (postId) => {
@@ -152,27 +140,12 @@ export default function Home() {
       await api.post(`/posts/${postId}/shares`, { shareContent });
       dispatch(getPosts());
     } catch (err) {
-      alert("Lỗi chia sẻ: " + (err?.response?.data?.message || "Vui lòng thử lại"));
+      alert(
+        "Lỗi chia sẻ: " + (err?.response?.data?.message || "Vui lòng thử lại"),
+      );
     }
   };
 
-  // Lấy tất cả reactions và reaction của mình cho post
-  const loadPostReactions = async (postId) => {
-    try {
-      const reactions = await dispatch(getReactionsOfPost(postId));
-      const myReaction = await dispatch(getReactPostByMeAndPostId(postId));
-
-      setMyReactionsData((prev) => ({
-        ...prev,
-        [postId]: myReaction || null,
-      }));
-    } catch (error) {
-      setMyReactionsData((prev) => ({
-        ...prev,
-        [postId]: null,
-      }));
-    }
-  };
   const handleShowReactionsModal = async (postId) => {
     setShowReactionModal(true);
     try {
@@ -367,7 +340,7 @@ export default function Home() {
           )}
           {posts &&
             posts.map((post) => {
-              const myReaction = myReactionsData[post.id];
+              const myReactionType = post.myReactionType;
 
               return (
                 <div
@@ -452,7 +425,7 @@ export default function Home() {
                     >
                       <select
                         className="border rounded-full px-3 py-1 text-sm bg-gray-100"
-                        value={myReaction?.reactionType || ""}
+                        value={myReactionType || ""}
                       >
                         <option value="">Chọn cảm xúc</option>
                         {REACTION_ORDER.map((reactionType) => (
@@ -463,7 +436,7 @@ export default function Home() {
                       </select>
                     </form>
                     {/* Unreact Button nếu đã có reaction */}
-                    {myReaction && myReaction.reactionType && (
+                    {myReactionType && (
                       <button
                         className="ml-2 text-xs text-blue-600 hover:underline"
                         onClick={() => handleUnreact(post.id)}
@@ -596,8 +569,8 @@ export default function Home() {
                         {friend.gender === "MALE"
                           ? "Nam"
                           : friend.gender === "FEMALE"
-                          ? "Nữ"
-                          : "Khác"}
+                            ? "Nữ"
+                            : "Khác"}
                         {friend.dateOfBirth && (
                           <>
                             {" "}
