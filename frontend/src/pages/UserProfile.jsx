@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getPostsByUser,
   getReactionsOfPost,
-  getReactPostByMeAndPostId,
   reactPost,
   unreactPost,
 } from "../api/Post/Action";
@@ -28,7 +27,6 @@ export default function UserProfile() {
   const dispatch = useDispatch();
   const { posts, loading } = useSelector((state) => state.post);
   const { user: userLogin } = useSelector((state) => state.auth);
-  const [myReactionsData, setMyReactionsData] = useState({});
   const [showReactionModal, setShowReactionModal] = useState(false);
   const [modalReactions, setModalReactions] = useState([]);
   const [user, setUser] = useState(null);
@@ -47,15 +45,6 @@ export default function UserProfile() {
   const [blockLoading, setBlockLoading] = useState(false);
 
   const token = localStorage.getItem("token");
-
-  // Load reactions for all posts after posts loaded
-  useEffect(() => {
-    if (posts && posts.length > 0) {
-      posts.forEach((post) => {
-        loadPostReactions(post.id);
-      });
-    }
-  }, [posts]);
 
   const fetchUser = async () => {
     setLoadingUser(true);
@@ -92,7 +81,7 @@ export default function UserProfile() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       setFriendShip(res.data.data || null);
       setFriendStatus(res.data.data?.status || null);
@@ -109,7 +98,9 @@ export default function UserProfile() {
       const res = await api.get("/blocks");
       const blockedList = res.data.data || [];
       setIsBlocked(
-        blockedList.some((item) => Number(item?.blocked?.id) === Number(userId))
+        blockedList.some(
+          (item) => Number(item?.blocked?.id) === Number(userId),
+        ),
       );
     } catch (err) {
       setIsBlocked(false);
@@ -127,7 +118,7 @@ export default function UserProfile() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       await fetchFriendStatus();
     } catch (err) {}
@@ -144,7 +135,7 @@ export default function UserProfile() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       await fetchFriendStatus();
     } catch (err) {}
@@ -162,7 +153,7 @@ export default function UserProfile() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       await fetchFriendStatus();
     } catch (err) {}
@@ -180,7 +171,7 @@ export default function UserProfile() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       await fetchFriendStatus();
     } catch (err) {}
@@ -197,27 +188,27 @@ export default function UserProfile() {
         },
       });
       await fetchFriendStatus();
-
-          const handleUpdateProfile = async (e) => {
-            e.preventDefault();
-            if (!userLogin || userLogin.id !== Number(userId)) return;
-            setUpdateLoading(true);
-            try {
-                      const res = await api.put("/users/profile", {
-                        fullName: editFullName,
-                        gender: editGender,
-                      });
-                      if (res?.data?.data) {
-                        localStorage.setItem("user", JSON.stringify(res.data.data));
-                      }
-                      dispatch(getProfile(token));
-              await fetchUser();
-              setIsEditing(false);
-            } catch (err) {}
-            setUpdateLoading(false);
-          };
     } catch (err) {}
     setFriendActionLoading(false);
+  };
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    if (!userLogin || userLogin.id !== Number(userId)) return;
+    setUpdateLoading(true);
+    try {
+      const res = await api.put("/users/profile", {
+        fullName: editFullName,
+        gender: editGender,
+      });
+      if (res?.data?.data) {
+        localStorage.setItem("user", JSON.stringify(res.data.data));
+      }
+      dispatch(getProfile(token));
+      await fetchUser();
+      setIsEditing(false);
+    } catch (err) {}
+    setUpdateLoading(false);
   };
 
   const handleBlock = async () => {
@@ -244,13 +235,13 @@ export default function UserProfile() {
   // Gọi API react
   const handleReact = async (postId, reactionType) => {
     await dispatch(reactPost(postId, reactionType));
-    await loadPostReactions(postId);
+    await dispatch(getPostsByUser(userId));
   };
 
   // Gọi API unreact
   const handleUnreact = async (postId) => {
     await dispatch(unreactPost(postId));
-    await loadPostReactions(postId);
+    await dispatch(getPostsByUser(userId));
   };
 
   const handleShare = async (postId) => {
@@ -260,24 +251,9 @@ export default function UserProfile() {
       await api.post(`/posts/${postId}/shares`, { shareContent });
       dispatch(getPostsByUser(userId));
     } catch (err) {
-      alert("Lỗi chia sẻ: " + (err?.response?.data?.message || "Vui lòng thử lại"));
-    }
-  };
-
-  const loadPostReactions = async (postId) => {
-    try {
-      const reactions = await dispatch(getReactionsOfPost(postId));
-      const myReaction = await dispatch(getReactPostByMeAndPostId(postId));
-
-      setMyReactionsData((prev) => ({
-        ...prev,
-        [postId]: myReaction || null,
-      }));
-    } catch (error) {
-      setMyReactionsData((prev) => ({
-        ...prev,
-        [postId]: null,
-      }));
+      alert(
+        "Lỗi chia sẻ: " + (err?.response?.data?.message || "Vui lòng thử lại"),
+      );
     }
   };
 
@@ -398,8 +374,8 @@ export default function UserProfile() {
               {user.gender === "MALE"
                 ? "Nam"
                 : user.gender === "FEMALE"
-                ? "Nữ"
-                : "Khác"}
+                  ? "Nữ"
+                  : "Khác"}
               {user.dateOfBirth && (
                 <> · {new Date(user.dateOfBirth).toLocaleDateString()}</>
               )}
@@ -468,8 +444,8 @@ export default function UserProfile() {
                   {blockLoading
                     ? "Đang xử lý..."
                     : isBlocked
-                    ? "Bỏ chặn"
-                    : "Chặn"}
+                      ? "Bỏ chặn"
+                      : "Chặn"}
                 </button>
               )}
             </div>
@@ -487,7 +463,7 @@ export default function UserProfile() {
         ) : (
           <>
             {posts.map((post) => {
-              const myReaction = myReactionsData[post.id];
+              const myReactionType = post.myReactionType;
 
               return (
                 <div
@@ -563,16 +539,16 @@ export default function UserProfile() {
                   {/* Action Buttons */}
                   <div className="flex items-center pt-2 border-t border-gray-200 space-x-4">
                     {/* Like/Unreact Button */}
-                    {myReaction && myReaction.reactionType ? (
+                    {myReactionType ? (
                       <button
                         className="flex items-center space-x-1 px-3 py-2 rounded-lg bg-gray-100 text-blue-600"
                         onClick={() => handleUnreact(post.id)}
                       >
                         <span className="text-lg">
-                          {REACTION_EMOJIS[myReaction.reactionType]}
+                          {REACTION_EMOJIS[myReactionType]}
                         </span>
                         <span className="text-sm">
-                          Bỏ {myReaction.reactionType.toLowerCase()}
+                          Bỏ {myReactionType.toLowerCase()}
                         </span>
                       </button>
                     ) : (

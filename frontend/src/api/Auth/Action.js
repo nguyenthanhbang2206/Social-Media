@@ -96,7 +96,10 @@ export const getProfile = (token) => async (dispatch) => {
 
 export const logout = () => async (dispatch) => {
   try {
-    await api.post("/auth/logout");
+    const token = localStorage.getItem("token");
+    if (token) {
+      await api.post("/auth/logout");
+    }
   } catch (error) {
     // Ignore logout errors and still clear client state
   }

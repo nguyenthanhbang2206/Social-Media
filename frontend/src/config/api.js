@@ -20,11 +20,15 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      localStorage.removeItem("token");
-      if (onUnauthorized) onUnauthorized();
+      const requestUrl = error.config?.url || "";
+      const isLogoutRequest = requestUrl.includes("/auth/logout");
+      if (!isLogoutRequest) {
+        localStorage.removeItem("token");
+        if (onUnauthorized) onUnauthorized();
+      }
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export function setOnUnauthorizedCallback(callback) {
@@ -34,7 +38,7 @@ export function setOnUnauthorizedCallback(callback) {
 // Hàm decode base64 payload của JWT để lấy exp
 export function getTokenExpiration(token) {
   try {
-    const payload = token.split('.')[1];
+    const payload = token.split(".")[1];
     const decoded = JSON.parse(atob(payload));
     return decoded.exp; // thời gian hết hạn tính bằng giây (Unix timestamp)
   } catch {
