@@ -9,5 +9,5 @@ public interface BlockService {
     void unblockUser(Long blockedUserId);
     List<Block> getMyBlocks();
     void ensureNotBlocked(Long targetUserId);
+    boolean existsBlockBetween(Long userId, Long targetId);
 }
-

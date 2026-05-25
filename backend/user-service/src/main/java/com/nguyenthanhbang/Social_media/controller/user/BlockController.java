@@ -54,5 +54,15 @@ public class BlockController {
                 .build();
         return ResponseEntity.ok(response);
     }
-}
 
+    @GetMapping("/exists")
+    public ResponseEntity<ApiResponse<Boolean>> exists(@RequestParam Long userId, @RequestParam Long targetId) {
+        boolean blocked = blockService.existsBlockBetween(userId, targetId);
+        ApiResponse response = ApiResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("Check block successfully")
+                .data(blocked)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+}
