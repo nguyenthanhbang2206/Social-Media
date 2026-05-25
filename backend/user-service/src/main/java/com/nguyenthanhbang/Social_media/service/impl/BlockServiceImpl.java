@@ -54,5 +54,9 @@ public class BlockServiceImpl implements BlockService {
             throw new AccessDeniedException("Blocked user");
         }
     }
-}
 
+    @Override
+    public boolean existsBlockBetween(Long userId, Long targetId) {
+        return blockRepository.existsBlockBetween(userId, targetId);
+    }
+}

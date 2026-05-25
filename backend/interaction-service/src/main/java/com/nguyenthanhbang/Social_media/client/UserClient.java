@@ -11,6 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface UserClient {
     @GetMapping("/api/v1/users/{id}")
     ApiResponse<UserSummaryResponse> getUserById(@PathVariable Long id);
-    @GetMapping("/internal/blocks/exists")
+    @GetMapping("/api/v1/blocks/exists")
     ApiResponse<Boolean> existsBlock(@RequestParam("userId") Long userId, @RequestParam("targetId") Long targetId);
 }

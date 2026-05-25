@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "interaction-service")
 public interface InteractionClient {
-    @GetMapping("/internal/posts/{postId}/counts")
+    @GetMapping("/api/v1/posts/{postId}/counts")
     ApiResponse<PostInteractionCountResponse> getPostCounts(@PathVariable Long postId);
 }
