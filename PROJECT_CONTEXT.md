@@ -4,7 +4,7 @@
 - Monorepo with Spring Boot microservices under `backend/` and React frontend under `frontend/`.
 - Services: `api-gateway`, `discovery-service`, `user-service`, `post-service`, `group-service`, `interaction-service`, `notification-service`, `common-library`.
 - Most public REST APIs are under `/api/v1`.
-- Internal service-to-service APIs use `/internal` and are called via OpenFeign (example: notification service).
+- Service-to-service endpoints are merged into the main controllers (example: notifications use `/api/v1/notifications`).
 
 ## Key conventions
 - Response wrapper: `ApiResponse<T>`.
@@ -107,6 +107,8 @@
 
 ### notification-service
 - NotificationController (`/api/v1/notifications`)
+  - POST `/`
+  - DELETE `/` (query: `actorId`, `referenceId`, `type`)
   - GET `/` (query: `page`, `size`)
   - GET `/unread-count`
   - PATCH `/{id}/read`
@@ -114,15 +116,7 @@
   - DELETE `/{id}`
 
 ## Internal endpoints (service-to-service)
-- notification-service: `InternalNotificationController`
-  - POST `/internal/notifications`
-  - DELETE `/internal/notifications?actorId=...&referenceId=...&type=...`
-- user-service: `InternalBlockController` (deprecated, empty)
-- interaction-service: `InternalPostInteractionController` (deprecated, empty)
+- None. All service-to-service endpoints are in the main controllers.
 
 ## Feign clients (service-to-service)
-- `common-library`: `NotificationClient` -> `notification-service` (`/internal/notifications`)
-- `post-service`: `UserClient`, `InteractionClient`, `GroupClient`
-- `interaction-service`: `UserClient`, `PostClient`
-- `notification-service`: `UserClient`
-
+- `common-library`: `NotificationClient` -> `notification-service` (`/api/v1/notifications`)

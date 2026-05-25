@@ -4,8 +4,7 @@ import com.nguyenthanhbang.Social_media.common.enumeration.NotificationType;
 import lombok.*;
 
 /**
- * Shared DTO used by other microservices to create notifications
- * via Feign call to notification-service's internal endpoint.
+ * Shared DTO used by other microservices to create notifications.
  */
 @Getter
 @Setter

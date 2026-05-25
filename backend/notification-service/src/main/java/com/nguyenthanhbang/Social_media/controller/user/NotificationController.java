@@ -1,6 +1,8 @@
 package com.nguyenthanhbang.Social_media.controller.user;
 
 import com.nguyenthanhbang.Social_media.common.dto.ApiResponse;
+import com.nguyenthanhbang.Social_media.common.enumeration.NotificationType;
+import com.nguyenthanhbang.Social_media.dto.request.NotificationRequest;
 import com.nguyenthanhbang.Social_media.dto.response.NotificationResponse;
 import com.nguyenthanhbang.Social_media.dto.response.UnreadCountResponse;
 import com.nguyenthanhbang.Social_media.service.NotificationService;
@@ -12,12 +14,48 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/notifications")
 public class NotificationController {
 
     private final NotificationService notificationService;
+
+    /**
+     * POST /api/v1/notifications
+     * Used by other services to create notifications.
+     */
+    @PostMapping
+    public ResponseEntity<ApiResponse<NotificationResponse>> createNotification(
+            @Valid @RequestBody NotificationRequest request) {
+        NotificationResponse notification = notificationService.createNotification(request);
+        ApiResponse<NotificationResponse> response = ApiResponse.<NotificationResponse>builder()
+                .message("Notification created successfully")
+                .status(HttpStatus.CREATED.value())
+                .data(notification)
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    /**
+     * DELETE /api/v1/notifications?actorId=1&referenceId=2&type=LIKE
+     * Used by other services to remove notifications when actions are undone.
+     */
+    @DeleteMapping
+    public ResponseEntity<ApiResponse<Void>> deleteByReference(
+            @RequestParam Long actorId,
+            @RequestParam Long referenceId,
+            @RequestParam NotificationType type) {
+        notificationService.deleteByReference(actorId, referenceId, type);
+        ApiResponse<Void> response = ApiResponse.<Void>builder()
+                .message("Notification deleted successfully")
+                .status(HttpStatus.OK.value())
+                .data(null)
+                .build();
+        return ResponseEntity.ok(response);
+    }
 
     /**
      * GET /api/v1/notifications?page=0&size=20
