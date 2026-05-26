@@ -5,10 +5,11 @@ import com.nguyenthanhbang.Social_media.dto.response.NotificationResponse;
 import com.nguyenthanhbang.Social_media.model.Notification;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Builder;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true))
 public interface NotificationMapper {
 
     NotificationResponse toNotificationResponse(Notification notification);

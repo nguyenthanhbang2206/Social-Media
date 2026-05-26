@@ -32,6 +32,10 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     @Transactional
     public NotificationResponse createNotification(NotificationRequest request) {
+        if (request == null || request.getActorId() == null || request.getRecipientId() == null) {
+            log.warn("Skipping notification: missing actorId/recipientId request={}", request);
+            return null;
+        }
         // Don't notify yourself
         if (request.getActorId().equals(request.getRecipientId())) {
             log.debug("Skipping self-notification for userId={}", request.getActorId());

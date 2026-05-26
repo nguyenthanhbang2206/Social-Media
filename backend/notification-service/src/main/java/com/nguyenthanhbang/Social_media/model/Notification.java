@@ -4,6 +4,7 @@ import com.nguyenthanhbang.Social_media.common.enumeration.NotificationType;
 import com.nguyenthanhbang.Social_media.common.model.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "notifications", indexes = {

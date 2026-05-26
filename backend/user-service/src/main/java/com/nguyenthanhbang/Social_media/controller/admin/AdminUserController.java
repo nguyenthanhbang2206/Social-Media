@@ -16,7 +16,7 @@ import java.util.List;
 public class AdminUserController {
     private final UserService userService;
     @GetMapping("/users")
-    public ResponseEntity<ApiResponse<List<User>>> getUsersByStatus(@RequestParam(required = false) Boolean active){
+    public ResponseEntity<ApiResponse<List<User>>> getUsersByStatus(@RequestParam(name = "active", required = false) Boolean active){
         List<User> users = userService.getAllUsers(active);
         ApiResponse response = ApiResponse.builder()
                 .message("Get users successfully")
@@ -26,7 +26,7 @@ public class AdminUserController {
         return ResponseEntity.ok(response);
     }
     @PutMapping("/users/{id}")
-    public ResponseEntity<ApiResponse<User>> updateUserStatus(@PathVariable Long id){
+    public ResponseEntity<ApiResponse<User>> updateUserStatus(@PathVariable("id") Long id){
         User user = userService.changeStatus(id);
         ApiResponse response = ApiResponse.builder()
                 .message("Change status successfully")

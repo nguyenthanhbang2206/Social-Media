@@ -45,9 +45,9 @@ public class NotificationController {
      */
     @DeleteMapping
     public ResponseEntity<ApiResponse<Void>> deleteByReference(
-            @RequestParam Long actorId,
-            @RequestParam Long referenceId,
-            @RequestParam NotificationType type) {
+            @RequestParam("actorId") Long actorId,
+            @RequestParam("referenceId") Long referenceId,
+            @RequestParam("type") NotificationType type) {
         notificationService.deleteByReference(actorId, referenceId, type);
         ApiResponse<Void> response = ApiResponse.<Void>builder()
                 .message("Notification deleted successfully")
@@ -63,8 +63,8 @@ public class NotificationController {
      */
     @GetMapping
     public ResponseEntity<ApiResponse<Page<NotificationResponse>>> getMyNotifications(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "20", name = "size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<NotificationResponse> notifications = notificationService.getMyNotifications(pageable);
         ApiResponse<Page<NotificationResponse>> response = ApiResponse.<Page<NotificationResponse>>builder()
@@ -95,7 +95,7 @@ public class NotificationController {
      * Mark a single notification as read.
      */
     @PatchMapping("/{id}/read")
-    public ResponseEntity<ApiResponse<NotificationResponse>> markAsRead(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<NotificationResponse>> markAsRead(@PathVariable("id") Long id) {
         NotificationResponse notification = notificationService.markAsRead(id);
         ApiResponse<NotificationResponse> response = ApiResponse.<NotificationResponse>builder()
                 .message("Notification marked as read")
@@ -125,7 +125,7 @@ public class NotificationController {
      * Soft-delete a notification.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteNotification(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteNotification(@PathVariable("id") Long id) {
         notificationService.deleteNotification(id);
         ApiResponse<Void> response = ApiResponse.<Void>builder()
                 .message("Notification deleted successfully")

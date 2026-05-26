@@ -48,6 +48,9 @@ public class SecurityConfiguration {
     @Value("${jwt.base64-secret}")
     private String jwtKey;
 
+    @Value("${internal.auth.secret}")
+    private String internalAuthSecret;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -74,7 +77,8 @@ public class SecurityConfiguration {
                                 "/api/v1/auth/refresh/**",
                                 "/api/v1/auth/logout",
                                 "/images/**",
-                                "/ws/**"
+                                "/ws/**",
+                                "/api/v1/internal/**"
                         ).permitAll()
 
                         .requestMatchers("/api/v1/admin/**")
@@ -104,6 +108,8 @@ public class SecurityConfiguration {
                 )
 
                 .formLogin(form -> form.disable());
+
+        http.addFilterBefore(new InternalAuthFilter(internalAuthSecret), org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

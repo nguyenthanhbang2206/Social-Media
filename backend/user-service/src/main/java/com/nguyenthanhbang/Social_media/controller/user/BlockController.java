@@ -21,7 +21,7 @@ public class BlockController {
     private final BlockMapper blockMapper;
 
     @PostMapping("/{userId}")
-    public ResponseEntity<ApiResponse<BlockResponse>> blockUser(@PathVariable Long userId,
+    public ResponseEntity<ApiResponse<BlockResponse>> blockUser(@PathVariable("userId") Long userId,
                                                                 @RequestBody(required = false) BlockRequest request) {
         String reason = request == null ? null : request.getReason();
         Block block = blockService.blockUser(userId, reason);
@@ -34,7 +34,7 @@ public class BlockController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<ApiResponse<Void>> unblockUser(@PathVariable Long userId) {
+    public ResponseEntity<ApiResponse<Void>> unblockUser(@PathVariable("userId") Long userId) {
         blockService.unblockUser(userId);
         ApiResponse response = ApiResponse.builder()
                 .message("Unblock user successfully")
@@ -56,7 +56,7 @@ public class BlockController {
     }
 
     @GetMapping("/exists")
-    public ResponseEntity<ApiResponse<Boolean>> exists(@RequestParam Long userId, @RequestParam Long targetId) {
+    public ResponseEntity<ApiResponse<Boolean>> exists(@RequestParam("userId") Long userId, @RequestParam("targetId") Long targetId) {
         boolean blocked = blockService.existsBlockBetween(userId, targetId);
         ApiResponse response = ApiResponse.builder()
                 .status(HttpStatus.OK.value())

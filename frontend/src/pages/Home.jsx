@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import api from "../config/api";
 import PostModal from "../components/PostModal";
+import NotificationBell from "../components/NotificationBell";
 
 const BASE_FILE_URL = "http://localhost:8080/images/post-media/";
 
@@ -33,8 +34,6 @@ export default function Home() {
   const { posts, loading, error, createSuccess, uploadLoading, uploadedFiles } =
     useSelector((state) => state.post);
   const [openPost, setOpenPost] = useState(null);
-  // ...existing code...
-  // ...existing code...
   const [content, setContent] = useState("");
   const [media, setMedia] = useState([]);
   const [showReactionModal, setShowReactionModal] = useState(false);
@@ -208,6 +207,7 @@ export default function Home() {
               </svg>
             </button>
           </form>
+          <NotificationBell />
           <img
             src="https://randomuser.me/api/portraits/men/32.jpg"
             alt="Avatar"

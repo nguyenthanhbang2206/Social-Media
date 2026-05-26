@@ -30,7 +30,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/users/{id}")
-    public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable Long id){
+    public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable("id") Long id){
         User user = userService.getUserById(id);
         ApiResponse response = ApiResponse.builder()
                 .message("Get user by id successfully")
@@ -60,7 +60,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/users/search")
-    public ResponseEntity<ApiResponse<List<UserResponse>>> searchUsers(@RequestParam String keyword){
+    public ResponseEntity<ApiResponse<List<UserResponse>>> searchUsers(@RequestParam("keyword") String keyword){
         List<User> users = userService.searchUser(keyword);
         ApiResponse response = ApiResponse.builder()
                 .message("Search users successfully")

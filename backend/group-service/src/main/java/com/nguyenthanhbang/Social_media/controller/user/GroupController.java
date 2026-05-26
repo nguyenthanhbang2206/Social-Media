@@ -42,7 +42,7 @@ public class GroupController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/groups/{id}")
-    public ResponseEntity<ApiResponse<GroupResponse>> groupDetails(@PathVariable Long id){
+    public ResponseEntity<ApiResponse<GroupResponse>> groupDetails(@PathVariable("id") Long id){
         Group group = groupService.getGroupById(id);
         ApiResponse response = ApiResponse.builder()
                 .message("Get group by id successfully")
@@ -52,7 +52,7 @@ public class GroupController {
         return ResponseEntity.ok(response);
     }
     @PutMapping("/groups/{id}")
-    public ResponseEntity<ApiResponse<GroupResponse>> updateGroup(@PathVariable Long id, @RequestBody GroupRequest request){
+    public ResponseEntity<ApiResponse<GroupResponse>> updateGroup(@PathVariable("id") Long id, @RequestBody GroupRequest request){
         Group group = groupService.updateGroup(id, request);
         ApiResponse response = ApiResponse.builder()
                 .message("Update group successfully")
@@ -62,7 +62,7 @@ public class GroupController {
         return ResponseEntity.ok(response);
     }
     @DeleteMapping("/groups/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteGroup(@PathVariable Long id){
+    public ResponseEntity<ApiResponse<Void>> deleteGroup(@PathVariable("id") Long id){
         groupService.deleteGroup(id);
         ApiResponse response = ApiResponse.builder()
                 .message("Delete group successfully")
@@ -72,7 +72,7 @@ public class GroupController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/groups/search")
-    public ResponseEntity<ApiResponse<List<GroupResponse>>> search(@RequestParam String keyword){
+    public ResponseEntity<ApiResponse<List<GroupResponse>>> search(@RequestParam("keyword") String keyword){
         List<Group> groups = groupService.searchGroup(keyword);
         ApiResponse response = ApiResponse.builder()
                 .message("Search group successfully")

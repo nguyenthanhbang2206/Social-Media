@@ -22,7 +22,7 @@ public class GroupMemberController {
     private final GroupMemberMapper groupMemberMapper;
 
     @PostMapping("/groups/{groupId}/join")
-    public ResponseEntity<ApiResponse<Void>> joinGroup(@PathVariable Long groupId) {
+    public ResponseEntity<ApiResponse<Void>> joinGroup(@PathVariable("groupId") Long groupId) {
         groupMemberService.joinGroup(groupId);
         ApiResponse response = ApiResponse.builder()
                 .message("Join group successfully")
@@ -32,7 +32,7 @@ public class GroupMemberController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     @PostMapping("/groups/{groupId}/left")
-    public ResponseEntity<ApiResponse<Void>> leftGroup(@PathVariable Long groupId) {
+    public ResponseEntity<ApiResponse<Void>> leftGroup(@PathVariable("groupId") Long groupId) {
         groupMemberService.leaveGroup(groupId);
         ApiResponse response = ApiResponse.builder()
                 .message("Left group successfully")
@@ -42,7 +42,7 @@ public class GroupMemberController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     @PostMapping("/groups/{groupId}/pending-members")
-    public ResponseEntity<ApiResponse<List<GroupMemberResponse>>> getPendingMembers(@PathVariable Long groupId) {
+    public ResponseEntity<ApiResponse<List<GroupMemberResponse>>> getPendingMembers(@PathVariable("groupId") Long groupId) {
         List<GroupMember> members = groupMemberService.getPendingMembers(groupId);
         ApiResponse response = ApiResponse.builder()
                 .message("Get pending members successfully")
@@ -52,7 +52,7 @@ public class GroupMemberController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     @PostMapping("/groups/{groupId}/members/{userId}/approve")
-    public ResponseEntity<ApiResponse<Void>> approveMember(@PathVariable Long groupId, @PathVariable Long userId) {
+    public ResponseEntity<ApiResponse<Void>> approveMember(@PathVariable("groupId") Long groupId, @PathVariable("userId") Long userId) {
         groupMemberService.approveMember(groupId, userId);
         ApiResponse response = ApiResponse.builder()
                 .message("Approve member successfully")
@@ -62,7 +62,7 @@ public class GroupMemberController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     @PostMapping("/groups/{groupId}/members/{userId}/reject")
-    public ResponseEntity<ApiResponse<Void>> rejectMember(@PathVariable Long groupId, @PathVariable Long userId) {
+    public ResponseEntity<ApiResponse<Void>> rejectMember(@PathVariable("groupId") Long groupId, @PathVariable("userId") Long userId) {
         groupMemberService.rejectMember(groupId, userId);
         ApiResponse response = ApiResponse.builder()
                 .message("Reject member successfully")
@@ -72,7 +72,7 @@ public class GroupMemberController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     @DeleteMapping("/groups/{groupId}/members/{userId}")
-    public ResponseEntity<ApiResponse<Void>> deleteMember(@PathVariable Long groupId, @PathVariable Long userId) {
+    public ResponseEntity<ApiResponse<Void>> deleteMember(@PathVariable("groupId") Long groupId, @PathVariable("userId") Long userId) {
         groupMemberService.deleteMember(groupId, userId);
         ApiResponse response = ApiResponse.builder()
                 .message("Delete member successfully")
@@ -82,7 +82,7 @@ public class GroupMemberController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/groups/{groupId}/members")
-    public ResponseEntity<ApiResponse<List<GroupMemberResponse>>> getMembers(@PathVariable Long groupId) {
+    public ResponseEntity<ApiResponse<List<GroupMemberResponse>>> getMembers(@PathVariable("groupId") Long groupId) {
         List<GroupMember> groupMembers = groupMemberService.getMembers(groupId);
         ApiResponse response = ApiResponse.builder()
                 .message("Get members successfully")
@@ -92,7 +92,7 @@ public class GroupMemberController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/groups/{groupId}/members/status")
-    public ResponseEntity<ApiResponse<GroupMembershipStatus>> getStatus(@PathVariable Long groupId) {
+    public ResponseEntity<ApiResponse<GroupMembershipStatus>> getStatus(@PathVariable("groupId") Long groupId) {
         GroupMembershipStatus status = groupMemberService.getMembershipStatus(groupId);
         ApiResponse response = ApiResponse.builder()
                 .message("Get member status successfully")
@@ -103,7 +103,7 @@ public class GroupMemberController {
     }
 
     @GetMapping("/groups/{groupId}/members/me/is-admin")
-    public ResponseEntity<ApiResponse<Boolean>> isAdmin(@PathVariable Long groupId) {
+    public ResponseEntity<ApiResponse<Boolean>> isAdmin(@PathVariable("groupId") Long groupId) {
         boolean isAdmin = groupMemberService.isCurrentUserAdmin(groupId);
         ApiResponse response = ApiResponse.builder()
                 .message("Get admin status successfully")
@@ -113,7 +113,7 @@ public class GroupMemberController {
         return ResponseEntity.ok(response);
     }
     @PutMapping("/groups/{groupId}/members/{userId}/role")
-    public ResponseEntity<ApiResponse<GroupMemberResponse>> changeRole(@PathVariable Long groupId, @PathVariable Long userId, @RequestBody UpdateGroupMemberRequest request) {
+    public ResponseEntity<ApiResponse<GroupMemberResponse>> changeRole(@PathVariable("groupId") Long groupId, @PathVariable("userId") Long userId, @RequestBody UpdateGroupMemberRequest request) {
         GroupMember groupMember = groupMemberService.changeRole(groupId, userId, request.getRole());
         ApiResponse response = ApiResponse.builder()
                 .message("Change successfully")

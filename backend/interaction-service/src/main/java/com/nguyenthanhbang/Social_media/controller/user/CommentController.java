@@ -21,7 +21,7 @@ public class CommentController {
     private final CommentMapper commentMapper;
 
     @PostMapping("/posts/{postId}/comments")
-    public ResponseEntity<ApiResponse<CommentResponse>> comment(@PathVariable Long postId, @RequestBody CommentRequest commentRequest) {
+    public ResponseEntity<ApiResponse<CommentResponse>> comment(@PathVariable("postId") Long postId, @RequestBody CommentRequest commentRequest) {
         Comment comment = commentService.comment(postId, commentRequest);
         ApiResponse response = ApiResponse.builder()
                 .message("Comment successfully")
@@ -31,7 +31,7 @@ public class CommentController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/posts/{postId}/comments")
-    public ResponseEntity<ApiResponse<List<CommentResponse>>> getComments(@PathVariable Long postId) {
+    public ResponseEntity<ApiResponse<List<CommentResponse>>> getComments(@PathVariable("postId") Long postId) {
         List<Comment> comments = commentService.getComments(postId);
         ApiResponse response = ApiResponse.builder()
                 .message("Get comments successfully")
@@ -41,7 +41,7 @@ public class CommentController {
         return ResponseEntity.ok(response);
     }
     @PutMapping("/comments/{commentId}")
-    public ResponseEntity<ApiResponse<CommentResponse>> updateComment(@PathVariable Long commentId, @RequestBody CommentRequest commentRequest) {
+    public ResponseEntity<ApiResponse<CommentResponse>> updateComment(@PathVariable("commentId") Long commentId, @RequestBody CommentRequest commentRequest) {
         Comment comment = commentService.updateComment(commentId, commentRequest);
         ApiResponse response = ApiResponse.builder()
                 .message("Update comment successfully")
@@ -52,7 +52,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/comments/{commentId}")
-    public ResponseEntity<ApiResponse<Void>> deleteComment(@PathVariable Long commentId) {
+    public ResponseEntity<ApiResponse<Void>> deleteComment(@PathVariable("commentId") Long commentId) {
         commentService.deleteComment(commentId);
         ApiResponse response = ApiResponse.builder()
                 .message("Delete comment successfully")
@@ -62,7 +62,7 @@ public class CommentController {
         return ResponseEntity.ok(response);
     }
     @PostMapping("/comments/{commentId}/reply")
-    public ResponseEntity<ApiResponse<CommentResponse>> replyComment(@PathVariable Long commentId, @RequestBody CommentRequest commentRequest) {
+    public ResponseEntity<ApiResponse<CommentResponse>> replyComment(@PathVariable("commentId") Long commentId, @RequestBody CommentRequest commentRequest) {
         Comment comment = commentService.reply(commentId, commentRequest);
         ApiResponse response = ApiResponse.builder()
                 .message("Reply comment successfully")
@@ -72,7 +72,7 @@ public class CommentController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/comments/{commentId}/replies")
-    public ResponseEntity<ApiResponse<List<CommentResponse>>> getReliesOfComment(@PathVariable Long commentId) {
+    public ResponseEntity<ApiResponse<List<CommentResponse>>> getReliesOfComment(@PathVariable("commentId") Long commentId) {
         List<Comment> comments = commentService.getReliesOfComment(commentId);
         ApiResponse response = ApiResponse.builder()
                 .message("Get replies comment successfully")

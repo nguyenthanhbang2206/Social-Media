@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "user-service")
 public interface UserClient {
-    @GetMapping("/api/v1/users/{id}")
-    ApiResponse<UserSummaryResponse> getUserById(@PathVariable Long id);
-    @GetMapping("/api/v1/blocks/exists")
+    @GetMapping("/api/v1/internal/users/{id}")
+    ApiResponse<UserSummaryResponse> getUserById(@PathVariable("id") Long id);
+    @GetMapping("/api/v1/internal/blocks/exists")
     ApiResponse<Boolean> existsBlock(@RequestParam("userId") Long userId, @RequestParam("targetId") Long targetId);
 }

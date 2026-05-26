@@ -22,7 +22,7 @@ import java.util.List;
 public class FileController {
     private final FileService fileService;
     @PostMapping
-    public ResponseEntity<ApiResponse<List<FileResponse>>> uploadFile(@RequestParam(name = "files", required = false) MultipartFile[] files, @RequestParam String folder) throws IOException {
+    public ResponseEntity<ApiResponse<List<FileResponse>>> uploadFile(@RequestParam(name = "files", required = false) MultipartFile[] files, @RequestParam("folder") String folder) throws IOException {
         List<FileResponse> fileResponses = new ArrayList<>();
         for(int i=0; i<files.length; i++) {
             String fileName = fileService.uploadFile(files[i], folder);

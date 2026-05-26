@@ -2,11 +2,13 @@ package com.nguyenthanhbang.Social_media.dto.request;
 
 import com.nguyenthanhbang.Social_media.common.enumeration.NotificationType;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class NotificationRequest {
     @NotNull(message = "Recipient ID is required")
     private Long recipientId;

@@ -1,6 +1,9 @@
 package com.nguyenthanhbang.Social_media.service.impl;
 
 import com.nguyenthanhbang.Social_media.common.enumeration.FriendShipStatus;
+import com.nguyenthanhbang.Social_media.common.event.FriendEvent;
+import com.nguyenthanhbang.Social_media.event.FriendAcceptedPublisher;
+import com.nguyenthanhbang.Social_media.event.FriendRequestPublisher;
 import com.nguyenthanhbang.Social_media.model.FriendShip;
 import com.nguyenthanhbang.Social_media.model.User;
 import com.nguyenthanhbang.Social_media.repository.FriendShipRepository;
@@ -10,25 +13,29 @@ import com.nguyenthanhbang.Social_media.service.UserService;
 import com.nguyenthanhbang.Social_media.service.BlockService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FriendShipServiceImpl implements FriendShipService {
     private final UserService userService;
     private final FriendShipRepository friendShipRepository;
     private final UserRepository userRepository;
     private final BlockService blockService;
+    private final FriendRequestPublisher friendRequestPublisher;
+    private final FriendAcceptedPublisher friendAcceptedPublisher;
 
     @Override
     public FriendShip sendRequest(Long userId) {
         blockService.ensureNotBlocked(userId);
+
         User currentUser = userService.getUserLogin();
+
         userService.getUserById(userId);
         FriendShip friendShip = new FriendShip();
         friendShip.setSenderId(currentUser.getId());
@@ -36,7 +43,18 @@ public class FriendShipServiceImpl implements FriendShipService {
         friendShip.setStatus(FriendShipStatus.PENDING);
 //        currentUser.getSentFriendRequests().add(friendShip);
 //        user.getReceivedFriendRequests().add(friendShip);
-        return friendShipRepository.save(friendShip);
+        friendShip = friendShipRepository.save(friendShip);
+
+        FriendEvent event = FriendEvent.builder()
+                .actorName(currentUser.getFullName())
+                .actorId(currentUser.getId())
+                .actorAvatar(currentUser.getAvatar())
+                .recipientId(userId)
+                .action("REQUEST")
+                .build();
+        log.info("------------publish friend request event---------------");
+        friendRequestPublisher.publishFriendRequest(event);
+        return friendShip;
     }
 
     @Override
@@ -56,7 +74,18 @@ public class FriendShipServiceImpl implements FriendShipService {
         FriendShip friendShip = friendShipRepository.findBySenderIdAndReceiverId(userId, currentUser.getId()).orElseThrow(()->new EntityNotFoundException("Not found"));
         friendShip.setStatus(FriendShipStatus.ACCEPTED);
         friendShip.setAcceptedAt(LocalDateTime.now());
-        return friendShipRepository.save(friendShip);
+        friendShip = friendShipRepository.save(friendShip);
+
+        log.info("------------publish friend accept event---------------");
+        FriendEvent event = FriendEvent.builder()
+                .actorName(currentUser.getFullName())
+                .actorId(currentUser.getId())
+                .actorAvatar(currentUser.getAvatar())
+                .recipientId(userId)
+                .action("ACCEPTED")
+                .build();
+        friendAcceptedPublisher.publishFriendAccepted(event);
+        return friendShip;
     }
 
     @Override
