@@ -43,18 +43,30 @@ const notificationReducer = (state = initialState, action) => {
       };
 
     // Get notifications success
-    case GET_NOTIFICATIONS_SUCCESS:
+    case GET_NOTIFICATIONS_SUCCESS: {
+      const nextNotifications =
+        action.payload.page === 0
+          ? action.payload.content
+          : [...state.notifications, ...action.payload.content];
+
+      if (action.payload.page === 0 && state.notifications.length > 0) {
+        const seen = new Set(nextNotifications.map((n) => n.id));
+        state.notifications.forEach((n) => {
+          if (!seen.has(n.id)) {
+            nextNotifications.push(n);
+          }
+        });
+      }
+
       return {
         ...state,
         loading: false,
-        notifications:
-          action.payload.page === 0
-            ? action.payload.content
-            : [...state.notifications, ...action.payload.content],
+        notifications: nextNotifications,
         page: action.payload.page,
         totalPages: action.payload.totalPages,
         totalElements: action.payload.totalElements,
       };
+    }
 
     // Get unread count success
     case GET_UNREAD_COUNT_SUCCESS:

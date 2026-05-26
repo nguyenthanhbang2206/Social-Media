@@ -31,7 +31,7 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     @PutMapping("/posts/{id}")
-    public ResponseEntity<ApiResponse<PostResponse>> updatePost(@RequestBody UpdatePostRequest request, @PathVariable Long id){
+    public ResponseEntity<ApiResponse<PostResponse>> updatePost(@RequestBody UpdatePostRequest request, @PathVariable("id") Long id){
         Post post = postService.updatePost(null, id, request);
         ApiResponse response = ApiResponse.builder()
                 .message("Update post successfully")
@@ -41,7 +41,7 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/users/{userId}/posts")
-    public ResponseEntity<ApiResponse<List<PostResponse>>> getPostByUser(@PathVariable Long userId){
+    public ResponseEntity<ApiResponse<List<PostResponse>>> getPostByUser(@PathVariable("userId") Long userId){
         List<Post> posts = postService.getPostByUserId(userId);
         List<PostResponse> responses = postMapper.toPostResponses(posts);
         ApiResponse response = ApiResponse.builder()
@@ -63,7 +63,7 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
     @DeleteMapping("/posts/{id}")
-    public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable Long id){
+    public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable("id") Long id){
         postService.deletePost(id);
         ApiResponse response = ApiResponse.builder()
                 .message("Delete post successfully")
@@ -73,7 +73,7 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/posts/{id}")
-    public ResponseEntity<ApiResponse<PostResponse>> getPostById(@PathVariable Long id){
+    public ResponseEntity<ApiResponse<PostResponse>> getPostById(@PathVariable("id") Long id){
         Post post = postService.getPostById(id);
         PostResponse postResponse = postMapper.toPostResponse(post);
         ApiResponse response = ApiResponse.builder()
@@ -85,7 +85,7 @@ public class PostController {
     }
 
     @PostMapping("/groups/{groupId}/posts")
-    public ResponseEntity<ApiResponse<PostResponse>> createPostGroup(@PathVariable Long groupId,
+    public ResponseEntity<ApiResponse<PostResponse>> createPostGroup(@PathVariable("groupId") Long groupId,
                                                                      @RequestBody CreatePostRequest request){
         Post post = postService.createPost(groupId, request);
         ApiResponse response = ApiResponse.builder()
@@ -97,7 +97,7 @@ public class PostController {
     }
 
     @GetMapping("/groups/{groupId}/posts")
-    public ResponseEntity<ApiResponse<List<PostResponse>>> getPostApprovedForGroup(@PathVariable Long groupId){
+    public ResponseEntity<ApiResponse<List<PostResponse>>> getPostApprovedForGroup(@PathVariable("groupId") Long groupId){
         List<Post> posts = postService.getPostApprovedForGroup(groupId);
         ApiResponse response = ApiResponse.builder()
                 .message("Get post approved group successfully")
@@ -108,7 +108,7 @@ public class PostController {
     }
 
     @GetMapping("/groups/{groupId}/posts/pending")
-    public ResponseEntity<ApiResponse<List<PostResponse>>> getPostPending(@PathVariable Long groupId){
+    public ResponseEntity<ApiResponse<List<PostResponse>>> getPostPending(@PathVariable("groupId") Long groupId){
         List<Post> posts = postService.getPostPending(groupId);
         ApiResponse response = ApiResponse.builder()
                 .message("Get post pending successfully")
@@ -119,7 +119,7 @@ public class PostController {
     }
 
     @PutMapping("/groups/{groupId}/posts/{postId}/approve")
-    public ResponseEntity<ApiResponse<Void>> approvePost(@PathVariable Long groupId, @PathVariable Long postId){
+    public ResponseEntity<ApiResponse<Void>> approvePost(@PathVariable("groupId") Long groupId, @PathVariable("postId") Long postId){
         postService.approvePost(groupId, postId);
         ApiResponse response = ApiResponse.builder()
                 .message("Approve post successfully")
@@ -130,7 +130,7 @@ public class PostController {
     }
 
     @PutMapping("/groups/{groupId}/posts/{postId}/pin")
-    public ResponseEntity<ApiResponse<Void>> pinPost(@PathVariable Long groupId, @PathVariable Long postId) {
+    public ResponseEntity<ApiResponse<Void>> pinPost(@PathVariable("groupId") Long groupId, @PathVariable("postId") Long postId) {
         postService.pinPost(groupId, postId);
         ApiResponse response = ApiResponse.builder()
                 .message("Pin post successfully")
@@ -141,7 +141,7 @@ public class PostController {
     }
 
     @PutMapping("/groups/{groupId}/posts/{postId}/unpin")
-    public ResponseEntity<ApiResponse<Void>> unpinPost(@PathVariable Long groupId, @PathVariable Long postId) {
+    public ResponseEntity<ApiResponse<Void>> unpinPost(@PathVariable("groupId") Long groupId, @PathVariable("postId") Long postId) {
         postService.unpinPost(groupId, postId);
         ApiResponse response = ApiResponse.builder()
                 .message("Unpin post successfully")

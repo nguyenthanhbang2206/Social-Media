@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "group-service")
 public interface GroupClient {
     @GetMapping("/api/v1/groups/{id}")
-    ApiResponse<GroupSummaryResponse> getGroupById(@PathVariable Long id);
+    ApiResponse<GroupSummaryResponse> getGroupById(@PathVariable("id") Long id);
 
     @GetMapping("/api/v1/groups/{groupId}/members/status")
-    ApiResponse<GroupMembershipStatus> getMembershipStatus(@PathVariable Long groupId);
+    ApiResponse<GroupMembershipStatus> getMembershipStatus(@PathVariable("groupId") Long groupId);
 
     @GetMapping("/api/v1/groups/{groupId}/members/me/is-admin")
-    ApiResponse<Boolean> isAdmin(@PathVariable Long groupId);
+    ApiResponse<Boolean> isAdmin(@PathVariable("groupId") Long groupId);
 }

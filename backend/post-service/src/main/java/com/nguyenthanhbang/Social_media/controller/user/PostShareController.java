@@ -21,7 +21,7 @@ public class PostShareController {
     private final PostShareMapper postShareMapper;
 
     @PostMapping("/posts/{postId}/shares")
-    public ResponseEntity<ApiResponse<PostShareResponse>> sharePost(@PathVariable Long postId,
+    public ResponseEntity<ApiResponse<PostShareResponse>> sharePost(@PathVariable("postId") Long postId,
                                                                     @RequestBody PostShareRequest request) {
         PostShare postShare = postShareService.sharePost(postId, request);
         ApiResponse response = ApiResponse.builder()
@@ -33,7 +33,7 @@ public class PostShareController {
     }
 
     @GetMapping("/posts/{postId}/shares")
-    public ResponseEntity<ApiResponse<List<PostShareResponse>>> getShares(@PathVariable Long postId) {
+    public ResponseEntity<ApiResponse<List<PostShareResponse>>> getShares(@PathVariable("postId") Long postId) {
         List<PostShare> postShares = postShareService.getSharesByPost(postId);
         ApiResponse response = ApiResponse.builder()
                 .message("Get shares successfully")
@@ -44,7 +44,7 @@ public class PostShareController {
     }
 
     @DeleteMapping("/posts/{postId}/shares/{shareId}")
-    public ResponseEntity<ApiResponse<Void>> deleteShare(@PathVariable Long postId, @PathVariable Long shareId) {
+    public ResponseEntity<ApiResponse<Void>> deleteShare(@PathVariable("postId") Long postId, @PathVariable("shareId") Long shareId) {
         postShareService.deleteShare(postId, shareId);
         ApiResponse response = ApiResponse.builder()
                 .message("Delete share successfully")

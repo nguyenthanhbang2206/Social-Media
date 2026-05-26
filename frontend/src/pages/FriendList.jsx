@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import NotificationBell from "../components/NotificationBell";
 
 export default function FriendList() {
   const navigate = useNavigate();
@@ -83,6 +84,7 @@ export default function FriendList() {
               </svg>
             </button>
           </form>
+          <NotificationBell />
           <img
             src="https://randomuser.me/api/portraits/men/32.jpg"
             alt="Avatar"

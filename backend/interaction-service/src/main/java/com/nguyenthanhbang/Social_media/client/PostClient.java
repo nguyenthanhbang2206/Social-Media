@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "post-service")
 public interface PostClient {
     @GetMapping("/api/v1/posts/{id}")
-    ApiResponse<PostSummaryResponse> getPostById(@PathVariable Long id);
+    ApiResponse<PostSummaryResponse> getPostById(@PathVariable("id") Long id);
 }

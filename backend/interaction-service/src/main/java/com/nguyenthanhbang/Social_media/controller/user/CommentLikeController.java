@@ -22,7 +22,7 @@ public class CommentLikeController {
 
     @PostMapping("/comments/{commentId}/react")
     public ResponseEntity<ApiResponse<CommentLikeResponse>> reactComment(@RequestBody CommentLikeRequest request,
-                                                                         @PathVariable Long commentId) {
+                                                                         @PathVariable("commentId") Long commentId) {
         CommentLike commentLike = commentLikeService.reactComment(request, commentId);
         ApiResponse response = ApiResponse.builder()
                 .message("React comment successfully")
@@ -33,7 +33,7 @@ public class CommentLikeController {
     }
 
     @GetMapping("/comments/{commentId}/reactions")
-    public ResponseEntity<ApiResponse<List<CommentLikeResponse>>> getReactions(@PathVariable Long commentId) {
+    public ResponseEntity<ApiResponse<List<CommentLikeResponse>>> getReactions(@PathVariable("commentId") Long commentId) {
         List<CommentLike> commentLikes = commentLikeService.getReactByComment(commentId);
         ApiResponse response = ApiResponse.builder()
                 .message("Get react comment successfully")
@@ -44,7 +44,7 @@ public class CommentLikeController {
     }
 
     @GetMapping("/comments/{commentId}/me")
-    public ResponseEntity<ApiResponse<CommentLikeResponse>> getMyReaction(@PathVariable Long commentId) {
+    public ResponseEntity<ApiResponse<CommentLikeResponse>> getMyReaction(@PathVariable("commentId") Long commentId) {
         CommentLike commentLike = commentLikeService.getReactByUserIdAndCommentId(commentId);
         ApiResponse response = ApiResponse.builder()
                 .message("Get react comment successfully")
@@ -55,7 +55,7 @@ public class CommentLikeController {
     }
 
     @DeleteMapping("/comments/{commentId}/un-react")
-    public ResponseEntity<ApiResponse<Void>> deleteReaction(@PathVariable Long commentId) {
+    public ResponseEntity<ApiResponse<Void>> deleteReaction(@PathVariable("commentId") Long commentId) {
         commentLikeService.deleteReactComment(commentId);
         ApiResponse response = ApiResponse.builder()
                 .message("Delete react comment successfully")

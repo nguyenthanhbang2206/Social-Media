@@ -4,11 +4,15 @@ import { useNavigate } from "react-router-dom";
 import { getProfile, logout } from "./api/Auth/Action";
 import { setOnUnauthorizedCallback, getTokenExpiration } from "./config/api";
 import AppRouter from "./router/router";
+import useNotificationWebSocket from "./config/useNotificationWebSocket";
+
 function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const { user } = useSelector((state) => state.auth);
+
+  useNotificationWebSocket();
 
   // Lấy profile user nếu đã có token nhưng chưa có user info
   useEffect(() => {
@@ -51,9 +55,7 @@ function App() {
     }
   }, [token, navigate]);
 
-  return (
-      <AppRouter />
-  );
+  return <AppRouter />;
 }
 
 export default App;

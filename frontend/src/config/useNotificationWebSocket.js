@@ -4,8 +4,9 @@ import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { receiveNotification } from "../api/Notification/Action";
 import { getUnreadCount } from "../api/Notification/Action";
+import { API_URL } from "./api";
 
-const WS_URL = "http://localhost:8085/ws/notifications";
+const WS_URL = `${API_URL.replace(/\/api\/v1\/?$/, "")}/ws/notifications`;
 
 /**
  * Custom hook that manages WebSocket connection for real-time notifications.
@@ -15,6 +16,17 @@ export default function useNotificationWebSocket() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const clientRef = useRef(null);
+
+  const parseNotificationPayload = (body) => {
+    if (!body) return null;
+    try {
+      const parsed = JSON.parse(body);
+      if (parsed && parsed.data) return parsed.data;
+      return parsed;
+    } catch {
+      return null;
+    }
+  };
 
   useEffect(() => {
     if (!user || !user.id) return;
@@ -38,17 +50,23 @@ export default function useNotificationWebSocket() {
         client.subscribe(
           `/topic/notifications/${user.id}`,
           (message) => {
-            try {
-              const notification = JSON.parse(message.body);
+            const notification = parseNotificationPayload(message.body);
+            if (notification) {
               dispatch(receiveNotification(notification));
-            } catch (e) {
-              console.error("[Notification WS] Parse error:", e);
+            } else {
+              console.warn("[Notification WS] Empty payload", message.body);
             }
           }
         );
       },
       onStompError: (frame) => {
         console.error("[Notification WS] STOMP error:", frame);
+      },
+      onWebSocketError: (event) => {
+        console.error("[Notification WS] WebSocket error:", event);
+      },
+      onWebSocketClose: (event) => {
+        console.warn("[Notification WS] WebSocket closed:", event);
       },
       onDisconnect: () => {
         console.log("[Notification WS] Disconnected");

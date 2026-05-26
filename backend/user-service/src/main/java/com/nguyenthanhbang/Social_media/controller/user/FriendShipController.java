@@ -26,7 +26,7 @@ public class FriendShipController {
     private final UserService userService;
 
     @PostMapping("/friend-requests/{userId}")
-    public ResponseEntity<ApiResponse<FriendShipResponse>> sendFriendRequest(@PathVariable Long userId) {
+    public ResponseEntity<ApiResponse<FriendShipResponse>> sendFriendRequest(@PathVariable("userId") Long userId) {
         FriendShip friendShip = friendShipService.sendRequest(userId);
         ApiResponse response = ApiResponse.builder()
                 .message("Send request successfully")
@@ -36,7 +36,7 @@ public class FriendShipController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     @DeleteMapping("/friend-requests/{userId}")
-    public ResponseEntity<ApiResponse<Void>> deleteRequest(@PathVariable Long userId) {
+    public ResponseEntity<ApiResponse<Void>> deleteRequest(@PathVariable("userId") Long userId) {
         friendShipService.cancelRequest(userId);
         ApiResponse response = ApiResponse.builder()
                 .message("Delete request successfully")
@@ -46,7 +46,7 @@ public class FriendShipController {
         return ResponseEntity.ok(response);
     }
     @PutMapping("/friend-requests/{userId}/accept")
-    public ResponseEntity<ApiResponse<FriendShipResponse>> acceptFriend(@PathVariable Long userId) {
+    public ResponseEntity<ApiResponse<FriendShipResponse>> acceptFriend(@PathVariable("userId") Long userId) {
         FriendShip friendShip = friendShipService.acceptFriend(userId);
         ApiResponse response = ApiResponse.builder()
                 .message("Accept friend successfully")
@@ -56,7 +56,7 @@ public class FriendShipController {
         return ResponseEntity.ok(response);
     }
     @PutMapping("/friend-requests/{userId}/refuse")
-    public ResponseEntity<ApiResponse<Void>> refuseFriend(@PathVariable Long userId) {
+    public ResponseEntity<ApiResponse<Void>> refuseFriend(@PathVariable("userId") Long userId) {
         friendShipService.refuseFriend(userId);
         ApiResponse response = ApiResponse.builder()
                 .message("Refuse friend successfully")
@@ -66,7 +66,7 @@ public class FriendShipController {
         return ResponseEntity.ok(response);
     }
     @DeleteMapping("/friends/{userId}")
-    public ResponseEntity<ApiResponse<Void>> deleteFriend(@PathVariable Long userId) {
+    public ResponseEntity<ApiResponse<Void>> deleteFriend(@PathVariable("userId") Long userId) {
         friendShipService.unfriend(userId);
         ApiResponse response = ApiResponse.builder()
                 .message("Delete friend successfully")
@@ -77,7 +77,7 @@ public class FriendShipController {
     }
 
     @GetMapping("/friends/{userId}")
-    public ResponseEntity<ApiResponse<List<UserResponse>>> getFriends(@PathVariable Long userId) {
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getFriends(@PathVariable("userId") Long userId) {
         List<User> users = friendShipService.getFriends(userId);
         ApiResponse response = ApiResponse.builder()
                 .message("Get friends successfully")
@@ -97,7 +97,7 @@ public class FriendShipController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/friends/status/{userId}")
-    public ResponseEntity<ApiResponse<FriendShipResponse>> getFriendStatus(@PathVariable Long userId) {
+    public ResponseEntity<ApiResponse<FriendShipResponse>> getFriendStatus(@PathVariable("userId") Long userId) {
         User user = userService.getUserLogin();
         FriendShip friendShip = friendShipService.findFriendshipBetween(user.getId(), userId);
         ApiResponse response = ApiResponse.builder()

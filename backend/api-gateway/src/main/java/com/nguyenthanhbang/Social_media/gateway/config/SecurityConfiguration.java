@@ -44,6 +44,7 @@ public class SecurityConfiguration {
                         .pathMatchers(HttpMethod.OPTIONS).permitAll()
 
                         .pathMatchers("/api/v1/auth/**").permitAll()
+                        .pathMatchers("/ws/notifications/**").permitAll()
 
                         .anyExchange().authenticated())
 

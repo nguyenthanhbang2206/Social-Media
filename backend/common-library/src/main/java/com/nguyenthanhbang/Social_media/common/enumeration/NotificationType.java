@@ -1,7 +1,7 @@
 package com.nguyenthanhbang.Social_media.common.enumeration;
 
 public enum NotificationType {
-    LIKE,
+    REACT,
     COMMENT,
     FRIEND_REQUEST,
     FRIEND_ACCEPT,
