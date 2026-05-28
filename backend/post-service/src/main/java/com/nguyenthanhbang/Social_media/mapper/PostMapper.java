@@ -15,6 +15,7 @@ public interface PostMapper {
     @Mapping(target = "modifiedDate", source = "modifiedDate")
     @Mapping(target = "createdBy", source = "createdBy")
     @Mapping(target = "modifiedBy", source = "modifiedBy")
+    @Mapping(target = "ownerName", source = "ownerName")
     PostResponse toPostResponse(Post post);
     List<PostResponse> toPostResponses(List<Post> posts);
 }

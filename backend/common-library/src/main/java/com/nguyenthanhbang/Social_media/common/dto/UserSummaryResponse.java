@@ -1,8 +1,7 @@
 package com.nguyenthanhbang.Social_media.common.dto;
 
 import com.nguyenthanhbang.Social_media.common.enumeration.Gender;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
