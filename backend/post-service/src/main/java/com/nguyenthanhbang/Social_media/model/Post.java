@@ -38,6 +38,9 @@ public class Post extends BaseEntity {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
+    @Column(name = "owner_name")
+    private String ownerName;
+
     @Column(name = "group_id")
     private Long groupId;
 

@@ -43,6 +43,7 @@ public class SecurityConfiguration {
                         // FIX PREFLIGHT
                         .pathMatchers(HttpMethod.OPTIONS).permitAll()
 
+                        .pathMatchers("/actuator/**").permitAll()
                         .pathMatchers("/api/v1/auth/**").permitAll()
                         .pathMatchers("/ws/notifications/**").permitAll()
 

@@ -18,6 +18,7 @@ public class PostResponse extends BaseResponse {
     private Boolean isPinned;
     private PostType postType;
     private Long userId;
+    private String ownerName;
     private Long groupId;
     private List<PostMediaResponse> media;
     private Long totalReactions;

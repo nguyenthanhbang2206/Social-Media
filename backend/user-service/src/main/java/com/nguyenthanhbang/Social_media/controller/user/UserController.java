@@ -30,7 +30,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/users/{id}")
-    public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable("id") Long id){
+    public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable("id") Long id) {
         User user = userService.getUserById(id);
         ApiResponse response = ApiResponse.builder()
                 .message("Get user by id successfully")

@@ -3,8 +3,10 @@ package com.nguyenthanhbang.Social_media.service.impl;
 import com.nguyenthanhbang.Social_media.client.GroupClient;
 import com.nguyenthanhbang.Social_media.client.InteractionClient;
 import com.nguyenthanhbang.Social_media.client.UserClient;
+import com.nguyenthanhbang.Social_media.client.UserServiceClient;
 import com.nguyenthanhbang.Social_media.common.dto.GroupSummaryResponse;
 import com.nguyenthanhbang.Social_media.common.dto.PostInteractionCountResponse;
+import com.nguyenthanhbang.Social_media.common.dto.UserSummaryResponse;
 import com.nguyenthanhbang.Social_media.common.enumeration.GroupMembershipStatus;
 import com.nguyenthanhbang.Social_media.common.enumeration.GroupPrivacy;
 import com.nguyenthanhbang.Social_media.common.enumeration.PostType;
@@ -40,15 +42,18 @@ public class PostServiceImpl implements PostService {
     private final GroupClient groupClient;
     private final UserClient userClient;
     private final InteractionClient interactionClient;
+    private final UserServiceClient userServiceClient;
 
     @Override
     public Post createPost(Long groupId, CreatePostRequest request) {
         Long userId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        UserSummaryResponse userSummaryResponse = userServiceClient.getUserById(userId).join();
         Post post = new Post();
         post.setContent(request.getContent());
         PrivacyLevel privacy = request.getPrivacy() == null ? PrivacyLevel.PUBLIC : request.getPrivacy();
         post.setPrivacy(isUserPost(request.getPostType()) ? privacy : PrivacyLevel.PUBLIC);
         post.setUserId(userId);
+        post.setOwnerName(userSummaryResponse == null ? null : userSummaryResponse.getFullName());
         List<PostMedia> postMediaList = new ArrayList<>();
         List<PostMediaRequest> mediaRequests = request.getMedia() == null ? new ArrayList<>() : request.getMedia();
         for(PostMediaRequest item : mediaRequests) {
