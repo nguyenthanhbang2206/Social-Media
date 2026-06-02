@@ -1,0 +1,589 @@
+2026-06-02T16:25:20.041+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] c.n.S.d.DiscoveryServiceApplication      : Starting DiscoveryServiceApplication using Java 17.0.9 with PID 23392 (D:\Projects\Social-media\backend\discovery-service\target\classes started by BANG in D:\Projects\Social-media\backend)
+2026-06-02T16:25:20.047+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] c.n.S.d.DiscoveryServiceApplication      : No active profile set, falling back to 1 default profile: "default"
+2026-06-02T16:25:20.988+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] o.s.cloud.context.scope.GenericScope     : BeanFactory id=f0dab0ea-1bbb-37bf-920c-fafd21f13733
+2026-06-02T16:25:21.231+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8761 (http)
+2026-06-02T16:25:21.243+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-02T16:25:21.243+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-06-02T16:25:21.307+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-02T16:25:21.308+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1210 ms
+2026-06-02T16:25:21.863+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] o.apache.catalina.core.StandardContext   : Suspicious URL pattern: [/actuator/**] in context [], see sections 12.1 and 12.2 of the Servlet specification
+2026-06-02T16:25:22.303+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] c.n.d.provider.DiscoveryJerseyProvider   : Using JSON encoding codec LegacyJacksonJson
+2026-06-02T16:25:22.304+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] c.n.d.provider.DiscoveryJerseyProvider   : Using JSON decoding codec LegacyJacksonJson
+2026-06-02T16:25:22.502+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] c.n.d.provider.DiscoveryJerseyProvider   : Using XML encoding codec XStreamXml
+2026-06-02T16:25:22.503+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] c.n.d.provider.DiscoveryJerseyProvider   : Using XML decoding codec XStreamXml
+2026-06-02T16:25:23.846+07:00  WARN [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-02T16:25:23.870+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-02T16:25:23.894+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-02T16:25:23.894+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] com.netflix.discovery.DiscoveryClient    : Client configured to neither register nor query for data.
+2026-06-02T16:25:23.897+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1780392323896 with initial instances count: 0
+2026-06-02T16:25:23.942+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] c.n.eureka.DefaultEurekaServerContext    : Initializing ...
+2026-06-02T16:25:23.944+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] c.n.eureka.cluster.PeerEurekaNodes       : Adding new peer nodes [http://localhost:8761/eureka/]
+2026-06-02T16:25:23.985+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] c.n.d.provider.DiscoveryJerseyProvider   : Using JSON encoding codec LegacyJacksonJson
+2026-06-02T16:25:23.986+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] c.n.d.provider.DiscoveryJerseyProvider   : Using JSON decoding codec LegacyJacksonJson
+2026-06-02T16:25:23.986+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] c.n.d.provider.DiscoveryJerseyProvider   : Using XML encoding codec XStreamXml
+2026-06-02T16:25:23.986+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] c.n.d.provider.DiscoveryJerseyProvider   : Using XML decoding codec XStreamXml
+2026-06-02T16:25:24.018+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] c.n.eureka.cluster.PeerEurekaNodes       : Replica node URL:  http://localhost:8761/eureka/
+2026-06-02T16:25:24.029+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Finished initializing remote region registries. All known remote regions: []
+2026-06-02T16:25:24.029+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] c.n.eureka.DefaultEurekaServerContext    : Initialized
+2026-06-02T16:25:24.038+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 4 endpoints beneath base path '/actuator'
+2026-06-02T16:25:24.126+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application DISCOVERY-SERVICE with eureka with status UP
+2026-06-02T16:25:24.135+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Thread-10] [                                                 ] o.s.c.n.e.server.EurekaServerBootstrap   : isAws returned false
+2026-06-02T16:25:24.136+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Thread-10] [                                                 ] o.s.c.n.e.server.EurekaServerBootstrap   : Initialized server context
+2026-06-02T16:25:24.136+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Thread-10] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Got 1 instances from neighboring DS node
+2026-06-02T16:25:24.136+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Thread-10] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Renew threshold is: 1
+2026-06-02T16:25:24.136+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Thread-10] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Changing status to UP
+2026-06-02T16:25:24.138+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Thread-10] [                                                 ] e.s.EurekaServerInitializerConfiguration : Started Eureka Server
+2026-06-02T16:25:24.146+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8761 (http) with context path '/'
+2026-06-02T16:25:24.147+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8761
+2026-06-02T16:25:24.276+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [main] [                                                 ] c.n.S.d.DiscoveryServiceApplication      : Started DiscoveryServiceApplication in 4.945 seconds (process running for 6.033)
+2026-06-02T16:25:24.799+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [RMI TCP Connection(3)-192.168.4.15] [                                                 ] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-02T16:25:24.799+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [RMI TCP Connection(3)-192.168.4.15] [                                                 ] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-06-02T16:25:24.801+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [RMI TCP Connection(3)-192.168.4.15] [                                                 ] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-06-02T16:25:49.463+07:00  INFO [discovery-service,2608a99cd07f8804d30a478466fedbae,b198b8adfe98e759] 23392 --- [discovery-service] [http-nio-8761-exec-2] [2608a99cd07f8804d30a478466fedbae-b198b8adfe98e759] c.n.e.registry.AbstractInstanceRegistry  : Registered instance API-GATEWAY/LAPTOP-4K64MGNI:api-gateway:8080 with status UP (replication=false)
+2026-06-02T16:25:50.288+07:00  INFO [discovery-service,72614548c9adeeb60e9a418129a189d1,de293fba3060a234] 23392 --- [discovery-service] [http-nio-8761-exec-3] [72614548c9adeeb60e9a418129a189d1-de293fba3060a234] c.n.e.registry.AbstractInstanceRegistry  : Registered instance API-GATEWAY/LAPTOP-4K64MGNI:api-gateway:8080 with status UP (replication=true)
+2026-06-02T16:25:54.191+07:00 ERROR [discovery-service,,] 23392 --- [discovery-service] [OkHttp http://localhost:4319/...] [                                                 ] i.o.exporter.internal.http.HttpExporter  : Failed to export spans. The request could not be executed. Full error message: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:4319
+
+java.net.ConnectException: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:4319
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:297) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealConnection.connect(RealConnection.kt:207) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.findConnection(ExchangeFinder.kt:226) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.findHealthyConnection(ExchangeFinder.kt:106) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.find(ExchangeFinder.kt:74) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall.initExchange$okhttp(RealCall.kt:255) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.kt:32) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.kt:95) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.kt:83) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:76) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:201) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall$AsyncCall.run(RealCall.kt:517) ~[okhttp-4.12.0.jar:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+	Suppressed: java.net.ConnectException: Failed to connect to localhost/127.0.0.1:4319
+		... 19 common frames omitted
+	Caused by: java.net.ConnectException: Connection refused: no further information
+		at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+		at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
+		at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
+		at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+		at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+		at java.base/java.net.Socket.connect(Socket.java:633)
+		at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128)
+		at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295)
+		... 18 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: no further information
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method) ~[na:na]
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602) ~[na:na]
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[na:na]
+	at java.base/java.net.Socket.connect(Socket.java:633) ~[na:na]
+	at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295) ~[okhttp-4.12.0.jar:na]
+	... 18 common frames omitted
+
+2026-06-02T16:26:04.220+07:00 ERROR [discovery-service,,] 23392 --- [discovery-service] [OkHttp http://localhost:4319/...] [                                                 ] i.o.exporter.internal.http.HttpExporter  : Failed to export spans. The request could not be executed. Full error message: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:4319
+
+java.net.ConnectException: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:4319
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:297) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealConnection.connect(RealConnection.kt:207) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.findConnection(ExchangeFinder.kt:226) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.findHealthyConnection(ExchangeFinder.kt:106) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.find(ExchangeFinder.kt:74) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall.initExchange$okhttp(RealCall.kt:255) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.kt:32) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.kt:95) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.kt:83) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:76) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:201) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall$AsyncCall.run(RealCall.kt:517) ~[okhttp-4.12.0.jar:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+	Suppressed: java.net.ConnectException: Failed to connect to localhost/127.0.0.1:4319
+		... 19 common frames omitted
+	Caused by: java.net.ConnectException: Connection refused: no further information
+		at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+		at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
+		at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
+		at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+		at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+		at java.base/java.net.Socket.connect(Socket.java:633)
+		at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128)
+		at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295)
+		... 18 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: no further information
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method) ~[na:na]
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602) ~[na:na]
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[na:na]
+	at java.base/java.net.Socket.connect(Socket.java:633) ~[na:na]
+	at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295) ~[okhttp-4.12.0.jar:na]
+	... 18 common frames omitted
+
+2026-06-02T16:26:04.326+07:00  INFO [discovery-service,3b7bbdaac0c6a8b9bedd88e043b4e582,df7812e1b733d199] 23392 --- [discovery-service] [http-nio-8761-exec-6] [3b7bbdaac0c6a8b9bedd88e043b4e582-df7812e1b733d199] c.n.e.registry.AbstractInstanceRegistry  : Registered instance GROUP-SERVICE/LAPTOP-4K64MGNI:group-service:8085 with status UP (replication=false)
+2026-06-02T16:26:04.859+07:00  INFO [discovery-service,37c4761926e49c9be44cdef3b58c189a,fc7d5ca266720a86] 23392 --- [discovery-service] [http-nio-8761-exec-5] [37c4761926e49c9be44cdef3b58c189a-fc7d5ca266720a86] c.n.e.registry.AbstractInstanceRegistry  : Registered instance GROUP-SERVICE/LAPTOP-4K64MGNI:group-service:8085 with status UP (replication=true)
+2026-06-02T16:26:09.270+07:00 ERROR [discovery-service,,] 23392 --- [discovery-service] [OkHttp http://localhost:4319/...] [                                                 ] i.o.exporter.internal.http.HttpExporter  : Failed to export spans. The request could not be executed. Full error message: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:4319
+
+java.net.ConnectException: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:4319
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:297) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealConnection.connect(RealConnection.kt:207) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.findConnection(ExchangeFinder.kt:226) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.findHealthyConnection(ExchangeFinder.kt:106) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.find(ExchangeFinder.kt:74) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall.initExchange$okhttp(RealCall.kt:255) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.kt:32) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.kt:95) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.kt:83) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:76) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:201) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall$AsyncCall.run(RealCall.kt:517) ~[okhttp-4.12.0.jar:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+	Suppressed: java.net.ConnectException: Failed to connect to localhost/127.0.0.1:4319
+		... 19 common frames omitted
+	Caused by: java.net.ConnectException: Connection refused: no further information
+		at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+		at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
+		at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
+		at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+		at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+		at java.base/java.net.Socket.connect(Socket.java:633)
+		at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128)
+		at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295)
+		... 18 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: no further information
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method) ~[na:na]
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602) ~[na:na]
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[na:na]
+	at java.base/java.net.Socket.connect(Socket.java:633) ~[na:na]
+	at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295) ~[okhttp-4.12.0.jar:na]
+	... 18 common frames omitted
+
+2026-06-02T16:26:19.354+07:00 ERROR [discovery-service,,] 23392 --- [discovery-service] [OkHttp http://localhost:4319/...] [                                                 ] i.o.exporter.internal.http.HttpExporter  : Failed to export spans. The request could not be executed. Full error message: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:4319
+
+java.net.ConnectException: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:4319
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:297) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealConnection.connect(RealConnection.kt:207) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.findConnection(ExchangeFinder.kt:226) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.findHealthyConnection(ExchangeFinder.kt:106) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.find(ExchangeFinder.kt:74) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall.initExchange$okhttp(RealCall.kt:255) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.kt:32) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.kt:95) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.kt:83) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:76) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:201) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall$AsyncCall.run(RealCall.kt:517) ~[okhttp-4.12.0.jar:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+	Suppressed: java.net.ConnectException: Failed to connect to localhost/127.0.0.1:4319
+		... 19 common frames omitted
+	Caused by: java.net.ConnectException: Connection refused: no further information
+		at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+		at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
+		at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
+		at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+		at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+		at java.base/java.net.Socket.connect(Socket.java:633)
+		at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128)
+		at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295)
+		... 18 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: no further information
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method) ~[na:na]
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602) ~[na:na]
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[na:na]
+	at java.base/java.net.Socket.connect(Socket.java:633) ~[na:na]
+	at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295) ~[okhttp-4.12.0.jar:na]
+	... 18 common frames omitted
+
+2026-06-02T16:26:24.138+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T16:26:24.382+07:00 ERROR [discovery-service,,] 23392 --- [discovery-service] [OkHttp http://localhost:4319/...] [                                                 ] i.o.exporter.internal.http.HttpExporter  : Failed to export spans. The request could not be executed. Full error message: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:4319
+
+java.net.ConnectException: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:4319
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:297) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealConnection.connect(RealConnection.kt:207) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.findConnection(ExchangeFinder.kt:226) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.findHealthyConnection(ExchangeFinder.kt:106) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.find(ExchangeFinder.kt:74) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall.initExchange$okhttp(RealCall.kt:255) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.kt:32) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.kt:95) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.kt:83) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:76) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:201) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall$AsyncCall.run(RealCall.kt:517) ~[okhttp-4.12.0.jar:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+	Suppressed: java.net.ConnectException: Failed to connect to localhost/127.0.0.1:4319
+		... 19 common frames omitted
+	Caused by: java.net.ConnectException: Connection refused: no further information
+		at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+		at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
+		at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
+		at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+		at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+		at java.base/java.net.Socket.connect(Socket.java:633)
+		at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128)
+		at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295)
+		... 18 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: no further information
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method) ~[na:na]
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602) ~[na:na]
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[na:na]
+	at java.base/java.net.Socket.connect(Socket.java:633) ~[na:na]
+	at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295) ~[okhttp-4.12.0.jar:na]
+	... 18 common frames omitted
+
+2026-06-02T16:26:34.394+07:00 ERROR [discovery-service,,] 23392 --- [discovery-service] [OkHttp http://localhost:4319/...] [                                                 ] i.o.exporter.internal.http.HttpExporter  : Failed to export spans. The request could not be executed. Full error message: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:4319
+
+java.net.ConnectException: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:4319
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:297) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealConnection.connect(RealConnection.kt:207) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.findConnection(ExchangeFinder.kt:226) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.findHealthyConnection(ExchangeFinder.kt:106) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.find(ExchangeFinder.kt:74) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall.initExchange$okhttp(RealCall.kt:255) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.kt:32) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.kt:95) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.kt:83) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:76) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:201) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall$AsyncCall.run(RealCall.kt:517) ~[okhttp-4.12.0.jar:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+	Suppressed: java.net.ConnectException: Failed to connect to localhost/127.0.0.1:4319
+		... 19 common frames omitted
+	Caused by: java.net.ConnectException: Connection refused: no further information
+		at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+		at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
+		at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
+		at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+		at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+		at java.base/java.net.Socket.connect(Socket.java:633)
+		at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128)
+		at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295)
+		... 18 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: no further information
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method) ~[na:na]
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602) ~[na:na]
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[na:na]
+	at java.base/java.net.Socket.connect(Socket.java:633) ~[na:na]
+	at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295) ~[okhttp-4.12.0.jar:na]
+	... 18 common frames omitted
+
+2026-06-02T16:26:39.485+07:00 ERROR [discovery-service,,] 23392 --- [discovery-service] [OkHttp http://localhost:4319/...] [                                                 ] i.o.exporter.internal.http.HttpExporter  : Failed to export spans. The request could not be executed. Full error message: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:4319
+
+java.net.ConnectException: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:4319
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:297) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealConnection.connect(RealConnection.kt:207) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.findConnection(ExchangeFinder.kt:226) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.findHealthyConnection(ExchangeFinder.kt:106) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.find(ExchangeFinder.kt:74) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall.initExchange$okhttp(RealCall.kt:255) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.kt:32) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.kt:95) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.kt:83) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:76) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:201) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall$AsyncCall.run(RealCall.kt:517) ~[okhttp-4.12.0.jar:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+	Suppressed: java.net.ConnectException: Failed to connect to localhost/127.0.0.1:4319
+		... 19 common frames omitted
+	Caused by: java.net.ConnectException: Connection refused: no further information
+		at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+		at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
+		at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
+		at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+		at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+		at java.base/java.net.Socket.connect(Socket.java:633)
+		at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128)
+		at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295)
+		... 18 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: no further information
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method) ~[na:na]
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602) ~[na:na]
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[na:na]
+	at java.base/java.net.Socket.connect(Socket.java:633) ~[na:na]
+	at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295) ~[okhttp-4.12.0.jar:na]
+	... 18 common frames omitted
+
+2026-06-02T16:26:49.503+07:00 ERROR [discovery-service,,] 23392 --- [discovery-service] [OkHttp http://localhost:4319/...] [                                                 ] i.o.exporter.internal.http.HttpExporter  : Failed to export spans. The request could not be executed. Full error message: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:4319
+
+java.net.ConnectException: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:4319
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:297) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealConnection.connect(RealConnection.kt:207) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.findConnection(ExchangeFinder.kt:226) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.findHealthyConnection(ExchangeFinder.kt:106) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.find(ExchangeFinder.kt:74) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall.initExchange$okhttp(RealCall.kt:255) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.kt:32) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.kt:95) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.kt:83) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:76) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:201) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall$AsyncCall.run(RealCall.kt:517) ~[okhttp-4.12.0.jar:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+	Suppressed: java.net.ConnectException: Failed to connect to localhost/127.0.0.1:4319
+		... 19 common frames omitted
+	Caused by: java.net.ConnectException: Connection refused: no further information
+		at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+		at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
+		at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
+		at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+		at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+		at java.base/java.net.Socket.connect(Socket.java:633)
+		at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128)
+		at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295)
+		... 18 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: no further information
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method) ~[na:na]
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602) ~[na:na]
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[na:na]
+	at java.base/java.net.Socket.connect(Socket.java:633) ~[na:na]
+	at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295) ~[okhttp-4.12.0.jar:na]
+	... 18 common frames omitted
+
+2026-06-02T16:26:54.514+07:00 ERROR [discovery-service,,] 23392 --- [discovery-service] [OkHttp http://localhost:4319/...] [                                                 ] i.o.exporter.internal.http.HttpExporter  : Failed to export spans. The request could not be executed. Full error message: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:4319
+
+java.net.ConnectException: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:4319
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:297) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealConnection.connect(RealConnection.kt:207) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.findConnection(ExchangeFinder.kt:226) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.findHealthyConnection(ExchangeFinder.kt:106) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ExchangeFinder.find(ExchangeFinder.kt:74) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall.initExchange$okhttp(RealCall.kt:255) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.kt:32) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.kt:95) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.kt:83) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:76) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:201) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealCall$AsyncCall.run(RealCall.kt:517) ~[okhttp-4.12.0.jar:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+	Suppressed: java.net.ConnectException: Failed to connect to localhost/127.0.0.1:4319
+		... 19 common frames omitted
+	Caused by: java.net.ConnectException: Connection refused: no further information
+		at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+		at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
+		at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
+		at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+		at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+		at java.base/java.net.Socket.connect(Socket.java:633)
+		at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128)
+		at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295)
+		... 18 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: no further information
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method) ~[na:na]
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602) ~[na:na]
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[na:na]
+	at java.base/java.net.Socket.connect(Socket.java:633) ~[na:na]
+	at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128) ~[okhttp-4.12.0.jar:na]
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295) ~[okhttp-4.12.0.jar:na]
+	... 18 common frames omitted
+
+2026-06-02T16:27:24.139+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T16:28:24.142+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2026-06-02T16:28:46.137+07:00  INFO [discovery-service,5eafa6885217180291f24823116bfc29,83e3db2d7ac7bc76] 23392 --- [discovery-service] [http-nio-8761-exec-2] [5eafa6885217180291f24823116bfc29-83e3db2d7ac7bc76] c.n.e.registry.AbstractInstanceRegistry  : Registered instance INTERACTION-SERVICE/LAPTOP-4K64MGNI:interaction-service:8084 with status UP (replication=false)
+2026-06-02T16:28:46.656+07:00  INFO [discovery-service,6887980d873e90a9486f82e47b080862,cea075df09cfc782] 23392 --- [discovery-service] [http-nio-8761-exec-4] [6887980d873e90a9486f82e47b080862-cea075df09cfc782] c.n.e.registry.AbstractInstanceRegistry  : Registered instance INTERACTION-SERVICE/LAPTOP-4K64MGNI:interaction-service:8084 with status UP (replication=true)
+2026-06-02T16:28:54.138+07:00  INFO [discovery-service,98f1d10ec101b77cf81f7dc5460c068f,1542877a91080f83] 23392 --- [discovery-service] [http-nio-8761-exec-10] [98f1d10ec101b77cf81f7dc5460c068f-1542877a91080f83] c.n.e.registry.AbstractInstanceRegistry  : Registered instance NOTIFICATION-SERVICE/LAPTOP-4K64MGNI:notification-service:8083 with status UP (replication=false)
+2026-06-02T16:28:54.658+07:00  INFO [discovery-service,4ba22496e5badf1dccbf33fa69e937d4,9bbc15b8f5371ab0] 23392 --- [discovery-service] [http-nio-8761-exec-9] [4ba22496e5badf1dccbf33fa69e937d4-9bbc15b8f5371ab0] c.n.e.registry.AbstractInstanceRegistry  : Registered instance NOTIFICATION-SERVICE/LAPTOP-4K64MGNI:notification-service:8083 with status UP (replication=true)
+2026-06-02T16:29:12.414+07:00  INFO [discovery-service,47d92e51faee7f9eb943d5967b81bf24,e968271aec14a720] 23392 --- [discovery-service] [http-nio-8761-exec-10] [47d92e51faee7f9eb943d5967b81bf24-e968271aec14a720] c.n.e.registry.AbstractInstanceRegistry  : Registered instance USER-SERVICE/LAPTOP-4K64MGNI:user-service:8081 with status UP (replication=false)
+2026-06-02T16:29:12.929+07:00  INFO [discovery-service,2e6c9c93b6f724c798a7439894b0a71a,a5dfa4f8c88320b6] 23392 --- [discovery-service] [http-nio-8761-exec-9] [2e6c9c93b6f724c798a7439894b0a71a-a5dfa4f8c88320b6] c.n.e.registry.AbstractInstanceRegistry  : Registered instance USER-SERVICE/LAPTOP-4K64MGNI:user-service:8081 with status UP (replication=true)
+2026-06-02T16:29:24.146+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 2ms
+2026-06-02T16:30:03.043+07:00  INFO [discovery-service,7d28925a853dee124e4207eca99a342e,aba71f267ce105c7] 23392 --- [discovery-service] [http-nio-8761-exec-5] [7d28925a853dee124e4207eca99a342e-aba71f267ce105c7] c.n.e.registry.AbstractInstanceRegistry  : Registered instance POST-SERVICE/LAPTOP-4K64MGNI:post-service:8082 with status UP (replication=false)
+2026-06-02T16:30:03.561+07:00  INFO [discovery-service,c7556a1027bcc4d37b99c8471fcd35e4,7cee79ccb509d262] 23392 --- [discovery-service] [http-nio-8761-exec-7] [c7556a1027bcc4d37b99c8471fcd35e4-7cee79ccb509d262] c.n.e.registry.AbstractInstanceRegistry  : Registered instance POST-SERVICE/LAPTOP-4K64MGNI:post-service:8082 with status UP (replication=true)
+2026-06-02T16:30:24.145+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T16:31:24.152+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2026-06-02T16:32:20.354+07:00  INFO [discovery-service,838db7e549cf73aba75585dd61f400a2,e8adb46b7873f1ad] 23392 --- [discovery-service] [http-nio-8761-exec-8] [838db7e549cf73aba75585dd61f400a2-e8adb46b7873f1ad] c.n.e.registry.AbstractInstanceRegistry  : Registered instance GROUP-SERVICE/LAPTOP-4K64MGNI:group-service:8085 with status DOWN (replication=false)
+2026-06-02T16:32:20.869+07:00  INFO [discovery-service,d2dbe40a133c434ad2654faeecd04126,91097f67fd6b70cd] 23392 --- [discovery-service] [http-nio-8761-exec-1] [d2dbe40a133c434ad2654faeecd04126-91097f67fd6b70cd] c.n.e.registry.AbstractInstanceRegistry  : Registered instance GROUP-SERVICE/LAPTOP-4K64MGNI:group-service:8085 with status DOWN (replication=true)
+2026-06-02T16:32:24.151+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T16:32:24.441+07:00  INFO [discovery-service,58495358749b341ff057ddc5a52f881b,cd65baa4a8acb0ec] 23392 --- [discovery-service] [http-nio-8761-exec-6] [58495358749b341ff057ddc5a52f881b-cd65baa4a8acb0ec] c.n.e.registry.AbstractInstanceRegistry  : Cancelled instance GROUP-SERVICE/LAPTOP-4K64MGNI:group-service:8085 (replication=false)
+2026-06-02T16:32:24.777+07:00  WARN [discovery-service,2ea821711c484a05c94ba80c6d4f82f3,eeab4d17bacdf359] 23392 --- [discovery-service] [http-nio-8761-exec-3] [2ea821711c484a05c94ba80c6d4f82f3-eeab4d17bacdf359] c.n.e.registry.AbstractInstanceRegistry  : DS: Registry: cancel failed because Lease is not registered for: GROUP-SERVICE/LAPTOP-4K64MGNI:group-service:8085
+2026-06-02T16:32:24.778+07:00  INFO [discovery-service,2ea821711c484a05c94ba80c6d4f82f3,eeab4d17bacdf359] 23392 --- [discovery-service] [http-nio-8761-exec-3] [2ea821711c484a05c94ba80c6d4f82f3-eeab4d17bacdf359] c.n.eureka.resources.InstanceResource    : Not Found (Cancel): GROUP-SERVICE - LAPTOP-4K64MGNI:group-service:8085
+2026-06-02T16:32:24.783+07:00  WARN [discovery-service,,] 23392 --- [discovery-service] [TaskBatchingWorker-target_localhost-11] [                                                 ] c.n.eureka.cluster.ReplicationTask       : The replication of task GROUP-SERVICE/LAPTOP-4K64MGNI:group-service:8085:Cancel@localhost failed with response code 404
+2026-06-02T16:32:24.786+07:00  WARN [discovery-service,,] 23392 --- [discovery-service] [TaskBatchingWorker-target_localhost-11] [                                                 ] c.netflix.eureka.cluster.PeerEurekaNode  : GROUP-SERVICE/LAPTOP-4K64MGNI:group-service:8085:Cancel@localhost: missing entry.
+2026-06-02T16:33:13.863+07:00  INFO [discovery-service,acd8d544943aa201dd6a349094bba29a,9a674ab2e5459cb8] 23392 --- [discovery-service] [http-nio-8761-exec-9] [acd8d544943aa201dd6a349094bba29a-9a674ab2e5459cb8] c.n.e.registry.AbstractInstanceRegistry  : Registered instance GROUP-SERVICE/LAPTOP-4K64MGNI:group-service:8085 with status UP (replication=false)
+2026-06-02T16:33:14.396+07:00  INFO [discovery-service,1fa8215481c04b7112ae6448f65502b7,7587525344cf38d4] 23392 --- [discovery-service] [http-nio-8761-exec-1] [1fa8215481c04b7112ae6448f65502b7-7587525344cf38d4] c.n.e.registry.AbstractInstanceRegistry  : Registered instance GROUP-SERVICE/LAPTOP-4K64MGNI:group-service:8085 with status UP (replication=true)
+2026-06-02T16:33:24.160+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 8ms
+2026-06-02T16:34:24.162+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 1ms
+2026-06-02T16:35:24.174+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 12ms
+2026-06-02T16:36:24.175+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T16:37:24.184+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 9ms
+2026-06-02T16:38:24.184+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T16:39:24.195+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 10ms
+2026-06-02T16:40:24.036+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [ReplicaAwareInstanceRegistry - RenewalThresholdUpdater] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Current renewal threshold is : 11
+2026-06-02T16:40:24.196+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 1ms
+2026-06-02T16:41:24.196+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T16:42:24.196+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T16:43:24.196+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T16:44:24.196+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T16:45:24.196+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T16:46:24.197+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T16:47:24.198+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T16:48:24.199+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T16:49:24.246+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 48ms
+2026-06-02T16:50:24.922+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 675ms
+2026-06-02T16:51:24.931+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 9ms
+2026-06-02T16:52:24.936+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2026-06-02T16:53:24.939+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 2ms
+2026-06-02T16:54:24.954+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 15ms
+2026-06-02T16:55:24.034+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [ReplicaAwareInstanceRegistry - RenewalThresholdUpdater] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Current renewal threshold is : 11
+2026-06-02T16:55:24.962+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 7ms
+2026-06-02T16:56:24.964+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 2ms
+2026-06-02T16:57:24.985+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 20ms
+2026-06-02T16:58:24.990+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2026-06-02T16:59:24.999+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 8ms
+2026-06-02T17:00:25.006+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 7ms
+2026-06-02T17:01:25.023+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 17ms
+2026-06-02T17:02:25.033+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 8ms
+2026-06-02T17:03:25.042+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 9ms
+2026-06-02T17:04:25.042+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T17:05:25.042+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T17:06:25.045+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 2ms
+2026-06-02T17:07:25.053+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 8ms
+2026-06-02T17:08:25.053+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T17:09:25.054+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T17:10:24.053+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [ReplicaAwareInstanceRegistry - RenewalThresholdUpdater] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Current renewal threshold is : 11
+2026-06-02T17:10:25.074+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 20ms
+2026-06-02T17:11:25.080+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2026-06-02T17:12:25.080+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T17:13:25.081+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T17:14:25.081+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T17:15:25.082+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T17:16:25.082+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T17:17:25.083+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T17:18:17.303+07:00 ERROR [discovery-service,,] 23392 --- [discovery-service] [TaskBatchingWorker-target_localhost-14] [                                                 ] c.n.e.cluster.ReplicationTaskProcessor   : It seems to be a socket read timeout exception, it will retry later. if it continues to happen and some eureka node occupied all the cpu time, you should set property 'eureka.server.peer-node-read-timeout-ms' to a bigger value
+
+jakarta.ws.rs.ProcessingException: java.net.SocketTimeoutException: Read timed out
+	at org.glassfish.jersey.apache.connector.ApacheConnector.apply(ApacheConnector.java:534) ~[jersey-apache-connector-3.1.9.jar:na]
+	at org.glassfish.jersey.client.ClientRuntime.invoke(ClientRuntime.java:300) ~[jersey-client-3.1.9.jar:na]
+	at org.glassfish.jersey.client.JerseyInvocation.lambda$invoke$0(JerseyInvocation.java:674) ~[jersey-client-3.1.9.jar:na]
+	at org.glassfish.jersey.client.JerseyInvocation.call(JerseyInvocation.java:709) ~[jersey-client-3.1.9.jar:na]
+	at org.glassfish.jersey.client.JerseyInvocation.lambda$runInScope$3(JerseyInvocation.java:703) ~[jersey-client-3.1.9.jar:na]
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:292) ~[jersey-common-3.1.9.jar:na]
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:274) ~[jersey-common-3.1.9.jar:na]
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:205) ~[jersey-common-3.1.9.jar:na]
+	at org.glassfish.jersey.process.internal.RequestScope.runInScope(RequestScope.java:391) ~[jersey-common-3.1.9.jar:na]
+	at org.glassfish.jersey.client.JerseyInvocation.runInScope(JerseyInvocation.java:703) ~[jersey-client-3.1.9.jar:na]
+	at org.glassfish.jersey.client.JerseyInvocation.invoke(JerseyInvocation.java:673) ~[jersey-client-3.1.9.jar:na]
+	at org.glassfish.jersey.client.JerseyInvocation$Builder.method(JerseyInvocation.java:439) ~[jersey-client-3.1.9.jar:na]
+	at org.glassfish.jersey.client.JerseyInvocation$Builder.post(JerseyInvocation.java:345) ~[jersey-client-3.1.9.jar:na]
+	at com.netflix.eureka.transport.Jersey3ReplicationClient.submitBatchUpdates(Jersey3ReplicationClient.java:116) ~[eureka-core-jersey3-2.0.4.jar:2.0.4]
+	at com.netflix.eureka.cluster.ReplicationTaskProcessor.process(ReplicationTaskProcessor.java:80) ~[eureka-core-2.0.4.jar:2.0.4]
+	at com.netflix.eureka.util.batcher.TaskExecutors$BatchWorkerRunnable.run(TaskExecutors.java:178) ~[eureka-core-2.0.4.jar:2.0.4]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+Caused by: java.net.SocketTimeoutException: Read timed out
+	at java.base/sun.nio.ch.NioSocketImpl.timedRead(NioSocketImpl.java:288) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:314) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:355) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:808) ~[na:na]
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:966) ~[na:na]
+	at org.apache.http.impl.io.SessionInputBufferImpl.streamRead(SessionInputBufferImpl.java:137) ~[httpcore-4.4.16.jar:4.4.16]
+	at org.apache.http.impl.io.SessionInputBufferImpl.fillBuffer(SessionInputBufferImpl.java:153) ~[httpcore-4.4.16.jar:4.4.16]
+	at org.apache.http.impl.io.SessionInputBufferImpl.readLine(SessionInputBufferImpl.java:280) ~[httpcore-4.4.16.jar:4.4.16]
+	at org.apache.http.impl.conn.DefaultHttpResponseParser.parseHead(DefaultHttpResponseParser.java:138) ~[httpclient-4.5.3.jar:4.5.3]
+	at org.apache.http.impl.conn.DefaultHttpResponseParser.parseHead(DefaultHttpResponseParser.java:56) ~[httpclient-4.5.3.jar:4.5.3]
+	at org.apache.http.impl.io.AbstractMessageParser.parse(AbstractMessageParser.java:259) ~[httpcore-4.4.16.jar:4.4.16]
+	at org.apache.http.impl.DefaultBHttpClientConnection.receiveResponseHeader(DefaultBHttpClientConnection.java:163) ~[httpcore-4.4.16.jar:4.4.16]
+	at org.apache.http.impl.conn.CPoolProxy.receiveResponseHeader(CPoolProxy.java:165) ~[httpclient-4.5.3.jar:4.5.3]
+	at org.apache.http.protocol.HttpRequestExecutor.doReceiveResponse(HttpRequestExecutor.java:273) ~[httpcore-4.4.16.jar:4.4.16]
+	at org.apache.http.protocol.HttpRequestExecutor.execute(HttpRequestExecutor.java:125) ~[httpcore-4.4.16.jar:4.4.16]
+	at org.apache.http.impl.execchain.MainClientExec.execute(MainClientExec.java:272) ~[httpclient-4.5.3.jar:4.5.3]
+	at org.apache.http.impl.execchain.ProtocolExec.execute(ProtocolExec.java:185) ~[httpclient-4.5.3.jar:4.5.3]
+	at org.apache.http.impl.execchain.RetryExec.execute(RetryExec.java:89) ~[httpclient-4.5.3.jar:4.5.3]
+	at org.apache.http.impl.execchain.RedirectExec.execute(RedirectExec.java:111) ~[httpclient-4.5.3.jar:4.5.3]
+	at org.apache.http.impl.client.InternalHttpClient.doExecute(InternalHttpClient.java:185) ~[httpclient-4.5.3.jar:4.5.3]
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:72) ~[httpclient-4.5.3.jar:4.5.3]
+	at org.glassfish.jersey.apache.connector.ApacheConnector.apply(ApacheConnector.java:486) ~[jersey-apache-connector-3.1.9.jar:na]
+	... 16 common frames omitted
+
+2026-06-02T17:18:25.083+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T17:19:25.083+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T17:20:25.084+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 1ms
+2026-06-02T17:21:25.084+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T17:22:25.085+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 2ms
+2026-06-02T17:23:25.086+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T17:24:25.086+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T17:25:24.052+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [ReplicaAwareInstanceRegistry - RenewalThresholdUpdater] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Current renewal threshold is : 11
+2026-06-02T17:25:25.086+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T17:26:25.087+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T17:27:25.087+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T17:28:25.090+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2026-06-02T17:29:25.091+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T17:30:25.100+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 9ms
+2026-06-02T17:31:25.101+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T17:32:25.110+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 9ms
+2026-06-02T17:33:25.114+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2026-06-02T17:34:25.114+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-06-02T17:35:25.115+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 1ms
+2026-06-02T17:36:25.121+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2026-06-02T17:37:25.123+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 1ms
+2026-06-02T17:38:25.130+07:00  INFO [discovery-service,,] 23392 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 7ms

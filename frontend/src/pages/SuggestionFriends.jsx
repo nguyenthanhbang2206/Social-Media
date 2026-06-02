@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import api from "../config/api";
+import Header from "../components/Header";
 
 export default function SuggestionFriends() {
   const navigate = useNavigate();
@@ -48,7 +49,9 @@ export default function SuggestionFriends() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-8">
+    <div className="bg-gray-100 min-h-screen font-sans">
+      <Header />
+      <div className="max-w-4xl mx-auto pt-24 py-8">
       <h1 className="text-2xl font-bold text-blue-600 mb-4">Bạn bè gợi ý</h1>
       {loading ? (
         <div className="text-gray-500">Đang tải...</div>
@@ -97,6 +100,7 @@ export default function SuggestionFriends() {
           ))}
         </ul>
       )}
+      </div>
     </div>
   );
 }

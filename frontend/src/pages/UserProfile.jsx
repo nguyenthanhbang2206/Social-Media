@@ -342,6 +342,7 @@ export default function UserProfile() {
 
   return (
     <div className="bg-gray-100 min-h-screen">
+      <Header />
       {/* Cover Photo */}
       <div className="relative h-64 bg-gray-300">
         {user && user.coverPhoto && (
