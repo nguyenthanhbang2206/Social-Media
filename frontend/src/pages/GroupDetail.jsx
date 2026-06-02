@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import Header from "../components/Header";
 
 export default function GroupDetail() {
   const { id } = useParams();
@@ -339,7 +340,9 @@ export default function GroupDetail() {
 
   // Tabs cho group: Thành viên, Bài viết, Chờ duyệt (admin)
   return (
-    <div className="max-w-4xl mx-auto py-8">
+    <div className="bg-gray-100 min-h-screen font-sans">
+      <Header />
+      <div className="max-w-4xl mx-auto pt-24 py-8">
       <div className="flex gap-6 mb-6">
         <img
           src={
@@ -643,6 +646,7 @@ export default function GroupDetail() {
           </div>
         </>
       )}
+      </div>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import Header from "../components/Header";
 
 export default function FriendRequest() {
   const navigate = useNavigate();
@@ -81,8 +82,10 @@ export default function FriendRequest() {
   };
 
   return (
-    <div className="flex max-w-5xl mx-auto pt-8">
-      {/* Left Sidebar */}
+    <div className="bg-gray-100 min-h-screen font-sans">
+      <Header />
+      <div className="flex max-w-5xl mx-auto pt-24">
+        {/* Left Sidebar */}
       <aside className="w-1/4 pr-4">
         <div className="bg-white rounded-lg shadow p-4 sticky top-24">
           <div className="font-bold text-lg mb-4 text-blue-600">Bạn bè</div>
@@ -206,6 +209,7 @@ export default function FriendRequest() {
           )}
         </div>
       </main>
+      </div>
     </div>
   );
 }

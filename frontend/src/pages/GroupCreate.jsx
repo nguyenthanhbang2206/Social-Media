@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Header from "../components/Header";
 
 export default function GroupCreate() {
   const [name, setName] = useState("");
@@ -25,7 +26,9 @@ export default function GroupCreate() {
   };
 
   return (
-    <div className="max-w-xl mx-auto py-8">
+    <div className="bg-gray-100 min-h-screen font-sans">
+      <Header />
+      <div className="max-w-xl mx-auto pt-24 py-8">
       <h1 className="text-2xl font-bold mb-6 text-blue-600">Tạo nhóm mới</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
@@ -68,6 +71,7 @@ export default function GroupCreate() {
           {loading ? "Đang tạo..." : "Tạo nhóm"}
         </button>
       </form>
+      </div>
     </div>
   );
 }

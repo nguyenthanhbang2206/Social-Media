@@ -1,257 +1,91 @@
+services:
 
-  services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - social-network
 
-    # RABBITMQ
-    rabbitmq:
-      image: rabbitmq:3-management
-      container_name: rabbitmq
-      restart: always
-      ports:
-        - "5672:5672"
-        - "15672:15672"
-      networks:
-        - social-network
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: always
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+      - loki
+      - tempo
+    networks:
+      - social-network
 
-    # USER DATABASE
-    user-postgres:
-      image: postgres:16
-      container_name: user-postgres
-      restart: always
-      environment:
-        POSTGRES_DB: social_media_user
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: 123456789
-      ports:
-        - "5433:5432"
-      volumes:
-        - user_postgres_data:/var/lib/postgresql/data
-      networks:
-        - social-network
+  tempo:
+    image: grafana/tempo:latest
+    container_name: tempo
+    restart: always
+    command: [ "-config.file=/etc/tempo.yml" ]
+    volumes:
+      - ./observability/tempo/tempo.yml:/etc/tempo.yml
+    # KHÔNG mở cổng 4318 ra ngoài nữa, để Otel-Collector lo giao tiếp nội bộ
+    ports:
+      - "3200:3200"
+    networks:
+      - social-network
 
-    # POST DATABASE
-    post-postgres:
-      image: postgres:16
-      container_name: post-postgres
-      restart: always
-      environment:
-        POSTGRES_DB: social_media_post
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: 123456789
-      ports:
-        - "5434:5432"
-      volumes:
-        - post_postgres_data:/var/lib/postgresql/data
-      networks:
-        - social-network
+  loki:
+    image: grafana/loki:2.9.10
+    container_name: loki
+    restart: always
+    command: [ "-config.file=/etc/loki/loki-config.yml" ] # Đồng bộ đuôi .yml
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./observability/loki/loki-config.yml:/etc/loki/loki-config.yml
+      - loki_data:/loki # Thêm volume để lưu trữ log không bị mất khi restart
+    networks:
+      - social-network
 
-    # INTERACTION DATABASE
-    interaction-postgres:
-      image: postgres:16
-      container_name: interaction-postgres
-      restart: always
-      environment:
-        POSTGRES_DB: social_media_interaction
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: 123456789
-      ports:
-        - "5435:5432"
-      volumes:
-        - interaction_postgres_data:/var/lib/postgresql/data
-      networks:
-        - social-network
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    restart: always
+    command: [ "-config.file=/etc/promtail/promtail-config.yml" ]
+    volumes:
+      - ./observability/promtail/promtail-config.yml:/etc/promtail/promtail-config.yml
+      - ./logs:/logs
+    depends_on:
+      - loki
+    networks:
+      - social-network
 
-    # GROUP DATABASE
-    group-postgres:
-      image: postgres:16
-      container_name: group-postgres
-      restart: always
-      environment:
-        POSTGRES_DB: social_media_group
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: 123456789
-      ports:
-        - "5436:5432"
-      volumes:
-        - group_postgres_data:/var/lib/postgresql/data
-      networks:
-        - social-network
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: otel-collector
+    restart: always
+    command: [ "--config=/etc/otel-collector-config.yml" ]
+    volumes:
+      - ./observability/otel-collector/otel-collector-config.yml:/etc/otel-collector-config.yml
+    ports:
+      - "4319:4318"  # Máy host gọi vào 4319 -> chạy vào cổng HTTP 4318 của Collector
+    depends_on:
+      - tempo
+    networks:
+      - social-network
 
-    # =====================================================
-    # NOTIFICATION DATABASE
-    # =====================================================
+networks:
+  social-network:
+    driver: bridge
 
-    notification-postgres:
-      image: postgres:16
-      container_name: notification-postgres
-      restart: always
-      environment:
-        POSTGRES_DB: social_media_notification
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: 123456789
-      ports:
-        - "5437:5432"
-      volumes:
-        - notification_postgres_data:/var/lib/postgresql/data
-      networks:
-        - social-network
-
-    # DISCOVERY SERVICE
-    discovery-service:
-      build:
-        context: .
-        dockerfile: discovery-service/Dockerfile
-      container_name: discovery-service
-      restart: always
-      ports:
-        - "8761:8761"
-      networks:
-        - social-network
-
-    # API GATEWAY
-    api-gateway:
-      build:
-        context: .
-        dockerfile: api-gateway/Dockerfile
-      container_name: api-gateway
-      restart: always
-      ports:
-        - "8080:8080"
-      depends_on:
-        - discovery-service
-      environment:
-        EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
-      networks:
-        - social-network
-
-    # USER SERVICE
-    user-service:
-      build:
-        context: .
-        dockerfile: user-service/Dockerfile
-      container_name: user-service
-      restart: always
-      ports:
-        - "8081:8081"
-      depends_on:
-        - user-postgres
-        - rabbitmq
-        - discovery-service
-      environment:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://user-postgres:5432/social_media_user
-        SPRING_DATASOURCE_USERNAME: postgres
-        SPRING_DATASOURCE_PASSWORD: 123456789
-        SPRING_RABBITMQ_HOST: rabbitmq
-        SPRING_RABBITMQ_PORT: 5672
-        EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
-      networks:
-        - social-network
-
-    # POST SERVICE
-    post-service:
-      build:
-        context: .
-        dockerfile: post-service/Dockerfile
-      container_name: post-service
-      restart: always
-      ports:
-        - "8082:8082"
-      depends_on:
-        - post-postgres
-        - rabbitmq
-        - discovery-service
-      environment:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://post-postgres:5432/social_media_post
-        SPRING_DATASOURCE_USERNAME: postgres
-        SPRING_DATASOURCE_PASSWORD: 123456789
-
-        SPRING_RABBITMQ_HOST: rabbitmq
-        SPRING_RABBITMQ_PORT: 5672
-
-        EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
-      networks:
-        - social-network
-
-    # INTERACTION SERVICE
-    interaction-service:
-      build:
-        context: .
-        dockerfile: interaction-service/Dockerfile
-      container_name: interaction-service
-      restart: always
-      ports:
-        - "8084:8084"
-      depends_on:
-        - interaction-postgres
-        - rabbitmq
-        - discovery-service
-      environment:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://interaction-postgres:5432/social_media_interaction
-        SPRING_DATASOURCE_USERNAME: postgres
-        SPRING_DATASOURCE_PASSWORD: 123456789
-
-        SPRING_RABBITMQ_HOST: rabbitmq
-        SPRING_RABBITMQ_PORT: 5672
-
-        EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
-      networks:
-        - social-network
-
-    # GROUP SERVICE
-    group-service:
-      build:
-        context: .
-        dockerfile: group-service/Dockerfile
-      container_name: group-service
-      restart: always
-      ports:
-        - "8085:8085"
-      depends_on:
-        - group-postgres
-        - rabbitmq
-        - discovery-service
-      environment:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://group-postgres:5432/social_media_group
-        SPRING_DATASOURCE_USERNAME: postgres
-        SPRING_DATASOURCE_PASSWORD: 123456789
-
-        SPRING_RABBITMQ_HOST: rabbitmq
-        SPRING_RABBITMQ_PORT: 5672
-
-        EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
-      networks:
-        - social-network
-
-    # NOTIFICATION SERVICE
-    notification-service:
-      build:
-        context: .
-        dockerfile: notification-service/Dockerfile
-      container_name: notification-service
-      restart: always
-      ports:
-        - "8083:8083"
-      depends_on:
-        - notification-postgres
-        - rabbitmq
-        - discovery-service
-      environment:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://notification-postgres:5432/social_media_notification
-        SPRING_DATASOURCE_USERNAME: postgres
-        SPRING_DATASOURCE_PASSWORD: 123456789
-        SPRING_RABBITMQ_HOST: rabbitmq
-        SPRING_RABBITMQ_PORT: 5672
-        EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
-      networks:
-        - social-network
-
-  # NETWORK
-  networks:
-    social-network:
-
-  # VOLUMES
-  volumes:
-    user_postgres_data:
-    post_postgres_data:
-    interaction_postgres_data:
-    group_postgres_data:
-    notification_postgres_data:
+volumes:
+  grafana_data:
+  prometheus_data:
+  loki_data: # Khai báo thêm để lưu log database của Loki

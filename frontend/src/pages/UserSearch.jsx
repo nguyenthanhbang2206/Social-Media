@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import Header from "../components/Header";
 
 const API_URL = "http://localhost:8080/api/v1/users/search";
 
@@ -53,7 +54,9 @@ export default function UserSearch() {
     navigate("/users/" + id);
   };
   return (
-    <div className="max-w-xl mx-auto mt-8">
+    <div className="bg-gray-100 min-h-screen font-sans">
+      <Header />
+      <div className="max-w-xl mx-auto pt-24">
       <form onSubmit={handleSearch} className="flex items-center mb-4">
         <input
           type="text"
@@ -110,6 +113,7 @@ export default function UserSearch() {
             ))}
           </ul>
         )}
+      </div>
       </div>
     </div>
   );

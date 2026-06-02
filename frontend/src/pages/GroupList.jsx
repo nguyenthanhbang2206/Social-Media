@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import Header from "../components/Header";
 
 export default function GroupList() {
   const [groups, setGroups] = useState([]);
@@ -48,7 +49,9 @@ export default function GroupList() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-8">
+    <div className="bg-gray-100 min-h-screen font-sans">
+      <Header />
+      <div className="max-w-4xl mx-auto pt-24 py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-blue-600">Danh sách nhóm</h1>
         <button
@@ -134,6 +137,7 @@ export default function GroupList() {
           ))}
         </div>
       )}
+      </div>
     </div>
   );
 }

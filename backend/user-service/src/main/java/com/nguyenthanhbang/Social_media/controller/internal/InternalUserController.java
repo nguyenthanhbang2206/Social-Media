@@ -26,7 +26,7 @@ public class InternalUserController {
     @GetMapping("/users/{id}")
     public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable("id") Long id) throws InterruptedException {
         User user = userService.getUserById(id);
-        Thread.sleep(5000);
+//        Thread.sleep(5000);
         ApiResponse<UserResponse> response = ApiResponse.<UserResponse>builder()
                 .message("Get user by id successfully")
                 .status(HttpStatus.OK.value())

@@ -33,6 +33,24 @@ import {
   GET_REACTIONS_OF_POST_REQUEST,
   GET_REACTIONS_OF_POST_SUCCESS,
   GET_REACTIONS_OF_POST_FAILURE,
+  CREATE_GROUP_POST_REQUEST,
+  CREATE_GROUP_POST_SUCCESS,
+  CREATE_GROUP_POST_FAILURE,
+  GET_GROUP_POSTS_REQUEST,
+  GET_GROUP_POSTS_SUCCESS,
+  GET_GROUP_POSTS_FAILURE,
+  GET_GROUP_PENDING_POSTS_REQUEST,
+  GET_GROUP_PENDING_POSTS_SUCCESS,
+  GET_GROUP_PENDING_POSTS_FAILURE,
+  APPROVE_GROUP_POST_REQUEST,
+  APPROVE_GROUP_POST_SUCCESS,
+  APPROVE_GROUP_POST_FAILURE,
+  PIN_GROUP_POST_REQUEST,
+  PIN_GROUP_POST_SUCCESS,
+  PIN_GROUP_POST_FAILURE,
+  UNPIN_GROUP_POST_REQUEST,
+  UNPIN_GROUP_POST_SUCCESS,
+  UNPIN_GROUP_POST_FAILURE,
 } from "./ActionType";
 
 // Get all posts
@@ -226,5 +244,119 @@ export const getReactPostByMeAndPostId = (postId) => async (dispatch) => {
       payload: error.response?.data?.message || error.message,
     });
     throw error; // ✅ Cho phép bắt lỗi ở component
+  }
+};
+
+// Create group post
+export const createGroupPost = (groupId, postData) => async (dispatch) => {
+  dispatch({ type: CREATE_GROUP_POST_REQUEST });
+  try {
+    const res = await api.post(`/groups/${groupId}/posts`, postData);
+    dispatch({
+      type: CREATE_GROUP_POST_SUCCESS,
+      payload: res.data.data,
+    });
+    return res.data.data;
+  } catch (error) {
+    dispatch({
+      type: CREATE_GROUP_POST_FAILURE,
+      payload: error.response?.data?.message || error.message,
+    });
+    throw error;
+  }
+};
+
+// Get group posts
+export const getGroupPosts = (groupId) => async (dispatch) => {
+  dispatch({ type: GET_GROUP_POSTS_REQUEST });
+  try {
+    const res = await api.get(`/groups/${groupId}/posts`);
+    dispatch({
+      type: GET_GROUP_POSTS_SUCCESS,
+      payload: res.data.data,
+    });
+    return res.data.data;
+  } catch (error) {
+    dispatch({
+      type: GET_GROUP_POSTS_FAILURE,
+      payload: error.response?.data?.message || error.message,
+    });
+    throw error;
+  }
+};
+
+// Get group pending posts
+export const getGroupPendingPosts = (groupId) => async (dispatch) => {
+  dispatch({ type: GET_GROUP_PENDING_POSTS_REQUEST });
+  try {
+    const res = await api.get(`/groups/${groupId}/posts/pending`);
+    dispatch({
+      type: GET_GROUP_PENDING_POSTS_SUCCESS,
+      payload: res.data.data,
+    });
+    return res.data.data;
+  } catch (error) {
+    dispatch({
+      type: GET_GROUP_PENDING_POSTS_FAILURE,
+      payload: error.response?.data?.message || error.message,
+    });
+    throw error;
+  }
+};
+
+// Approve group post
+export const approveGroupPost = (groupId, postId) => async (dispatch) => {
+  dispatch({ type: APPROVE_GROUP_POST_REQUEST });
+  try {
+    const res = await api.put(`/groups/${groupId}/posts/${postId}/approve`);
+    dispatch({
+      type: APPROVE_GROUP_POST_SUCCESS,
+      payload: res.data.data,
+    });
+    return res.data.data;
+  } catch (error) {
+    dispatch({
+      type: APPROVE_GROUP_POST_FAILURE,
+      payload: error.response?.data?.message || error.message,
+    });
+    throw error;
+  }
+};
+
+// Pin group post
+export const pinGroupPost = (groupId, postId) => async (dispatch) => {
+  dispatch({ type: PIN_GROUP_POST_REQUEST });
+  try {
+    const res = await api.put(`/groups/${groupId}/posts/${postId}/pin`);
+    dispatch({
+      type: PIN_GROUP_POST_SUCCESS,
+      payload: res.data.data,
+    });
+    return res.data.data;
+  } catch (error) {
+    dispatch({
+      type: PIN_GROUP_POST_FAILURE,
+      payload: error.response?.data?.message || error.message,
+    });
+    throw error;
+  }
+};
+
+// Unpin group post
+export const unpinGroupPost = (groupId, postId) => async (dispatch) => {
+  dispatch({ type: UNPIN_GROUP_POST_REQUEST });
+  try {
+    const res = await api.put(`/groups/${groupId}/posts/${postId}/unpin`);
+    dispatch({
+      type: UNPIN_GROUP_POST_SUCCESS,
+      payload: res.data.data,
+    });
+    return res.data.data;
+  } catch (error) {
+    dispatch({
+      type: UNPIN_GROUP_POST_FAILURE,
+      payload: error.response?.data?.message || error.message,
+    });
+    throw error;
   }
 };
