@@ -45,15 +45,25 @@ export const Register = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="mt-[-200px] bg-white shadow-md rounded-lg p-6 w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4 text-center">Register</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 font-sans">
+      <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <img
+            src="https://static.xx.fbcdn.net/rsrc.php/yo/r/iRmz9lCMBD2.ico"
+            alt="Logo"
+            className="w-16 h-16 mx-auto mb-4"
+          />
+          <h1 className="text-3xl font-bold text-blue-600">facebook</h1>
+          <p className="text-gray-600 mt-2">Create a new account</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* Full Name Field */}
           <div>
             <label
               htmlFor="fullName"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-700 mb-2"
             >
               Full Name
             </label>
@@ -64,7 +74,8 @@ export const Register = () => {
               value={formData.fullName}
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter your full name"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
@@ -72,7 +83,7 @@ export const Register = () => {
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-700 mb-2"
             >
               Email
             </label>
@@ -83,7 +94,8 @@ export const Register = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter your email"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
@@ -91,7 +103,7 @@ export const Register = () => {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-700 mb-2"
             >
               Password
             </label>
@@ -102,7 +114,8 @@ export const Register = () => {
               value={formData.password}
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Create a password"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
@@ -110,7 +123,7 @@ export const Register = () => {
           <div>
             <label
               htmlFor="confirmPassword"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-700 mb-2"
             >
               Confirm Password
             </label>
@@ -121,32 +134,55 @@ export const Register = () => {
               value={formData.confirmPassword}
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Confirm your password"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
+          </div>
+
+          {/* Terms Checkbox */}
+          <div className="flex items-start">
+            <input
+              type="checkbox"
+              required
+              className="mt-1 rounded text-blue-600 focus:ring-blue-500"
+            />
+            <span className="ml-2 text-sm text-gray-600">
+              I agree to the Terms of Service and Privacy Policy
+            </span>
           </div>
 
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors"
           >
-            Register
+            Sign Up
           </button>
         </form>
 
-        {/* Login Button */}
-        <div className="mt-4 text-center">
-          <p className="text-sm text-gray-600">
-            Bạn đã có tài khoản?{" "}
-            <button
-              onClick={handleLogin}
-              className="text-blue-500 hover:underline focus:outline-none"
-            >
-              Đăng nhập
-            </button>
-          </p>
+        {/* Divider */}
+        <div className="my-6">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">or</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Login Link */}
+        <div className="text-center">
+          <button
+            onClick={handleLogin}
+            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+          >
+            Already have an account? Log In
+          </button>
         </div>
       </div>
+
       {/* Snackbar */}
       <Snackbar
         open={snackbar.open}

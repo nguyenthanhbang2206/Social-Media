@@ -1,12 +1,14 @@
 # Project context (Social-media)
 
 ## Overview
+
 - Monorepo with Spring Boot microservices under `backend/` and React frontend under `frontend/`.
 - Services: `api-gateway`, `discovery-service`, `user-service`, `post-service`, `group-service`, `interaction-service`, `notification-service`, `common-library`.
 - Most public REST APIs are under `/api/v1`.
 - Service-to-service endpoints are merged into the main controllers (example: notifications use `/api/v1/notifications`).
 
 ## Key conventions
+
 - Response wrapper: `ApiResponse<T>`.
 - Authentication: JWT access token + refresh token cookie (see `AuthController`).
 - File upload: multipart form with `files` array and `folder` param.
@@ -14,6 +16,7 @@
 ## Service endpoints (public)
 
 ### user-service
+
 - AuthController (`/api/v1/auth`)
   - POST `/login`
   - POST `/refresh`
@@ -43,7 +46,32 @@
   - GET `/users?active=...`
   - PUT `/users/{id}`
 
+## Frontend AdminUser integration
+
+- `frontend/src/api/AdminUser/Action.js` exports `getAdminUsers(active)` and `updateAdminUser(userId, userData)`.
+- `AdminUserController.PUT /api/v1/admin/users/{id}` toggles the user active flag from the path parameter only; the frontend should dispatch `updateAdminUser(userId)`.
+- `AdminDashBoard.jsx` should load users with `getAdminUsers()` instead of the older `getAllUsers` name.
+
+## Frontend API optimization notes
+
+- `frontend/src/api/FriendShip/Action.js` now applies a short TTL cache (60s) for `getFriends(userId)` and `getFriendRequestsReceived()` to avoid repeated calls when layout/components remount.
+- `frontend/src/api/FriendShip/Reducer.js` tracks `friendsFetchedForUserId`, `friendsLastFetchedAt`, and `friendRequestsLastFetchedAt` for cache decisions.
+- `frontend/src/api/Block/Action.js` now applies a short TTL cache (60s) for `getBlockedUsers()`.
+- `frontend/src/api/Block/Reducer.js` tracks `blockedUsersLastFetchedAt`.
+- `frontend/src/pages/Home.jsx` no longer requests friend list (it was unused there and duplicated sidebar behavior).
+- `frontend/src/pages/UserProfile.jsx` now skips `getFriendStatus` and `getBlockedUsers` when viewing own profile, and reuses `auth.user` instead of fetching `/users/{id}` for self profile.
+- `frontend/src/api/Auth/Reducer.js` initializes `user` and `token` from `localStorage` to reduce unnecessary profile fetch on app startup.
+- `frontend/src/utils/profileNavigation.js` centralizes profile navigation: when target id equals current login user id, routes to `/profile`; otherwise routes to `/users/{id}`.
+- `frontend/src/components/layout/TopNavigation.jsx` now includes a real logout button and uses auth state avatar instead of static demo avatar.
+- Post cards should render `ownerName` first; `createdBy` is only a legacy fallback. This matches the backend `PostResponse.ownerName` field.
+- `frontend/src/api/Post/Action.js#getPostsByUser` now has a practical fallback: if `/users/{id}/posts` fails, it falls back to `/posts` and filters by `userId`; it also uses a short cooldown to avoid spamming a failing endpoint.
+
+## Backend stabilization notes
+
+- `backend/post-service/src/main/java/com/nguyenthanhbang/Social_media/service/impl/PostServiceImpl.java#getPostByUserId` no longer makes an unnecessary cross-service `userClient.getUserById(userId)` call before reading posts. This reduces avoidable 500 errors when user-service internal calls are unstable.
+
 ### post-service
+
 - PostController (`/api/v1`)
   - POST `/posts`
   - PUT `/posts/{id}`
@@ -65,6 +93,7 @@
   - POST `/` (multipart `files[]`, `folder`)
 
 ### interaction-service
+
 - CommentController (`/api/v1`)
   - POST `/posts/{postId}/comments`
   - GET `/posts/{postId}/comments`
@@ -85,6 +114,7 @@
   - DELETE `/comments/{commentId}/un-react`
 
 ### group-service
+
 - GroupController (`/api/v1`)
   - POST `/groups`
   - GET `/groups`
@@ -106,6 +136,7 @@
   - PUT `/groups/{groupId}/members/{userId}/role`
 
 ### notification-service
+
 - NotificationController (`/api/v1/notifications`)
   - POST `/`
   - DELETE `/` (query: `actorId`, `referenceId`, `type`)
@@ -116,7 +147,9 @@
   - DELETE `/{id}`
 
 ## Internal endpoints (service-to-service)
+
 - None. All service-to-service endpoints are in the main controllers.
 
 ## Feign clients (service-to-service)
+
 - `common-library`: `NotificationClient` -> `notification-service` (`/api/v1/notifications`)

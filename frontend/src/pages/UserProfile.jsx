@@ -9,7 +9,16 @@ import {
   unreactPost,
 } from "../api/Post/Action";
 import { getProfile } from "../api/Auth/Action";
-import axios from "axios";
+import {
+  getFriendStatus,
+  sendFriendRequest,
+  cancelFriendRequest,
+  acceptFriendRequest,
+  refuseFriendRequest,
+  unfriend,
+} from "../api/FriendShip/Action";
+import { getBlockedUsers, blockUser, unblockUser } from "../api/Block/Action";
+import AppLayout from "../components/layout/AppLayout";
 
 const BASE_FILE_URL = "http://localhost:8080/images/post-media/";
 const REACTION_ORDER = ["LIKE", "LOVE", "HAHA", "WOW", "SAD", "ANGRY"];
@@ -22,11 +31,17 @@ const REACTION_EMOJIS = {
   ANGRY: "😠",
 };
 
+const getPostOwnerName = (post) =>
+  post?.ownerName || post?.createdBy || post?.createdByName || "Người dùng";
+
 export default function UserProfile() {
   const { userId } = useParams();
+  const profileId = Number(userId);
   const dispatch = useDispatch();
   const { posts, loading } = useSelector((state) => state.post);
   const { user: userLogin } = useSelector((state) => state.auth);
+  const { friendStatus, friendship } = useSelector((state) => state.friendship);
+  const { blockedUsers } = useSelector((state) => state.block);
   const [showReactionModal, setShowReactionModal] = useState(false);
   const [modalReactions, setModalReactions] = useState([]);
   const [user, setUser] = useState(null);
@@ -35,21 +50,30 @@ export default function UserProfile() {
   const [editFullName, setEditFullName] = useState("");
   const [editGender, setEditGender] = useState("OTHER");
   const [updateLoading, setUpdateLoading] = useState(false);
-
-  // Friend status
-  const [friendStatus, setFriendStatus] = useState(null);
-  const [friendShipId, setFriendShipId] = useState(null);
-  const [friendShip, setFriendShip] = useState(null);
   const [friendActionLoading, setFriendActionLoading] = useState(false);
-  const [isBlocked, setIsBlocked] = useState(false);
   const [blockLoading, setBlockLoading] = useState(false);
+  const storedUser = JSON.parse(localStorage.getItem("user") || "null");
+  const currentUserId = Number(userLogin?.id || storedUser?.id || 0);
+  const isSelfProfile = currentUserId > 0 && currentUserId === profileId;
 
   const token = localStorage.getItem("token");
 
   const fetchUser = async () => {
+    if (!profileId) {
+      setUser(null);
+      setLoadingUser(false);
+      return;
+    }
+
+    if (isSelfProfile) {
+      setUser(userLogin || storedUser);
+      setLoadingUser(false);
+      return;
+    }
+
     setLoadingUser(true);
     try {
-      const res = await api.get(`/users/${userId}`);
+      const res = await api.get(`/users/${profileId}`);
       setUser(res.data.data);
     } catch (err) {
       setUser(null);
@@ -59,68 +83,31 @@ export default function UserProfile() {
 
   useEffect(() => {
     fetchUser();
-    dispatch(getPostsByUser(userId));
-    fetchFriendStatus();
-    fetchBlockStatus();
+    dispatch(getPostsByUser(profileId));
+    if (!isSelfProfile) {
+      dispatch(getFriendStatus(profileId));
+      dispatch(getBlockedUsers());
+    }
     // eslint-disable-next-line
-  }, [userId, dispatch]);
+  }, [profileId, dispatch, isSelfProfile]);
 
   useEffect(() => {
-    if (user && userLogin && userLogin.id === Number(userId)) {
+    if (user && currentUserId && currentUserId === profileId) {
       setEditFullName(user.fullName || "");
       setEditGender(user.gender || "OTHER");
     }
-  }, [user, userLogin, userId]);
+  }, [user, currentUserId, profileId]);
 
-  // Lấy trạng thái bạn bè
-  const fetchFriendStatus = async () => {
-    try {
-      const res = await axios.get(
-        `http://localhost:8080/api/v1/friends/status/${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-      setFriendShip(res.data.data || null);
-      setFriendStatus(res.data.data?.status || null);
-      setFriendShipId(res.data.data?.id || null);
-    } catch (err) {
-      setFriendStatus(null);
-      setFriendShipId(null);
-      setFriendShip(null);
-    }
-  };
-
-  const fetchBlockStatus = async () => {
-    try {
-      const res = await api.get("/blocks");
-      const blockedList = res.data.data || [];
-      setIsBlocked(
-        blockedList.some(
-          (item) => Number(item?.blocked?.id) === Number(userId),
-        ),
-      );
-    } catch (err) {
-      setIsBlocked(false);
-    }
-  };
+  const isBlocked =
+    blockedUsers?.some((item) => Number(item?.blocked?.id) === profileId) ||
+    false;
 
   // Gửi lời mời kết bạn
   const handleSendRequest = async () => {
     setFriendActionLoading(true);
     try {
-      await axios.post(
-        `http://localhost:8080/api/v1/friend-requests/${userId}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-      await fetchFriendStatus();
+      await dispatch(sendFriendRequest(profileId));
+      dispatch(getFriendStatus(profileId));
     } catch (err) {}
     setFriendActionLoading(false);
   };
@@ -129,72 +116,63 @@ export default function UserProfile() {
   const handleCancelRequest = async () => {
     setFriendActionLoading(true);
     try {
-      await axios.delete(
-        `http://localhost:8080/api/v1/friend-requests/${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-      await fetchFriendStatus();
+      await dispatch(cancelFriendRequest(profileId));
+      dispatch(getFriendStatus(profileId));
     } catch (err) {}
     setFriendActionLoading(false);
   };
 
   // Chấp nhận lời mời kết bạn
   const handleAccept = async () => {
+    if (!profileId) {
+      console.error("Cannot accept friend request: profileId is undefined");
+      return;
+    }
     setFriendActionLoading(true);
     try {
-      await axios.put(
-        `http://localhost:8080/api/v1/friend-requests/${userId}/accept`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-      await fetchFriendStatus();
-    } catch (err) {}
+      await dispatch(acceptFriendRequest(profileId));
+      dispatch(getFriendStatus(profileId));
+    } catch (err) {
+      console.error("Error accepting friend request:", err);
+    }
     setFriendActionLoading(false);
   };
 
   // Từ chối lời mời kết bạn
   const handleRefuse = async () => {
+    if (!profileId) {
+      console.error("Cannot refuse friend request: profileId is undefined");
+      return;
+    }
     setFriendActionLoading(true);
     try {
-      await axios.put(
-        `http://localhost:8080/api/v1/friend-requests/${userId}/refuse`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-      await fetchFriendStatus();
-    } catch (err) {}
+      await dispatch(refuseFriendRequest(profileId));
+      dispatch(getFriendStatus(profileId));
+    } catch (err) {
+      console.error("Error refusing friend request:", err);
+    }
     setFriendActionLoading(false);
   };
 
   // Hủy kết bạn
   const handleUnfriend = async () => {
+    if (!profileId) {
+      console.error("Cannot unfriend: profileId is undefined");
+      return;
+    }
     setFriendActionLoading(true);
     try {
-      await axios.delete(`http://localhost:8080/api/v1/friends/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      await fetchFriendStatus();
-    } catch (err) {}
+      await dispatch(unfriend(profileId));
+      dispatch(getFriendStatus(profileId));
+    } catch (err) {
+      console.error("Error unfriending:", err);
+    }
     setFriendActionLoading(false);
   };
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
-    if (!userLogin || userLogin.id !== Number(userId)) return;
+    if (!currentUserId || currentUserId !== profileId) return;
     setUpdateLoading(true);
     try {
       const res = await api.put("/users/profile", {
@@ -212,22 +190,20 @@ export default function UserProfile() {
   };
 
   const handleBlock = async () => {
-    if (!userLogin || userLogin.id === Number(userId)) return;
+    if (!currentUserId || currentUserId === profileId) return;
     const reason = window.prompt("Lý do chặn (tùy chọn):") || "";
     setBlockLoading(true);
     try {
-      await api.post(`/blocks/${userId}`, reason ? { reason } : {});
-      await fetchBlockStatus();
+      await dispatch(blockUser(profileId, reason));
     } catch (err) {}
     setBlockLoading(false);
   };
 
   const handleUnblock = async () => {
-    if (!userLogin || userLogin.id === Number(userId)) return;
+    if (!currentUserId || currentUserId === profileId) return;
     setBlockLoading(true);
     try {
-      await api.delete(`/blocks/${userId}`);
-      await fetchBlockStatus();
+      await dispatch(unblockUser(profileId));
     } catch (err) {}
     setBlockLoading(false);
   };
@@ -235,13 +211,13 @@ export default function UserProfile() {
   // Gọi API react
   const handleReact = async (postId, reactionType) => {
     await dispatch(reactPost(postId, reactionType));
-    await dispatch(getPostsByUser(userId));
+    await dispatch(getPostsByUser(profileId));
   };
 
   // Gọi API unreact
   const handleUnreact = async (postId) => {
     await dispatch(unreactPost(postId));
-    await dispatch(getPostsByUser(userId));
+    await dispatch(getPostsByUser(profileId));
   };
 
   const handleShare = async (postId) => {
@@ -249,7 +225,7 @@ export default function UserProfile() {
     if (shareContent === null) return;
     try {
       await api.post(`/posts/${postId}/shares`, { shareContent });
-      dispatch(getPostsByUser(userId));
+      dispatch(getPostsByUser(profileId));
     } catch (err) {
       alert(
         "Lỗi chia sẻ: " + (err?.response?.data?.message || "Vui lòng thử lại"),
@@ -281,7 +257,7 @@ export default function UserProfile() {
 
   // Hiển thị button theo trạng thái bạn bè
   const renderFriendButton = () => {
-    if (!userLogin || userLogin.id === Number(userId)) return null;
+    if (!currentUserId || currentUserId === profileId) return null;
     switch (friendStatus) {
       case "ACCEPTED":
         return (
@@ -294,8 +270,8 @@ export default function UserProfile() {
           </button>
         );
       case "PENDING":
-        if (!friendShipId) return null;
-        if (friendShip?.sender?.id === userLogin.id) {
+        if (!friendship?.id) return null;
+        if (friendship?.sender?.id === currentUserId) {
           return (
             <button
               className="px-4 py-2 rounded bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300 transition"
@@ -341,8 +317,7 @@ export default function UserProfile() {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen">
-      <Header />
+    <AppLayout>
       {/* Cover Photo */}
       <div className="relative h-64 bg-gray-300">
         {user && user.coverPhoto && (
@@ -381,7 +356,7 @@ export default function UserProfile() {
                 <> · {new Date(user.dateOfBirth).toLocaleDateString()}</>
               )}
             </div>
-            {userLogin && userLogin.id === Number(userId) && (
+            {currentUserId && currentUserId === profileId && (
               <div className="mt-3 w-full max-w-md">
                 {isEditing ? (
                   <form
@@ -432,7 +407,7 @@ export default function UserProfile() {
             )}
             <div className="mt-4 flex items-center gap-2">
               {renderFriendButton()}
-              {userLogin && userLogin.id !== Number(userId) && (
+              {currentUserId && currentUserId !== profileId && (
                 <button
                   className={`px-4 py-2 rounded font-semibold transition ${
                     isBlocked
@@ -479,7 +454,7 @@ export default function UserProfile() {
                     />
                     <div>
                       <div className="font-semibold">
-                        {post.createdBy || "Người dùng"}
+                        {getPostOwnerName(post)}
                       </div>
                       <div className="text-xs text-gray-500">
                         {post.createdDate
@@ -630,6 +605,6 @@ export default function UserProfile() {
           </>
         )}
       </div>
-    </div>
+    </AppLayout>
   );
 }

@@ -1,46 +1,36 @@
 import React, { useEffect, useState } from "react";
 import CommentItem from "./CommentItem";
-import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+import { getComments, createComment } from "../api/Comment/Action";
 
 export default function CommentList({ postId }) {
-  const [comments, setComments] = useState([]);
-  const [content, setContent] = useState(""); // input cho bình luận gốc
-  const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user") || "null");
-
-  // Fetch all comments for the post
-  const fetchComments = () => {
-    axios
-      .get(`http://localhost:8080/api/v1/posts/${postId}/comments`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => setComments(res.data.data || []));
-  };
+  const dispatch = useDispatch();
+  const [content, setContent] = useState("");
+  const { comments, loading } = useSelector((state) => state.comment);
+  const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    fetchComments();
-    // eslint-disable-next-line
-  }, [postId, token]);
+    if (postId) {
+      dispatch(getComments(postId));
+    }
+  }, [postId, dispatch]);
 
-  // Lọc comment gốc (parentCommentId == null)
   const rootComments = comments.filter((c) => !c.parentCommentId);
 
-  // Thêm bình luận gốc
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!content.trim()) return;
-    await axios.post(
-      `http://localhost:8080/api/v1/posts/${postId}/comments`,
-      { content },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    setContent("");
-    fetchComments();
+    try {
+      await dispatch(createComment(postId, content));
+      setContent("");
+      await dispatch(getComments(postId));
+    } catch (err) {
+      alert("Lỗi đăng bình luận: " + (err?.response?.data?.message || "Vui lòng thử lại"));
+    }
   };
 
   return (
     <div>
-      {/* Form nhập bình luận gốc */}
       <form onSubmit={handleSubmit} className="flex gap-2 mb-4">
         <input
           value={content}
@@ -52,17 +42,20 @@ export default function CommentList({ postId }) {
           Gửi
         </button>
       </form>
-      {/* Danh sách comment gốc */}
-      {rootComments.map((c) => (
-        <CommentItem
-          key={c.id}
-          comment={c}
-          allComments={comments}
-          depth={0}
-          reloadComments={fetchComments}
-          currentUserId={user?.id}
-        />
-      ))}
+      {loading ? (
+        <div className="text-gray-500 text-sm">Đang tải bình luận...</div>
+      ) : (
+        rootComments.map((c) => (
+          <CommentItem
+            key={c.id}
+            comment={c}
+            allComments={comments}
+            depth={0}
+            reloadComments={() => dispatch(getComments(postId))}
+            currentUserId={user?.id}
+          />
+        ))
+      )}
     </div>
   );
 }

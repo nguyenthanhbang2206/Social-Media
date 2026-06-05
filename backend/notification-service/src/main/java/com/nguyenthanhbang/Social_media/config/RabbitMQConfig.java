@@ -20,9 +20,18 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public TopicExchange topicExchange(){
+    public TopicExchange interactionExchange(){
         return new TopicExchange(INTERACTION_EXCHANGE);
     }
+    @Bean
+    public TopicExchange userExchange(){
+        return new TopicExchange(USER_EXCHANGE);
+    }
+    @Bean
+    public TopicExchange groupExchange(){
+        return new TopicExchange(GROUP_EXCHANGE);
+    }
+
 
     @Bean
     public Queue postNotificationQueue(){
@@ -38,28 +47,37 @@ public class RabbitMQConfig {
     public Queue friendNotificationQueue(){
         return new Queue(FRIEND_NOTIFICATION_QUEUE, true);
     }
+    @Bean
+    public Queue groupNotificationQueue(){
+        return new Queue(GROUP_NOTIFICATION_QUEUE, true);
+    }
 
     @Bean
     public Binding bindingPost(
-            @Qualifier("topicExchange") TopicExchange topicExchange,
+            @Qualifier("interactionExchange") TopicExchange interactionExchange,
             @Qualifier("postNotificationQueue") Queue postNotificationQueue
     ){
-        return BindingBuilder.bind(postNotificationQueue).to(topicExchange).with("post.*");
+        return BindingBuilder.bind(postNotificationQueue).to(interactionExchange).with("post.*");
     }
 
     @Bean
     public Binding bindingComment(
-            @Qualifier("topicExchange") TopicExchange topicExchange,
+            @Qualifier("interactionExchange") TopicExchange interactionExchange,
             @Qualifier("commentNotificationQueue") Queue commentNotificationQueue
     ){
-        return BindingBuilder.bind(commentNotificationQueue).to(topicExchange).with("comment.*");
+        return BindingBuilder.bind(commentNotificationQueue).to(interactionExchange).with("comment.*");
     }
 
     @Bean
     public Binding bindingFriend(
-            @Qualifier("topicExchange") TopicExchange topicExchange,
+            @Qualifier("userExchange") TopicExchange userExchange,
             @Qualifier("friendNotificationQueue") Queue friendNotificationQueue
     ){
-        return BindingBuilder.bind(friendNotificationQueue).to(topicExchange).with("friend.*");
+        return BindingBuilder.bind(friendNotificationQueue).to(userExchange).with("friend.*");
+    }
+    @Bean
+    public Binding bindGroup(@Qualifier("groupExchange") TopicExchange groupExchange,
+                             @Qualifier("groupNotificationQueue") Queue groupNotificationQueue){
+        return BindingBuilder.bind(groupNotificationQueue).to(groupExchange).with("group.*");
     }
 }

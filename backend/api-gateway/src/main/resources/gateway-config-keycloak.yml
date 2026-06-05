@@ -1,0 +1,63 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        # User Service Routes
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/v1/users/**
+            - Path=/api/v1/auth/**
+          filters:
+            - name: UserContextFilter
+
+        # Post Service Routes
+        - id: post-service
+          uri: lb://post-service
+          predicates:
+            - Path=/api/v1/posts/**
+            - Path=/api/v1/files/**
+          filters:
+            - name: UserContextFilter
+
+        # Group Service Routes
+        - id: group-service
+          uri: lb://group-service
+          predicates:
+            - Path=/api/v1/groups/**
+          filters:
+            - name: UserContextFilter
+
+        # Interaction Service Routes
+        - id: interaction-service
+          uri: lb://interaction-service
+          predicates:
+            - Path=/api/v1/comments/**
+            - Path=/api/v1/reactions/**
+          filters:
+            - name: UserContextFilter
+
+        # Notification Service Routes
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/v1/notifications/**
+          filters:
+            - name: UserContextFilter
+
+        # Friend Service Routes (part of user-service)
+        - id: friend-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/v1/friends/**
+            - Path=/api/v1/friend-requests/**
+          filters:
+            - name: UserContextFilter
+
+        # Block Service Routes (part of user-service)
+        - id: block-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/v1/blocks/**
+          filters:
+            - name: UserContextFilter

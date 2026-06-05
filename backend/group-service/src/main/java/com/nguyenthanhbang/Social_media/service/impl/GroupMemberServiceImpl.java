@@ -1,9 +1,13 @@
 package com.nguyenthanhbang.Social_media.service.impl;
 
+import com.nguyenthanhbang.Social_media.client.UserClient;
+import com.nguyenthanhbang.Social_media.common.dto.UserSummaryResponse;
 import com.nguyenthanhbang.Social_media.common.enumeration.GroupMembershipStatus;
 import com.nguyenthanhbang.Social_media.common.enumeration.GroupPrivacy;
 import com.nguyenthanhbang.Social_media.common.enumeration.GroupRole;
+import com.nguyenthanhbang.Social_media.common.event.GroupEvent;
 import com.nguyenthanhbang.Social_media.common.util.RequestHeaderUtil;
+import com.nguyenthanhbang.Social_media.event.GroupPublisher;
 import com.nguyenthanhbang.Social_media.model.Group;
 import com.nguyenthanhbang.Social_media.model.GroupMember;
 import com.nguyenthanhbang.Social_media.repository.GroupMemberRepository;
@@ -11,6 +15,7 @@ import com.nguyenthanhbang.Social_media.service.GroupMemberService;
 import com.nguyenthanhbang.Social_media.service.GroupService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,12 +25,18 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class GroupMemberServiceImpl implements GroupMemberService {
     private final GroupMemberRepository groupMemberRepository;
     private final GroupService groupService;
+    private final GroupPublisher groupPublisher;
+    private final UserClient userClient;
+
     @Override
     public void joinGroup(Long groupId) {
         Long userId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        UserSummaryResponse userSummaryResponse = userClient.getUserById(userId).getData();
+
         Group group = groupService.getGroupById(groupId);
         Optional<GroupMember> optionalGroupMember = groupMemberRepository.findByGroupIdAndUserId(groupId, userId);
         if(optionalGroupMember.isPresent()) {
@@ -39,7 +50,11 @@ public class GroupMemberServiceImpl implements GroupMemberService {
                 existingGroupMember.setStatus(GroupMembershipStatus.PENDING);
                 existingGroupMember.setRequestedAt(LocalDateTime.now());
                 existingGroupMember.setRole(GroupRole.MEMBER);
+                existingGroupMember.setJoinedAt(null);
+                existingGroupMember.setIsApproved(false);
                 groupMemberRepository.save(existingGroupMember);
+
+
             }
         }
         else {
@@ -48,20 +63,36 @@ public class GroupMemberServiceImpl implements GroupMemberService {
             if(group.getPrivacy().equals(GroupPrivacy.PUBLIC)){
                 status = GroupMembershipStatus.APPROVED;
                 isApproved = true;
+
             }
 
-                GroupMember groupMember = GroupMember.builder()
-                    .groupId(groupId)
-                    .userId(userId)
-                    .role(GroupRole.MEMBER)
-                    .requestedAt(LocalDateTime.now())
-                    .status(status)
-                    .joinedAt(isApproved ? LocalDateTime.now() : null)
-                    .isApproved(isApproved)
-                    .build();
+            GroupMember groupMember = GroupMember.builder()
+                .groupId(groupId)
+                .userId(userId)
+                .role(GroupRole.MEMBER)
+                .requestedAt(LocalDateTime.now())
+                .status(status)
+                .joinedAt(isApproved ? LocalDateTime.now() : null)
+                .isApproved(isApproved)
+                .build();
             groupMemberRepository.save(groupMember);
         }
 
+        if(group.getPrivacy() == GroupPrivacy.PRIVATE){
+            GroupEvent groupEvent = GroupEvent
+                    .builder()
+                    .recipientId(group.getCreatorId())
+                    .groupImage(group.getGroupImage())
+                    .eventType(GroupEvent.GroupEventType.REQUESTED)
+                    .privacy(group.getPrivacy())
+                    .name(group.getName())
+                    .actorName(userSummaryResponse.getFullName())
+                    .ownerId(group.getCreatorId())
+                    .actorId(userId)
+                    .build();
+            log.info("-----------------publish group event , type = {} ,---------", groupEvent.getEventType());
+            groupPublisher.publishGroupEvent(groupEvent, "group.requested");
+        }
 
     }
 
@@ -82,6 +113,8 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     @Override
     public void approveMember(Long groupId, Long userId) {
         Long currentUserId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Group group = groupService.getGroupById(groupId);
+
         if(!this.isAdmin(groupId, currentUserId)) {
             throw new RuntimeException("You do not have permission to approve this member");
         }
@@ -93,6 +126,19 @@ public class GroupMemberServiceImpl implements GroupMemberService {
         groupMember.setIsApproved(true);
         groupMember.setStatus(GroupMembershipStatus.APPROVED);
         groupMemberRepository.save(groupMember);
+        //        approved
+        GroupEvent groupEvent = GroupEvent
+                .builder()
+                .recipientId(groupMember.getUserId())
+                .actorId(group.getCreatorId())
+                .groupImage(group.getGroupImage())
+                .eventType(GroupEvent.GroupEventType.APPROVED)
+                .privacy(group.getPrivacy())
+                .name(group.getName())
+                .ownerId(group.getCreatorId())
+                .build();
+        log.info("-----------------publish group event , type = {} ,---------", groupEvent.getEventType());
+        groupPublisher.publishGroupEvent(groupEvent, "group.approved");
     }
 
     @Override

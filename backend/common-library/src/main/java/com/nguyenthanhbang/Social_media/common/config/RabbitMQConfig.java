@@ -8,6 +8,7 @@ public class RabbitMQConfig {
 //    exchange
     public static final String INTERACTION_EXCHANGE = "interaction.exchange";
     public static final String USER_EXCHANGE = "user.exchange";
+    public static final String GROUP_EXCHANGE = "group.exchange";
 
 
 //    queue
@@ -15,10 +16,12 @@ public class RabbitMQConfig {
     public static final String COMMENT_NOTIFICATION_QUEUE = "notification.comment.queue";
 
     public static final String FRIEND_NOTIFICATION_QUEUE = "notification.friend.queue";
+    public static final String GROUP_NOTIFICATION_QUEUE = "notification.group.queue";
 
     @Bean
     public Jackson2JsonMessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
     }
+
 
 }

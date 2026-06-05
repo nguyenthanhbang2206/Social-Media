@@ -2,7 +2,6 @@ package com.nguyenthanhbang.Social_media.service.impl;
 
 import com.nguyenthanhbang.Social_media.client.GroupClient;
 import com.nguyenthanhbang.Social_media.client.InteractionClient;
-import com.nguyenthanhbang.Social_media.client.UserClient;
 import com.nguyenthanhbang.Social_media.client.UserServiceClient;
 import com.nguyenthanhbang.Social_media.common.dto.GroupSummaryResponse;
 import com.nguyenthanhbang.Social_media.common.dto.PostInteractionCountResponse;
@@ -40,7 +39,6 @@ public class PostServiceImpl implements PostService {
     private final PostMediaRepository postMediaRepository;
     private final PostShareRepository postShareRepository;
     private final GroupClient groupClient;
-    private final UserClient userClient;
     private final InteractionClient interactionClient;
     private final UserServiceClient userServiceClient;
 
@@ -232,7 +230,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<Post> getPostByUserId(Long userId) {
-        userClient.getUserById(userId);
         List<Post> posts = postRepository.findByUserId(userId);
         posts.forEach(this::populatePostTotals);
         return posts;
