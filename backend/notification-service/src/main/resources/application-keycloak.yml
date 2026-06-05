@@ -1,0 +1,30 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/social-media
+          jwk-set-uri: http://localhost:8080/realms/social-media/protocol/openid-connect/certs
+      client:
+        registration:
+          keycloak:
+            client-id: notification-service
+            client-secret: notification-service-secret-change-in-production
+            authorization-grant-type: client_credentials
+            scope: openid,profile,email
+        provider:
+          keycloak:
+            token-uri: http://localhost:8080/realms/social-media/protocol/openid-connect/token
+            authorization-uri: http://localhost:8080/realms/social-media/protocol/openid-connect/auth
+            user-info-uri: http://localhost:8080/realms/social-media/protocol/openid-connect/userinfo
+            jwk-set-uri: http://localhost:8080/realms/social-media/protocol/openid-connect/certs
+
+keycloak:
+  auth-server-url: http://localhost:8080
+  realm: social-media
+  resource: notification-service
+  credentials:
+    secret: notification-service-secret-change-in-production
+  bearer-only: true
+  use-resource-role-mappings: true
+  principal-attribute: preferred_username

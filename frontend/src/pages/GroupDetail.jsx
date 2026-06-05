@@ -1,148 +1,94 @@
 import React, { useEffect, useState, useRef } from "react";
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
-import Header from "../components/Header";
+import {
+  getGroupById,
+  getGroupPosts,
+  getGroupPendingPosts,
+  createGroupPost,
+  approveGroupPost,
+  deleteGroup,
+} from "../api/Group/Action";
+import {
+  getGroupMembers,
+  getPendingMembers,
+  getMembershipStatus,
+  joinGroup,
+  leaveGroup,
+  approveMember,
+  deleteMember,
+  updateMemberRole,
+  rejectMember,
+  checkIsAdmin,
+} from "../api/GroupMember/Action";
+import AppLayout from "../components/layout/AppLayout";
 
 export default function GroupDetail() {
+  const dispatch = useDispatch();
   const { id } = useParams();
-  const [group, setGroup] = useState(null);
-  const [members, setMembers] = useState([]);
-  const [pendingMembers, setPendingMembers] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [actionLoading, setActionLoading] = useState(false);
+  const navigate = useNavigate();
   const [tab, setTab] = useState("members");
-  const [groupPosts, setGroupPosts] = useState([]);
-  const [pendingPosts, setPendingPosts] = useState([]);
   const [postContent, setPostContent] = useState("");
   const [postMedia, setPostMedia] = useState([]);
+  const [actionLoading, setActionLoading] = useState(false);
   const fileInputRef = useRef(null);
 
-  const token = localStorage.getItem("token");
-  const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user") || "null");
 
-  // Trạng thái của user trong nhóm
-  const [membershipStatus, setMembershipStatus] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isCreator, setIsCreator] = useState(false);
+  const { currentGroup, groupPosts, pendingPosts, loading } = useSelector((state) => state.group);
+  const { members, pendingMembers, membershipStatus, isAdmin } = useSelector((state) => state.groupMember);
+
+  const group = currentGroup;
+  const isCreator = group && group.creator && user ? String(group.creator.id) === String(user.id) : false;
 
   useEffect(() => {
-    fetchGroup();
-    fetchMembers();
-    fetchMembershipStatus();
-    // fetchGroupPosts();
+    dispatch(getGroupById(id));
+    dispatch(getGroupMembers(id));
+    if (user && user.id) {
+      dispatch(getMembershipStatus(id)).catch(() => {
+        // Ignore error if user is not a member
+      });
+      dispatch(checkIsAdmin(id)).catch(() => {
+        // Ignore error if user is not an admin
+      });
+    }
     // eslint-disable-next-line
-  }, [id]);
+  }, [id, dispatch]);
+
   useEffect(() => {
     if (tab === "posts") {
-      fetchGroupPosts();
+      dispatch(getGroupPosts(id)).catch((err) => {
+        console.error("Error fetching group posts:", err);
+      });
     }
     if (tab === "pendingPosts" && isAdmin && group?.privacy === "PRIVATE") {
-      fetchPendingPosts();
+      dispatch(getGroupPendingPosts(id)).catch((err) => {
+        console.error("Error fetching pending group posts:", err);
+      });
     }
     if (tab === "pending" && isAdmin && group?.privacy === "PRIVATE") {
-      fetchPendingMembers();
+      dispatch(getPendingMembers(id)).catch((err) => {
+        console.error("Error fetching pending members:", err);
+      });
     }
-  }, [tab, isAdmin, group?.privacy]);
-
-  useEffect(() => {
-    if (group && group.creator && user) {
-      setIsCreator(String(group.creator.id) === String(user.id));
-    } else {
-      setIsCreator(false);
-    }
-  }, [group, user]);
-
-  const fetchGroup = async () => {
-    setLoading(true);
-    const res = await axios.get(`http://localhost:8080/api/v1/groups/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    setGroup(res.data.data);
-    setLoading(false);
-  };
-
-  const fetchMembers = async () => {
-    const res = await axios.get(
-      `http://localhost:8080/api/v1/groups/${id}/members`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    setMembers(res.data.data || []);
-    const me = res.data.data.find(
-      (m) => m.user && String(m.user.id) === String(user?.id)
-    );
-    setIsAdmin(!!me && me.role === "ADMIN");
-  };
-
-  const fetchPendingMembers = async () => {
-    const res = await axios.post(
-      `http://localhost:8080/api/v1/groups/${id}/pending-members`,
-      {},
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    setPendingMembers(res.data.data || []);
-  };
-
-  const fetchMembershipStatus = async () => {
-    try {
-      const res = await axios.get(
-        `http://localhost:8080/api/v1/groups/${id}/members/status`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setMembershipStatus(res.data.data);
-    } catch (err) {
-      setMembershipStatus(null);
-    }
-  };
-
-  // Lấy bài viết đã duyệt
-  const fetchGroupPosts = async () => {
-    try{
-      const res = await axios.get(
-      `http://localhost:8080/api/v1/groups/${id}/posts`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    setGroupPosts(res.data.data || []);
-    }catch(err){
-      alert(
-        "Lỗi: " + (err?.response?.data?.message || "Vui lòng thử lại")
-      );
-    }
-  };
-
-  // Lấy bài viết chờ duyệt (chỉ admin)
-  const fetchPendingPosts = async () => {
-    try {
-      const res = await axios.get(
-        `http://localhost:8080/api/v1/groups/${id}/posts/pending`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setPendingPosts(res.data.data || []);
-    } catch (err) {
-      alert(
-        "Lỗi: " + (err?.response?.data?.message || "Vui lòng thử lại")
-      );
-    }
-  };
+  }, [tab, isAdmin, group?.privacy, id, dispatch]);
 
   // Tạo bài viết mới trong group
   const handleCreatePost = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(
-        `http://localhost:8080/api/v1/groups/${id}/posts`,
-        {
+      await dispatch(
+        createGroupPost(id, {
           content: postContent,
           postType: "GROUP_POST",
           media: postMedia,
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
+        })
       );
       setPostContent("");
       setPostMedia([]);
       if (fileInputRef.current) fileInputRef.current.value = "";
-      await fetchGroupPosts();
-      if (isAdmin) await fetchPendingPosts();
+      await dispatch(getGroupPosts(id));
+      if (isAdmin) await dispatch(getGroupPendingPosts(id));
     } catch (err) {
       alert(
         "Lỗi đăng bài: " + (err?.response?.data?.message || "Vui lòng thử lại")
@@ -165,13 +111,9 @@ export default function GroupDetail() {
   // Duyệt bài viết
   const handleApprovePost = async (postId) => {
     try {
-      await axios.put(
-        `http://localhost:8080/api/v1/groups/${id}/posts/${postId}/approve`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      await fetchPendingPosts();
-      await fetchGroupPosts();
+      await dispatch(approveGroupPost(id, postId));
+      await dispatch(getGroupPendingPosts(id));
+      await dispatch(getGroupPosts(id));
     } catch (err) {
       alert(
         "Lỗi duyệt bài viết: " +
@@ -179,23 +121,17 @@ export default function GroupDetail() {
       );
     }
   };
-  // Các hàm thành viên giữ nguyên...
 
   const handleJoin = async () => {
     setActionLoading(true);
     try {
-      await axios.post(
-        `http://localhost:8080/api/v1/groups/${id}/join`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      await fetchMembershipStatus();
-      await fetchMembers();
+      await dispatch(joinGroup(id));
+      await dispatch(getMembershipStatus(id));
+      await dispatch(getGroupMembers(id));
     } catch (err) {
-      alert(
-        "Lỗi tham gia nhóm: " +
-          (err?.response?.data?.message || "Vui lòng thử lại")
-      );
+      console.error("Error joining group:", err);
+      const errorMessage = err?.response?.data?.message || "Không thể tham gia nhóm. Vui lòng thử lại.";
+      alert("Lỗi tham gia nhóm: " + errorMessage);
     }
     setActionLoading(false);
   };
@@ -203,13 +139,9 @@ export default function GroupDetail() {
   const handleLeave = async () => {
     setActionLoading(true);
     try {
-      await axios.post(
-        `http://localhost:8080/api/v1/groups/${id}/left`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      await fetchMembershipStatus();
-      await fetchMembers();
+      await dispatch(leaveGroup(id));
+      await dispatch(getMembershipStatus(id));
+      await dispatch(getGroupMembers(id));
     } catch (err) {
       alert(
         "Lỗi rời nhóm: " + (err?.response?.data?.message || "Vui lòng thử lại")
@@ -221,9 +153,7 @@ export default function GroupDetail() {
   const handleDeleteGroup = async () => {
     if (!window.confirm("Bạn có chắc muốn xóa nhóm này?")) return;
     try {
-      await axios.delete(`http://localhost:8080/api/v1/groups/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await dispatch(deleteGroup(id));
       navigate("/groups");
     } catch (err) {
       alert(
@@ -233,14 +163,14 @@ export default function GroupDetail() {
   };
 
   const handleApprove = async (userId) => {
+    if (!userId) {
+      console.error("Cannot approve member: userId is undefined");
+      return;
+    }
     try {
-      await axios.post(
-        `http://localhost:8080/api/v1/groups/${id}/members/${userId}/approve`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      await fetchMembers();
-      await fetchPendingMembers();
+      await dispatch(approveMember(id, userId));
+      await dispatch(getGroupMembers(id));
+      await dispatch(getPendingMembers(id));
     } catch (err) {
       alert(
         "Lỗi duyệt thành viên: " +
@@ -250,14 +180,15 @@ export default function GroupDetail() {
   };
 
   const handleDeleteMember = async (userId) => {
+    if (!userId) {
+      console.error("Cannot delete member: userId is undefined");
+      return;
+    }
     if (!window.confirm("Xóa thành viên này khỏi nhóm?")) return;
     try {
-      await axios.delete(
-        `http://localhost:8080/api/v1/groups/${id}/members/${userId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      await fetchMembers();
-      await fetchPendingMembers();
+      await dispatch(deleteMember(id, userId));
+      await dispatch(getGroupMembers(id));
+      await dispatch(getPendingMembers(id));
     } catch (err) {
       alert(
         "Lỗi xóa thành viên: " +
@@ -265,14 +196,15 @@ export default function GroupDetail() {
       );
     }
   };
+
   const handleChangeRole = async (userId, role) => {
+    if (!userId) {
+      console.error("Cannot change role: userId is undefined");
+      return;
+    }
     try {
-      await axios.put(
-        `http://localhost:8080/api/v1/groups/${id}/members/${userId}/role`,
-        { role },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      await fetchMembers();
+      await dispatch(updateMemberRole(id, userId, role));
+      await dispatch(getGroupMembers(id));
     } catch (err) {
       alert(
         "Lỗi đổi vai trò: " +
@@ -282,15 +214,15 @@ export default function GroupDetail() {
   };
 
   const handleRejectMember = async (userId) => {
+    if (!userId) {
+      console.error("Cannot reject member: userId is undefined");
+      return;
+    }
     if (!window.confirm("Bạn có chắc muốn từ chối thành viên này?")) return;
     try {
-      await axios.post(
-        `http://localhost:8080/api/v1/groups/${id}/members/${userId}/reject`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      await fetchPendingMembers();
-      await fetchMembers();
+      await dispatch(rejectMember(id, userId));
+      await dispatch(getPendingMembers(id));
+      await dispatch(getGroupMembers(id));
     } catch (err) {
       alert(
         "Lỗi từ chối thành viên: " +
@@ -340,53 +272,52 @@ export default function GroupDetail() {
 
   // Tabs cho group: Thành viên, Bài viết, Chờ duyệt (admin)
   return (
-    <div className="bg-gray-100 min-h-screen font-sans">
-      <Header />
-      <div className="max-w-4xl mx-auto pt-24 py-8">
-      <div className="flex gap-6 mb-6">
-        <img
-          src={
-            group.groupImage ||
-            "https://globalcastingresources.com/wp-content/uploads/2019/03/image1-5.png"
-          }
-          alt="group"
-          className="w-32 h-32 object-cover rounded-lg"
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src =
-              "https://globalcastingresources.com/wp-content/uploads/2019/03/image1-5.png";
-          }}
-        />
-        <div>
-          <h1 className="text-2xl font-bold text-blue-600">{group.name}</h1>
-          <div className="text-gray-600 mb-2">{group.description}</div>
-          <div className="text-xs text-gray-500 mb-2">
-            Quyền riêng tư: {group.privacy}
-          </div>
-          <div className="flex gap-2">
-            {actionButton}
-            {isCreator && (
-              <>
-                <button
-                  className="bg-yellow-500 text-white px-4 py-2 rounded font-semibold"
-                  onClick={() => navigate(`/groups/${group.id}/edit`)}
-                >
-                  Sửa nhóm
-                </button>
-                <button
-                  className="bg-red-500 text-white px-4 py-2 rounded font-semibold"
-                  onClick={handleDeleteGroup}
-                >
-                  Xóa nhóm
-                </button>
-              </>
-            )}
+    <AppLayout>
+      <div className="max-w-4xl mx-auto">
+        <div className="flex gap-6 mb-6">
+          <img
+            src={
+              group.groupImage ||
+              "https://globalcastingresources.com/wp-content/uploads/2019/03/image1-5.png"
+            }
+            alt="group"
+            className="w-32 h-32 object-cover rounded-lg"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src =
+                "https://globalcastingresources.com/wp-content/uploads/2019/03/image1-5.png";
+            }}
+          />
+          <div>
+            <h1 className="text-2xl font-bold text-blue-600">{group.name}</h1>
+            <div className="text-gray-600 mb-2">{group.description}</div>
+            <div className="text-xs text-gray-500 mb-2">
+              Quyền riêng tư: {group.privacy}
+            </div>
+            <div className="flex gap-2">
+              {actionButton}
+              {isCreator && (
+                <>
+                  <button
+                    className="bg-yellow-500 text-white px-4 py-2 rounded font-semibold"
+                    onClick={() => navigate(`/groups/${group.id}/edit`)}
+                  >
+                    Sửa nhóm
+                  </button>
+                  <button
+                    className="bg-red-500 text-white px-4 py-2 rounded font-semibold"
+                    onClick={handleDeleteGroup}
+                  >
+                    Xóa nhóm
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Tabs */}
-      <div className="mb-4 flex gap-4">
+        {/* Tabs */}
+        <div className="mb-4 flex gap-4">
         <button
           className={`px-4 py-2 rounded font-semibold ${
             tab === "members"
@@ -441,7 +372,7 @@ export default function GroupDetail() {
             <ul>
               {members.map((m) => (
                 <li
-                  key={m.user?.id}
+                  key={m.id || m.user?.id || Math.random()}
                   className="flex items-center gap-3 py-2 border-b"
                 >
                   <img
@@ -562,7 +493,7 @@ export default function GroupDetail() {
               ) : (
                 pendingMembers.map((m) => (
                   <li
-                    key={m.user?.id}
+                    key={m.id || m.user?.id || Math.random()}
                     className="flex items-center gap-3 py-2 border-b"
                   >
                     <img
@@ -647,6 +578,6 @@ export default function GroupDetail() {
         </>
       )}
       </div>
-    </div>
+    </AppLayout>
   );
 }

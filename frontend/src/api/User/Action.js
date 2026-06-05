@@ -9,6 +9,9 @@ import {
   UPDATE_USER_PROFILE_REQUEST,
   UPDATE_USER_PROFILE_SUCCESS,
   UPDATE_USER_PROFILE_FAILURE,
+  GET_ALL_USERS_REQUEST,
+  GET_ALL_USERS_SUCCESS,
+  GET_ALL_USERS_FAILURE,
 } from "./ActionType";
 
 // Get user by ID
@@ -64,6 +67,25 @@ export const updateUserProfile = (userData) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: UPDATE_USER_PROFILE_FAILURE,
+      payload: error.response?.data?.message || error.message,
+    });
+    throw error;
+  }
+};
+
+// Get all users
+export const getAllUsers = () => async (dispatch) => {
+  dispatch({ type: GET_ALL_USERS_REQUEST });
+  try {
+    const res = await api.get("/users");
+    dispatch({
+      type: GET_ALL_USERS_SUCCESS,
+      payload: res.data.data,
+    });
+    return res.data.data;
+  } catch (error) {
+    dispatch({
+      type: GET_ALL_USERS_FAILURE,
       payload: error.response?.data?.message || error.message,
     });
     throw error;

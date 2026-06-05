@@ -15,10 +15,10 @@ import {
 } from "./ActionType";
 
 const initialState = {
-  user: null,
+  user: JSON.parse(localStorage.getItem("user") || "null"),
   isLoading: false,
   error: null,
-  token: null,
+  token: localStorage.getItem("token"),
   success: null,
 };
 
