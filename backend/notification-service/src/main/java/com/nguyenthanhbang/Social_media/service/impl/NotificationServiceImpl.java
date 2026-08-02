@@ -1,6 +1,7 @@
 package com.nguyenthanhbang.Social_media.service.impl;
 
 import com.nguyenthanhbang.Social_media.client.UserClient;
+import com.nguyenthanhbang.Social_media.common.dto.ApiResponse;
 import com.nguyenthanhbang.Social_media.common.dto.UserSummaryResponse;
 import com.nguyenthanhbang.Social_media.common.enumeration.NotificationType;
 import com.nguyenthanhbang.Social_media.common.util.RequestHeaderUtil;
@@ -129,8 +130,16 @@ public class NotificationServiceImpl implements NotificationService {
     // ─── Helper Methods ───────────────────────────────────────────
 
     private Long getCurrentUserId() {
-        return RequestHeaderUtil.getUserId()
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        // Use email to lookup user since X-User-Id is no longer sent (it was UUID, not Long)
+        String email = RequestHeaderUtil.getUserEmail()
+                .orElseThrow(() -> new EntityNotFoundException("User not found - X-User-Email header missing"));
+        
+        ApiResponse<UserSummaryResponse> response = userClient.getUserByEmail(email);
+        if (response == null || response.getData() == null) {
+            throw new EntityNotFoundException("User not found with email: " + email);
+        }
+        
+        return response.getData().getId();
     }
 
     private void enrichWithActorInfo(NotificationResponse response) {

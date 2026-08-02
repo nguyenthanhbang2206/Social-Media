@@ -26,6 +26,8 @@ import {
   GET_FRIEND_STATUS_FAILURE,
 } from "./ActionType";
 
+const FRIEND_CACHE_TTL_MS = 60 * 1000;
+
 // Send friend request
 export const sendFriendRequest = (userId) => async (dispatch) => {
   dispatch({ type: SEND_FRIEND_REQUEST_REQUEST });
@@ -35,6 +37,7 @@ export const sendFriendRequest = (userId) => async (dispatch) => {
       type: SEND_FRIEND_REQUEST_SUCCESS,
       payload: res.data.data,
     });
+    dispatch(getFriendRequestsReceived({ force: true }));
     return res.data.data;
   } catch (error) {
     dispatch({
@@ -54,6 +57,7 @@ export const cancelFriendRequest = (userId) => async (dispatch) => {
       type: CANCEL_FRIEND_REQUEST_SUCCESS,
       payload: userId,
     });
+    dispatch(getFriendRequestsReceived({ force: true }));
   } catch (error) {
     dispatch({
       type: CANCEL_FRIEND_REQUEST_FAILURE,
@@ -72,6 +76,7 @@ export const acceptFriendRequest = (userId) => async (dispatch) => {
       type: ACCEPT_FRIEND_REQUEST_SUCCESS,
       payload: res.data.data,
     });
+    dispatch(getFriendRequestsReceived({ force: true }));
     return res.data.data;
   } catch (error) {
     dispatch({
@@ -91,6 +96,7 @@ export const refuseFriendRequest = (userId) => async (dispatch) => {
       type: REFUSE_FRIEND_REQUEST_SUCCESS,
       payload: userId,
     });
+    dispatch(getFriendRequestsReceived({ force: true }));
   } catch (error) {
     dispatch({
       type: REFUSE_FRIEND_REQUEST_FAILURE,
@@ -119,42 +125,67 @@ export const unfriend = (userId) => async (dispatch) => {
 };
 
 // Get friends list
-export const getFriends = (userId) => async (dispatch) => {
-  dispatch({ type: GET_FRIENDS_REQUEST });
-  try {
-    const res = await api.get(`/friends/${userId}`);
-    dispatch({
-      type: GET_FRIENDS_SUCCESS,
-      payload: res.data.data,
-    });
-    return res.data.data;
-  } catch (error) {
-    dispatch({
-      type: GET_FRIENDS_FAILURE,
-      payload: error.response?.data?.message || error.message,
-    });
-    throw error;
-  }
-};
+export const getFriends =
+  (userId, options = {}) =>
+  async (dispatch, getState) => {
+    const { force = false } = options;
+    const { friendship } = getState();
+    const isSameUser =
+      Number(friendship?.friendsFetchedForUserId) === Number(userId);
+    const fetchedAt = friendship?.friendsLastFetchedAt;
+    const isFresh = fetchedAt && Date.now() - fetchedAt < FRIEND_CACHE_TTL_MS;
+
+    if (!force && isSameUser && isFresh) {
+      return friendship.friends;
+    }
+
+    dispatch({ type: GET_FRIENDS_REQUEST });
+    try {
+      const res = await api.get(`/friends/${userId}`);
+      dispatch({
+        type: GET_FRIENDS_SUCCESS,
+        payload: res.data.data,
+        meta: { userId },
+      });
+      return res.data.data;
+    } catch (error) {
+      dispatch({
+        type: GET_FRIENDS_FAILURE,
+        payload: error.response?.data?.message || error.message,
+      });
+      throw error;
+    }
+  };
 
 // Get received friend requests
-export const getFriendRequestsReceived = () => async (dispatch) => {
-  dispatch({ type: GET_FRIEND_REQUESTS_RECEIVED_REQUEST });
-  try {
-    const res = await api.get("/friend-requests/received");
-    dispatch({
-      type: GET_FRIEND_REQUESTS_RECEIVED_SUCCESS,
-      payload: res.data.data,
-    });
-    return res.data.data;
-  } catch (error) {
-    dispatch({
-      type: GET_FRIEND_REQUESTS_RECEIVED_FAILURE,
-      payload: error.response?.data?.message || error.message,
-    });
-    throw error;
-  }
-};
+export const getFriendRequestsReceived =
+  (options = {}) =>
+  async (dispatch, getState) => {
+    const { force = false } = options;
+    const { friendship } = getState();
+    const fetchedAt = friendship?.friendRequestsLastFetchedAt;
+    const isFresh = fetchedAt && Date.now() - fetchedAt < FRIEND_CACHE_TTL_MS;
+
+    if (!force && isFresh) {
+      return friendship.friendRequests;
+    }
+
+    dispatch({ type: GET_FRIEND_REQUESTS_RECEIVED_REQUEST });
+    try {
+      const res = await api.get("/friend-requests/received");
+      dispatch({
+        type: GET_FRIEND_REQUESTS_RECEIVED_SUCCESS,
+        payload: res.data.data,
+      });
+      return res.data.data;
+    } catch (error) {
+      dispatch({
+        type: GET_FRIEND_REQUESTS_RECEIVED_FAILURE,
+        payload: error.response?.data?.message || error.message,
+      });
+      throw error;
+    }
+  };
 
 // Get friend status
 export const getFriendStatus = (userId) => async (dispatch) => {

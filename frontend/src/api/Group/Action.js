@@ -21,6 +21,18 @@ import {
   GET_MY_GROUPS_REQUEST,
   GET_MY_GROUPS_SUCCESS,
   GET_MY_GROUPS_FAILURE,
+  GET_GROUP_POSTS_REQUEST,
+  GET_GROUP_POSTS_SUCCESS,
+  GET_GROUP_POSTS_FAILURE,
+  GET_GROUP_PENDING_POSTS_REQUEST,
+  GET_GROUP_PENDING_POSTS_SUCCESS,
+  GET_GROUP_PENDING_POSTS_FAILURE,
+  CREATE_GROUP_POST_REQUEST,
+  CREATE_GROUP_POST_SUCCESS,
+  CREATE_GROUP_POST_FAILURE,
+  APPROVE_GROUP_POST_REQUEST,
+  APPROVE_GROUP_POST_SUCCESS,
+  APPROVE_GROUP_POST_FAILURE,
 } from "./ActionType";
 
 // Create group
@@ -149,6 +161,82 @@ export const getMyGroups = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: GET_MY_GROUPS_FAILURE,
+      payload: error.response?.data?.message || error.message,
+    });
+    throw error;
+  }
+};
+
+// Get group posts
+export const getGroupPosts = (groupId) => async (dispatch) => {
+  dispatch({ type: GET_GROUP_POSTS_REQUEST });
+  try {
+    const res = await api.get(`/groups/${groupId}/posts`);
+    dispatch({
+      type: GET_GROUP_POSTS_SUCCESS,
+      payload: res.data.data,
+    });
+    return res.data.data;
+  } catch (error) {
+    dispatch({
+      type: GET_GROUP_POSTS_FAILURE,
+      payload: error.response?.data?.message || error.message,
+    });
+    throw error;
+  }
+};
+
+// Get group pending posts
+export const getGroupPendingPosts = (groupId) => async (dispatch) => {
+  dispatch({ type: GET_GROUP_PENDING_POSTS_REQUEST });
+  try {
+    const res = await api.get(`/groups/${groupId}/posts/pending`);
+    dispatch({
+      type: GET_GROUP_PENDING_POSTS_SUCCESS,
+      payload: res.data.data,
+    });
+    return res.data.data;
+  } catch (error) {
+    dispatch({
+      type: GET_GROUP_PENDING_POSTS_FAILURE,
+      payload: error.response?.data?.message || error.message,
+    });
+    throw error;
+  }
+};
+
+// Create group post
+export const createGroupPost = (groupId, postData) => async (dispatch) => {
+  dispatch({ type: CREATE_GROUP_POST_REQUEST });
+  try {
+    const res = await api.post(`/groups/${groupId}/posts`, postData);
+    dispatch({
+      type: CREATE_GROUP_POST_SUCCESS,
+      payload: res.data.data,
+    });
+    return res.data.data;
+  } catch (error) {
+    dispatch({
+      type: CREATE_GROUP_POST_FAILURE,
+      payload: error.response?.data?.message || error.message,
+    });
+    throw error;
+  }
+};
+
+// Approve group post
+export const approveGroupPost = (groupId, postId) => async (dispatch) => {
+  dispatch({ type: APPROVE_GROUP_POST_REQUEST });
+  try {
+    const res = await api.put(`/groups/${groupId}/posts/${postId}/approve`);
+    dispatch({
+      type: APPROVE_GROUP_POST_SUCCESS,
+      payload: res.data.data,
+    });
+    return res.data.data;
+  } catch (error) {
+    dispatch({
+      type: APPROVE_GROUP_POST_FAILURE,
       payload: error.response?.data?.message || error.message,
     });
     throw error;

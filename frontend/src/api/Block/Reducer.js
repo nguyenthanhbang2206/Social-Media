@@ -16,6 +16,7 @@ import {
 const initialState = {
   blockedUsers: [],
   blockExists: false,
+  blockedUsersLastFetchedAt: null,
   loading: false,
   error: null,
   actionLoading: false,
@@ -38,7 +39,12 @@ export default function blockReducer(state = initialState, action) {
     case GET_BLOCKED_USERS_REQUEST:
       return { ...state, loading: true, error: null };
     case GET_BLOCKED_USERS_SUCCESS:
-      return { ...state, loading: false, blockedUsers: action.payload };
+      return {
+        ...state,
+        loading: false,
+        blockedUsers: action.payload,
+        blockedUsersLastFetchedAt: Date.now(),
+      };
     case GET_BLOCKED_USERS_FAILURE:
       return { ...state, loading: false, error: action.payload };
 

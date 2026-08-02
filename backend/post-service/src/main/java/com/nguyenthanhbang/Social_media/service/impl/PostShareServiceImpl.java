@@ -1,7 +1,10 @@
 package com.nguyenthanhbang.Social_media.service.impl;
 
+import com.nguyenthanhbang.Social_media.client.UserClient;
+import com.nguyenthanhbang.Social_media.common.dto.ApiResponse;
 import com.nguyenthanhbang.Social_media.dto.request.PostShareRequest;
 import com.nguyenthanhbang.Social_media.common.util.RequestHeaderUtil;
+import com.nguyenthanhbang.Social_media.common.dto.UserSummaryResponse;
 import com.nguyenthanhbang.Social_media.model.Post;
 import com.nguyenthanhbang.Social_media.model.PostShare;
 import com.nguyenthanhbang.Social_media.repository.PostRepository;
@@ -10,20 +13,23 @@ import com.nguyenthanhbang.Social_media.service.PostService;
 import com.nguyenthanhbang.Social_media.service.PostShareService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostShareServiceImpl implements PostShareService {
     private final PostShareRepository postShareRepository;
     private final PostService postService;
     private final PostRepository postRepository;
+    private final UserClient userClient;
 
     @Override
     public PostShare sharePost(Long postId, PostShareRequest request) {
-        Long userId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Long userId = getCurrentUserId();
         Post post = postService.getPostById(postId);
         PostShare postShare = PostShare.builder()
                 .shareContent(request.getShareContent())
@@ -43,7 +49,7 @@ public class PostShareServiceImpl implements PostShareService {
 
     @Override
     public void deleteShare(Long postId, Long shareId) {
-        Long userId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Long userId = getCurrentUserId();
         PostShare postShare = postShareRepository.findByIdAndPostId(shareId, postId)
                 .orElseThrow(() -> new EntityNotFoundException("Share not found"));
         if (!postShare.getUserId().equals(userId)) {
@@ -53,5 +59,17 @@ public class PostShareServiceImpl implements PostShareService {
         postShareRepository.delete(postShare);
         post.setTotalShares(Math.max(0L, post.getTotalShares() - 1));
         postRepository.save(post);
+    }
+
+    private Long getCurrentUserId() {
+        String email = RequestHeaderUtil.getUserEmail()
+                .orElseThrow(() -> new EntityNotFoundException("User not found - X-User-Email header missing"));
+        
+        ApiResponse<UserSummaryResponse> response = userClient.getUserByEmail(email);
+        if (response == null || response.getData() == null) {
+            throw new EntityNotFoundException("User not found with email: " + email);
+        }
+        
+        return response.getData().getId();
     }
 }

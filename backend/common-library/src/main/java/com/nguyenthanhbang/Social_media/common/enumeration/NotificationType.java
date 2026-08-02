@@ -8,5 +8,7 @@ public enum NotificationType {
     POST_SHARE,
     MENTION,
     GROUP_INVITE,
-    GROUP_POST
+    GROUP_POST,
+    GROUP_REQUESTED,
+    GROUP_APPROVED
 }

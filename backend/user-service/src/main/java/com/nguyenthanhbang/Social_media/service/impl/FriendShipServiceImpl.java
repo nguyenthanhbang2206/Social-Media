@@ -50,7 +50,7 @@ public class FriendShipServiceImpl implements FriendShipService {
                 .actorId(currentUser.getId())
                 .actorAvatar(currentUser.getAvatar())
                 .recipientId(userId)
-                .action("REQUEST")
+                .action("REQUESTED")
                 .build();
         log.info("------------publish friend request event---------------");
         friendRequestPublisher.publishFriendRequest(event);

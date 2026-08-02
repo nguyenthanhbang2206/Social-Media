@@ -53,6 +53,16 @@ import {
   UNPIN_GROUP_POST_FAILURE,
 } from "./ActionType";
 
+const USER_POSTS_FAILURE_COOLDOWN_MS = 30 * 1000;
+const userPostsFailureByUserId = new Map();
+
+const getUserPostsFromFeed = async (userId) => {
+  const res = await api.get("/posts");
+  const normalizedUserId = Number(userId);
+  const feedPosts = Array.isArray(res.data?.data) ? res.data.data : [];
+  return feedPosts.filter((post) => Number(post?.userId) === normalizedUserId);
+};
+
 // Get all posts
 export const getPosts = () => async (dispatch) => {
   dispatch({ type: GET_POSTS_REQUEST });
@@ -73,17 +83,62 @@ export const getPosts = () => async (dispatch) => {
 // Get posts by user id
 export const getPostsByUser = (userId) => async (dispatch) => {
   dispatch({ type: GET_POST_BY_USER_ID_REQUEST });
+  const normalizedUserId = Number(userId);
+
+  if (!normalizedUserId) {
+    dispatch({ type: GET_POST_BY_USER_ID_SUCCESS, payload: [] });
+    return [];
+  }
+
+  const lastFailureAt = userPostsFailureByUserId.get(normalizedUserId);
+  const inCooldown =
+    lastFailureAt &&
+    Date.now() - lastFailureAt < USER_POSTS_FAILURE_COOLDOWN_MS;
+
+  if (inCooldown) {
+    try {
+      const fallbackPosts = await getUserPostsFromFeed(normalizedUserId);
+      dispatch({
+        type: GET_POST_BY_USER_ID_SUCCESS,
+        payload: fallbackPosts,
+      });
+      return fallbackPosts;
+    } catch (fallbackError) {
+      dispatch({
+        type: GET_POST_BY_USER_ID_FAILURE,
+        payload: fallbackError.response?.data?.message || fallbackError.message,
+      });
+      return [];
+    }
+  }
+
   try {
-    const res = await api.get(`/users/${userId}/posts`);
+    const res = await api.get(`/users/${normalizedUserId}/posts`);
+    userPostsFailureByUserId.delete(normalizedUserId);
     dispatch({
       type: GET_POST_BY_USER_ID_SUCCESS,
       payload: res.data.data,
     });
+    return res.data.data;
   } catch (error) {
-    dispatch({
-      type: GET_POST_BY_USER_ID_FAILURE,
-      payload: error.response?.data?.message || error.message,
-    });
+    userPostsFailureByUserId.set(normalizedUserId, Date.now());
+    try {
+      const fallbackPosts = await getUserPostsFromFeed(normalizedUserId);
+      dispatch({
+        type: GET_POST_BY_USER_ID_SUCCESS,
+        payload: fallbackPosts,
+      });
+      return fallbackPosts;
+    } catch (fallbackError) {
+      dispatch({
+        type: GET_POST_BY_USER_ID_FAILURE,
+        payload:
+          fallbackError.response?.data?.message ||
+          error.response?.data?.message ||
+          error.message,
+      });
+      return [];
+    }
   }
 };
 
