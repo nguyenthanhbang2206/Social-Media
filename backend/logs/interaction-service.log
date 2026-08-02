@@ -1,0 +1,88 @@
+2026-07-03T09:18:49.001+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] c.n.S.InteractionServiceApplication      : Starting InteractionServiceApplication using Java 17.0.9 with PID 3576 (D:\Projects\Social-media\backend\interaction-service\target\classes started by BANG in D:\Projects\Social-media\backend)
+2026-07-03T09:18:49.022+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] c.n.S.InteractionServiceApplication      : No active profile set, falling back to 1 default profile: "default"
+2026-07-03T09:18:53.270+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-07-03T09:18:53.918+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 621 ms. Found 3 JPA repository interfaces.
+2026-07-03T09:18:54.960+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] o.s.cloud.context.scope.GenericScope     : BeanFactory id=a2efce4d-87c2-3dbd-b0fd-ad4a41888e57
+2026-07-03T09:18:56.557+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8084 (http)
+2026-07-03T09:18:56.609+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-07-03T09:18:56.611+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.42]
+2026-07-03T09:18:57.072+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-07-03T09:18:57.075+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 7880 ms
+2026-07-03T09:18:59.421+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-07-03T09:18:59.781+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-07-03T09:18:59.953+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-07-03T09:19:01.101+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-07-03T09:19:01.225+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-07-03T09:19:01.965+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1504b493
+2026-07-03T09:19:01.977+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-07-03T09:19:02.196+07:00  WARN [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-07-03T09:19:06.069+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-07-03T09:19:06.429+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-07-03T09:19:06.479+07:00  WARN [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'commentController' defined in file [D:\Projects\Social-media\backend\interaction-service\target\classes\com\nguyenthanhbang\Social_media\controller\user\CommentController.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'commentServiceImpl': Resolution of declared constructors on bean Class [com.nguyenthanhbang.Social_media.service.impl.CommentServiceImpl] from ClassLoader [jdk.internal.loader.ClassLoaders$AppClassLoader@63947c6b] failed
+2026-07-03T09:19:06.481+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-07-03T09:19:06.495+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-07-03T09:19:06.515+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-07-03T09:19:06.527+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] i.o.sdk.trace.SdkTracerProvider          : Calling shutdown() multiple times.
+2026-07-03T09:19:06.530+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] i.o.exporter.internal.http.HttpExporter  : Calling shutdown() multiple times.
+2026-07-03T09:19:06.538+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-07-03T09:19:06.553+07:00  WARN [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [BatchSpanProcessor_WorkerThread-1] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+ java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+ java.base@17.0.9/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:1672)
+ java.base@17.0.9/java.util.concurrent.ArrayBlockingQueue.poll(ArrayBlockingQueue.java:435)
+ app//io.opentelemetry.sdk.trace.export.BatchSpanProcessor$Worker.run(BatchSpanProcessor.java:266)
+ java.base@17.0.9/java.lang.Thread.run(Thread.java:842)
+2026-07-03T09:19:06.639+07:00  INFO [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-07-03T09:19:06.758+07:00 ERROR [interaction-service,,] 3576 --- [interaction-service] [main] [                                                 ] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'commentController' defined in file [D:\Projects\Social-media\backend\interaction-service\target\classes\com\nguyenthanhbang\Social_media\controller\user\CommentController.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'commentServiceImpl': Resolution of declared constructors on bean Class [com.nguyenthanhbang.Social_media.service.impl.CommentServiceImpl] from ClassLoader [jdk.internal.loader.ClassLoaders$AppClassLoader@63947c6b] failed
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:795) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:237) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1375) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1212) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:975) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:971) ~[spring-context-6.1.21.jar:6.1.21]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625) ~[spring-context-6.1.21.jar:6.1.21]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.3.13.jar:3.3.13]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754) ~[spring-boot-3.3.13.jar:3.3.13]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456) ~[spring-boot-3.3.13.jar:3.3.13]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335) ~[spring-boot-3.3.13.jar:3.3.13]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363) ~[spring-boot-3.3.13.jar:3.3.13]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352) ~[spring-boot-3.3.13.jar:3.3.13]
+	at com.nguyenthanhbang.Social_media.InteractionServiceApplication.main(InteractionServiceApplication.java:11) ~[classes/:na]
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'commentServiceImpl': Resolution of declared constructors on bean Class [com.nguyenthanhbang.Social_media.service.impl.CommentServiceImpl] from ClassLoader [jdk.internal.loader.ClassLoaders$AppClassLoader@63947c6b] failed
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.determineCandidateConstructors(AutowiredAnnotationBeanPostProcessor.java:384) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.determineConstructorsFromBeanPostProcessors(AbstractAutowireCapableBeanFactory.java:1314) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1209) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1448) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1358) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:904) ~[spring-beans-6.1.21.jar:6.1.21]
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:782) ~[spring-beans-6.1.21.jar:6.1.21]
+	... 19 common frames omitted
+Caused by: java.lang.NoClassDefFoundError: UserClient
+	at java.base/java.lang.Class.getDeclaredConstructors0(Native Method) ~[na:na]
+	at java.base/java.lang.Class.privateGetDeclaredConstructors(Class.java:3373) ~[na:na]
+	at java.base/java.lang.Class.getDeclaredConstructors(Class.java:2555) ~[na:na]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.determineCandidateConstructors(AutowiredAnnotationBeanPostProcessor.java:379) ~[spring-beans-6.1.21.jar:6.1.21]
+	... 32 common frames omitted
+Caused by: java.lang.ClassNotFoundException: UserClient
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:641) ~[na:na]
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:188) ~[na:na]
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:520) ~[na:na]
+	... 36 common frames omitted
+

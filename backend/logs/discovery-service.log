@@ -1,0 +1,135 @@
+2026-07-03T09:17:35.347+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] c.n.S.d.DiscoveryServiceApplication      : Starting DiscoveryServiceApplication using Java 17.0.9 with PID 25596 (D:\Projects\Social-media\backend\discovery-service\target\classes started by BANG in D:\Projects\Social-media\backend)
+2026-07-03T09:17:35.370+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] c.n.S.d.DiscoveryServiceApplication      : No active profile set, falling back to 1 default profile: "default"
+2026-07-03T09:17:40.079+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] o.s.cloud.context.scope.GenericScope     : BeanFactory id=f0dab0ea-1bbb-37bf-920c-fafd21f13733
+2026-07-03T09:17:41.053+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8761 (http)
+2026-07-03T09:17:41.098+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-07-03T09:17:41.100+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-07-03T09:17:41.407+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-07-03T09:17:41.409+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 5833 ms
+2026-07-03T09:17:44.096+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] o.apache.catalina.core.StandardContext   : Suspicious URL pattern: [/actuator/**] in context [], see sections 12.1 and 12.2 of the Servlet specification
+2026-07-03T09:17:46.253+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] c.n.d.provider.DiscoveryJerseyProvider   : Using JSON encoding codec LegacyJacksonJson
+2026-07-03T09:17:46.259+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] c.n.d.provider.DiscoveryJerseyProvider   : Using JSON decoding codec LegacyJacksonJson
+2026-07-03T09:17:46.985+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] c.n.d.provider.DiscoveryJerseyProvider   : Using XML encoding codec XStreamXml
+2026-07-03T09:17:46.986+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] c.n.d.provider.DiscoveryJerseyProvider   : Using XML decoding codec XStreamXml
+2026-07-03T09:17:51.591+07:00  WARN [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-07-03T09:17:51.646+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-07-03T09:17:51.718+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-07-03T09:17:51.719+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] com.netflix.discovery.DiscoveryClient    : Client configured to neither register nor query for data.
+2026-07-03T09:17:51.726+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1783045071723 with initial instances count: 0
+2026-07-03T09:17:51.859+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] c.n.eureka.DefaultEurekaServerContext    : Initializing ...
+2026-07-03T09:17:51.865+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] c.n.eureka.cluster.PeerEurekaNodes       : Adding new peer nodes [http://localhost:8761/eureka/]
+2026-07-03T09:17:51.989+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] c.n.d.provider.DiscoveryJerseyProvider   : Using JSON encoding codec LegacyJacksonJson
+2026-07-03T09:17:51.990+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] c.n.d.provider.DiscoveryJerseyProvider   : Using JSON decoding codec LegacyJacksonJson
+2026-07-03T09:17:51.990+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] c.n.d.provider.DiscoveryJerseyProvider   : Using XML encoding codec XStreamXml
+2026-07-03T09:17:51.990+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] c.n.d.provider.DiscoveryJerseyProvider   : Using XML decoding codec XStreamXml
+2026-07-03T09:17:52.106+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] c.n.eureka.cluster.PeerEurekaNodes       : Replica node URL:  http://localhost:8761/eureka/
+2026-07-03T09:17:52.149+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Finished initializing remote region registries. All known remote regions: []
+2026-07-03T09:17:52.150+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] c.n.eureka.DefaultEurekaServerContext    : Initialized
+2026-07-03T09:17:52.180+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 4 endpoints beneath base path '/actuator'
+2026-07-03T09:17:52.466+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application DISCOVERY-SERVICE with eureka with status UP
+2026-07-03T09:17:52.500+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Thread-10] [                                                 ] o.s.c.n.e.server.EurekaServerBootstrap   : isAws returned false
+2026-07-03T09:17:52.502+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Thread-10] [                                                 ] o.s.c.n.e.server.EurekaServerBootstrap   : Initialized server context
+2026-07-03T09:17:52.503+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Thread-10] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Got 1 instances from neighboring DS node
+2026-07-03T09:17:52.504+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Thread-10] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Renew threshold is: 1
+2026-07-03T09:17:52.507+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Thread-10] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Changing status to UP
+2026-07-03T09:17:52.514+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Thread-10] [                                                 ] e.s.EurekaServerInitializerConfiguration : Started Eureka Server
+2026-07-03T09:17:52.543+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8761 (http) with context path '/'
+2026-07-03T09:17:52.546+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8761
+2026-07-03T09:17:53.229+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [http-nio-8761-exec-1] [                                                 ] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-07-03T09:17:53.230+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [http-nio-8761-exec-1] [                                                 ] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-07-03T09:17:53.242+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [http-nio-8761-exec-1] [                                                 ] o.s.web.servlet.DispatcherServlet        : Completed initialization in 6 ms
+2026-07-03T09:17:53.969+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [main] [                                                 ] c.n.S.d.DiscoveryServiceApplication      : Started DiscoveryServiceApplication in 21.654 seconds (process running for 27.163)
+2026-07-03T09:18:10.128+07:00  INFO [discovery-service,c820e716b389bf486c65d3f1769dcc6d,7b189ef6f0bc2ad2] 25596 --- [discovery-service] [http-nio-8761-exec-6] [c820e716b389bf486c65d3f1769dcc6d-7b189ef6f0bc2ad2] c.n.e.registry.AbstractInstanceRegistry  : Registered instance API-GATEWAY/LAPTOP-4K64MGNI:api-gateway:8080 with status UP (replication=false)
+2026-07-03T09:18:11.140+07:00  INFO [discovery-service,15e82689c6531f74a861ca842ca426ff,077f84d461982900] 25596 --- [discovery-service] [http-nio-8761-exec-7] [15e82689c6531f74a861ca842ca426ff-077f84d461982900] c.n.e.registry.AbstractInstanceRegistry  : Registered instance API-GATEWAY/LAPTOP-4K64MGNI:api-gateway:8080 with status UP (replication=true)
+2026-07-03T09:18:52.511+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-07-03T09:18:53.210+07:00  INFO [discovery-service,0c2d75bbbf395d7d6c8c006c62e986d7,ce6d1ccb9bf0d8ca] 25596 --- [discovery-service] [http-nio-8761-exec-1] [0c2d75bbbf395d7d6c8c006c62e986d7-ce6d1ccb9bf0d8ca] c.n.e.registry.AbstractInstanceRegistry  : Registered instance GROUP-SERVICE/LAPTOP-4K64MGNI:group-service:8085 with status UP (replication=false)
+2026-07-03T09:18:53.729+07:00  INFO [discovery-service,d2f34ad3535b59836fc61c0a3272813e,12956c67ac319fde] 25596 --- [discovery-service] [http-nio-8761-exec-2] [d2f34ad3535b59836fc61c0a3272813e-12956c67ac319fde] c.n.e.registry.AbstractInstanceRegistry  : Registered instance GROUP-SERVICE/LAPTOP-4K64MGNI:group-service:8085 with status UP (replication=true)
+2026-07-03T09:19:52.512+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 1ms
+2026-07-03T09:20:52.513+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-07-03T09:21:52.528+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 14ms
+2026-07-03T09:22:52.531+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2026-07-03T09:23:52.552+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 18ms
+2026-07-03T09:24:52.551+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 1ms
+2026-07-03T09:25:52.554+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2026-07-03T09:26:52.579+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 25ms
+2026-07-03T09:27:52.593+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 13ms
+2026-07-03T09:27:54.021+07:00  INFO [discovery-service,59ff26702b6ba76827ac0361f79cd58a,7b22d070784be623] 25596 --- [discovery-service] [http-nio-8761-exec-10] [59ff26702b6ba76827ac0361f79cd58a-7b22d070784be623] c.n.e.registry.AbstractInstanceRegistry  : Registered instance USER-SERVICE/LAPTOP-4K64MGNI:user-service:8081 with status UP (replication=false)
+2026-07-03T09:27:54.405+07:00  INFO [discovery-service,b6873f0fccc0c9232b6f3c24118e8c1b,5ab02eb1726cc295] 25596 --- [discovery-service] [http-nio-8761-exec-9] [b6873f0fccc0c9232b6f3c24118e8c1b-5ab02eb1726cc295] c.n.e.registry.AbstractInstanceRegistry  : Registered instance USER-SERVICE/LAPTOP-4K64MGNI:user-service:8081 with status UP (replication=true)
+2026-07-03T09:28:52.597+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2026-07-03T09:29:52.608+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 10ms
+2026-07-03T09:30:52.615+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 7ms
+2026-07-03T09:31:52.627+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 11ms
+2026-07-03T09:32:52.151+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [ReplicaAwareInstanceRegistry - RenewalThresholdUpdater] [                                                 ] c.n.e.r.PeerAwareInstanceRegistryImpl    : Current renewal threshold is : 6
+2026-07-03T09:32:52.633+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2026-07-03T09:33:12.221+07:00 ERROR [discovery-service,,] 25596 --- [discovery-service] [TaskBatchingWorker-target_localhost-7] [                                                 ] c.n.e.cluster.ReplicationTaskProcessor   : It seems to be a socket read timeout exception, it will retry later. if it continues to happen and some eureka node occupied all the cpu time, you should set property 'eureka.server.peer-node-read-timeout-ms' to a bigger value
+
+jakarta.ws.rs.ProcessingException: java.net.SocketTimeoutException: Read timed out
+	at org.glassfish.jersey.apache.connector.ApacheConnector.apply(ApacheConnector.java:534) ~[jersey-apache-connector-3.1.9.jar:na]
+	at org.glassfish.jersey.client.ClientRuntime.invoke(ClientRuntime.java:300) ~[jersey-client-3.1.9.jar:na]
+	at org.glassfish.jersey.client.JerseyInvocation.lambda$invoke$0(JerseyInvocation.java:674) ~[jersey-client-3.1.9.jar:na]
+	at org.glassfish.jersey.client.JerseyInvocation.call(JerseyInvocation.java:709) ~[jersey-client-3.1.9.jar:na]
+	at org.glassfish.jersey.client.JerseyInvocation.lambda$runInScope$3(JerseyInvocation.java:703) ~[jersey-client-3.1.9.jar:na]
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:292) ~[jersey-common-3.1.9.jar:na]
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:274) ~[jersey-common-3.1.9.jar:na]
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:205) ~[jersey-common-3.1.9.jar:na]
+	at org.glassfish.jersey.process.internal.RequestScope.runInScope(RequestScope.java:391) ~[jersey-common-3.1.9.jar:na]
+	at org.glassfish.jersey.client.JerseyInvocation.runInScope(JerseyInvocation.java:703) ~[jersey-client-3.1.9.jar:na]
+	at org.glassfish.jersey.client.JerseyInvocation.invoke(JerseyInvocation.java:673) ~[jersey-client-3.1.9.jar:na]
+	at org.glassfish.jersey.client.JerseyInvocation$Builder.method(JerseyInvocation.java:439) ~[jersey-client-3.1.9.jar:na]
+	at org.glassfish.jersey.client.JerseyInvocation$Builder.post(JerseyInvocation.java:345) ~[jersey-client-3.1.9.jar:na]
+	at com.netflix.eureka.transport.Jersey3ReplicationClient.submitBatchUpdates(Jersey3ReplicationClient.java:116) ~[eureka-core-jersey3-2.0.4.jar:2.0.4]
+	at com.netflix.eureka.cluster.ReplicationTaskProcessor.process(ReplicationTaskProcessor.java:80) ~[eureka-core-2.0.4.jar:2.0.4]
+	at com.netflix.eureka.util.batcher.TaskExecutors$BatchWorkerRunnable.run(TaskExecutors.java:178) ~[eureka-core-2.0.4.jar:2.0.4]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+Caused by: java.net.SocketTimeoutException: Read timed out
+	at java.base/sun.nio.ch.NioSocketImpl.timedRead(NioSocketImpl.java:288) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:314) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:355) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:808) ~[na:na]
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:966) ~[na:na]
+	at org.apache.http.impl.io.SessionInputBufferImpl.streamRead(SessionInputBufferImpl.java:137) ~[httpcore-4.4.16.jar:4.4.16]
+	at org.apache.http.impl.io.SessionInputBufferImpl.fillBuffer(SessionInputBufferImpl.java:153) ~[httpcore-4.4.16.jar:4.4.16]
+	at org.apache.http.impl.io.SessionInputBufferImpl.readLine(SessionInputBufferImpl.java:280) ~[httpcore-4.4.16.jar:4.4.16]
+	at org.apache.http.impl.conn.DefaultHttpResponseParser.parseHead(DefaultHttpResponseParser.java:138) ~[httpclient-4.5.3.jar:4.5.3]
+	at org.apache.http.impl.conn.DefaultHttpResponseParser.parseHead(DefaultHttpResponseParser.java:56) ~[httpclient-4.5.3.jar:4.5.3]
+	at org.apache.http.impl.io.AbstractMessageParser.parse(AbstractMessageParser.java:259) ~[httpcore-4.4.16.jar:4.4.16]
+	at org.apache.http.impl.DefaultBHttpClientConnection.receiveResponseHeader(DefaultBHttpClientConnection.java:163) ~[httpcore-4.4.16.jar:4.4.16]
+	at org.apache.http.impl.conn.CPoolProxy.receiveResponseHeader(CPoolProxy.java:165) ~[httpclient-4.5.3.jar:4.5.3]
+	at org.apache.http.protocol.HttpRequestExecutor.doReceiveResponse(HttpRequestExecutor.java:273) ~[httpcore-4.4.16.jar:4.4.16]
+	at org.apache.http.protocol.HttpRequestExecutor.execute(HttpRequestExecutor.java:125) ~[httpcore-4.4.16.jar:4.4.16]
+	at org.apache.http.impl.execchain.MainClientExec.execute(MainClientExec.java:272) ~[httpclient-4.5.3.jar:4.5.3]
+	at org.apache.http.impl.execchain.ProtocolExec.execute(ProtocolExec.java:185) ~[httpclient-4.5.3.jar:4.5.3]
+	at org.apache.http.impl.execchain.RetryExec.execute(RetryExec.java:89) ~[httpclient-4.5.3.jar:4.5.3]
+	at org.apache.http.impl.execchain.RedirectExec.execute(RedirectExec.java:111) ~[httpclient-4.5.3.jar:4.5.3]
+	at org.apache.http.impl.client.InternalHttpClient.doExecute(InternalHttpClient.java:185) ~[httpclient-4.5.3.jar:4.5.3]
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:72) ~[httpclient-4.5.3.jar:4.5.3]
+	at org.glassfish.jersey.apache.connector.ApacheConnector.apply(ApacheConnector.java:486) ~[jersey-apache-connector-3.1.9.jar:na]
+	... 16 common frames omitted
+
+2026-07-03T09:33:52.635+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 2ms
+2026-07-03T09:34:52.639+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2026-07-03T09:35:52.652+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [Eureka-EvictionTimer] [                                                 ] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 12ms
+2026-07-03T09:35:54.022+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [SpringApplicationShutdownHook] [                                                 ] o.s.c.n.e.s.EurekaServiceRegistry        : Unregistering application DISCOVERY-SERVICE with eureka with status DOWN
+2026-07-03T09:35:54.580+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [SpringApplicationShutdownHook] [                                                 ] o.s.c.n.e.server.EurekaServerBootstrap   : Shutting down Eureka Server..
+2026-07-03T09:35:54.580+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [SpringApplicationShutdownHook] [                                                 ] c.n.eureka.DefaultEurekaServerContext    : Shutting down ...
+2026-07-03T09:35:54.582+07:00 ERROR [discovery-service,,] 25596 --- [discovery-service] [Eureka-Jersey3Client-Conn-Cleaner2] [                                                 ] c.n.d.s.t.j.EurekaJersey3ClientImpl      : Cannot clean connections
+
+java.lang.IllegalStateException: Client instance has been closed.
+	at org.glassfish.jersey.internal.guava.Preconditions.checkState(Preconditions.java:169) ~[jersey-common-3.1.9.jar:na]
+	at org.glassfish.jersey.client.JerseyClient.checkNotClosed(JerseyClient.java:248) ~[jersey-client-3.1.9.jar:na]
+	at org.glassfish.jersey.client.JerseyClient.getConfiguration(JerseyClient.java:363) ~[jersey-client-3.1.9.jar:na]
+	at org.glassfish.jersey.client.JerseyClient.getConfiguration(JerseyClient.java:54) ~[jersey-client-3.1.9.jar:na]
+	at com.netflix.discovery.shared.transport.jersey3.EurekaJersey3ClientImpl$ConnectionCleanerTask.run(EurekaJersey3ClientImpl.java:338) ~[eureka-client-jersey3-2.0.4.jar:2.0.4]
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539) ~[na:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:304) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+
+2026-07-03T09:35:54.587+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [SpringApplicationShutdownHook] [                                                 ] c.n.eureka.DefaultEurekaServerContext    : Shut down
+2026-07-03T09:35:54.588+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [SpringApplicationShutdownHook] [                                                 ] o.s.c.n.e.server.EurekaServerBootstrap   : Eureka Service is now shutdown...
+2026-07-03T09:35:54.590+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [SpringApplicationShutdownHook] [                                                 ] c.n.eureka.DefaultEurekaServerContext    : Shutting down ...
+2026-07-03T09:35:54.590+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [SpringApplicationShutdownHook] [                                                 ] c.n.eureka.DefaultEurekaServerContext    : Shut down
+2026-07-03T09:35:54.637+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [SpringApplicationShutdownHook] [                                                 ] com.netflix.discovery.DiscoveryClient    : Shutting down DiscoveryClient ...
+2026-07-03T09:35:54.637+07:00  INFO [discovery-service,,] 25596 --- [discovery-service] [SpringApplicationShutdownHook] [                                                 ] com.netflix.discovery.DiscoveryClient    : Completed shut down of DiscoveryClient
