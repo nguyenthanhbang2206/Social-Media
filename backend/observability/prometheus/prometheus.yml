@@ -1,0 +1,39 @@
+  global:
+    scrape_interval: 5s
+
+  scrape_configs:
+
+    - job_name: 'api-gateway'
+      metrics_path: '/actuator/prometheus'
+      static_configs:
+        - targets: ['host.docker.internal:8080']
+
+    - job_name: 'discovery-service'
+      metrics_path: '/actuator/prometheus'
+      static_configs:
+        - targets: ['host.docker.internal:8761']
+
+    - job_name: 'user-service'
+      metrics_path: '/actuator/prometheus'
+      static_configs:
+        - targets: ['host.docker.internal:8081']
+
+    - job_name: 'post-service'
+      metrics_path: '/actuator/prometheus'
+      static_configs:
+        - targets: ['host.docker.internal:8082']
+
+    - job_name: 'group-service'
+      metrics_path: '/actuator/prometheus'
+      static_configs:
+        - targets: ['host.docker.internal:8085']
+
+    - job_name: 'interaction-service'
+      metrics_path: '/actuator/prometheus'
+      static_configs:
+        - targets: ['host.docker.internal:8084']
+
+    - job_name: 'notification-service'
+      metrics_path: '/actuator/prometheus'
+      static_configs:
+        - targets: ['host.docker.internal:8083']

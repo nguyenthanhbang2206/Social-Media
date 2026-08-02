@@ -1,3 +1,12 @@
+/**
+ * Auth Reducer.
+ *
+ * Thay đổi so với bản gốc:
+ * - Bỏ `token` khỏi state – token do Keycloak JS quản lý in-memory,
+ *   không cần lưu trong Redux. Lấy token dùng getToken() từ keycloak.js.
+ * - Bỏ `localStorage.getItem("token")` trong initialState (không dùng nữa).
+ * - Giữ user từ localStorage để tránh mất state khi F5.
+ */
 import {
   GET_USER_PROFILE_REQUEST,
   GET_USER_PROFILE_SUCCESS,
@@ -6,65 +15,43 @@ import {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
   LOGOUT,
-  REGISTER_FAILURE,
-  REGISTER_REQUEST,
-  REGISTER_SUCCESS,
   UPDATE_USER_PROFILE_REQUEST,
   UPDATE_USER_PROFILE_SUCCESS,
   UPDATE_USER_PROFILE_FAILURE,
 } from "./ActionType";
 
 const initialState = {
-  user: null,
+  // Restore user từ localStorage sau khi F5
+  user: JSON.parse(localStorage.getItem("user") || "null"),
   isLoading: false,
   error: null,
-  token: null,
   success: null,
 };
 
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
-    // Xử lý các yêu cầu
     case LOGIN_REQUEST:
-    case REGISTER_REQUEST:
     case GET_USER_PROFILE_REQUEST:
     case UPDATE_USER_PROFILE_REQUEST:
-      return {
-        ...state,
-        isLoading: true,
-        error: null,
-        success: null,
-      };
+      return { ...state, isLoading: true, error: null, success: null };
 
-    // Đăng ký thành công
-    case REGISTER_SUCCESS:
-      return {
-        ...state,
-        isLoading: false,
-        error: null,
-        success: "Đăng ký thành công! Vui lòng đăng nhập.",
-      };
-
-    // Đăng nhập thành công
     case LOGIN_SUCCESS:
       return {
         ...state,
         isLoading: false,
-        token: action.payload,
-        user: JSON.parse(localStorage.getItem("user")),
+        // user sẽ được set bởi GET_USER_PROFILE_SUCCESS ngay sau đó
+        error: null,
         success: "Đăng nhập thành công!",
       };
 
-    // Lấy thông tin người dùng thành công
     case GET_USER_PROFILE_SUCCESS:
       return {
         ...state,
         isLoading: false,
         user: action.payload,
-        success: "Thông tin người dùng đã được tải thành công!",
+        success: "Tải thông tin người dùng thành công!",
       };
 
-    // Cập nhật thông tin người dùng thành công
     case UPDATE_USER_PROFILE_SUCCESS:
       return {
         ...state,
@@ -73,23 +60,17 @@ const authReducer = (state = initialState, action) => {
         success: "Cập nhật thông tin thành công!",
       };
 
-    // Đăng xuất
     case LOGOUT:
       return {
         ...initialState,
+        user: null,
+        success: null,
       };
 
-    // Xử lý lỗi
-    case REGISTER_FAILURE:
     case LOGIN_FAILURE:
     case GET_USER_PROFILE_FAILURE:
     case UPDATE_USER_PROFILE_FAILURE:
-      return {
-        ...state,
-        isLoading: false,
-        error: action.payload,
-        success: null,
-      };
+      return { ...state, isLoading: false, error: action.payload, success: null };
 
     default:
       return state;

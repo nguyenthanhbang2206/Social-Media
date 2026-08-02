@@ -1,0 +1,17 @@
+# Build outputs
+**/target/
+target/
+
+# IDE / VCS
+.git/
+.idea/
+*.iml
+
+# Local uploads and runtime data
+uploads/
+**/uploads/
+
+# OS clutter
+Thumbs.db
+.DS_Store
+

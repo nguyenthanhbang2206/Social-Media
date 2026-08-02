@@ -1,56 +1,118 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  replyComment,
+  updateComment,
+  deleteComment,
+} from "../api/Comment/Action";
+import {
+  reactComment,
+  unreactComment,
+  getCommentReactions,
+  getMyCommentReaction,
+} from "../api/CommentLike/Action";
 
 export default function CommentItem({
   comment,
   allComments = [],
   depth,
   reloadComments,
-  currentUserId, // truyền vào nếu muốn kiểm tra quyền sửa/xóa
+  currentUserId,
 }) {
+  const dispatch = useDispatch();
+  const REACTION_ORDER = ["LIKE", "LOVE", "HAHA", "WOW", "SAD", "ANGRY"];
+  const REACTION_EMOJIS = {
+    LIKE: "👍",
+    LOVE: "❤️",
+    HAHA: "😂",
+    WOW: "😮",
+    SAD: "😢",
+    ANGRY: "😠",
+  };
   const [showReply, setShowReply] = useState(false);
   const [replyContent, setReplyContent] = useState("");
   const [editMode, setEditMode] = useState(false);
   const [editContent, setEditContent] = useState(comment.content);
-  const token = localStorage.getItem("token");
+  const [reactionLoading, setReactionLoading] = useState(false);
 
-  // Lấy replies của comment này
+  const { myReaction, reactions } = useSelector((state) => state.commentLike);
+
   const children = allComments.filter((c) => c.parentCommentId === comment.id);
 
-  // Gửi reply
+  useEffect(() => {
+    const fetchReactions = async () => {
+      setReactionLoading(true);
+      try {
+        await Promise.all([
+          dispatch(getMyCommentReaction(comment.id)),
+          dispatch(getCommentReactions(comment.id)),
+        ]);
+      } catch (err) {
+        console.error("Failed to fetch reactions:", err);
+      }
+      setReactionLoading(false);
+    };
+    fetchReactions();
+  }, [comment.id, dispatch]);
+
   const handleReply = async (e) => {
     e.preventDefault();
     if (!replyContent.trim()) return;
-    await axios.post(
-      `http://localhost:8080/api/v1/comments/${comment.id}/reply`,
-      { content: replyContent },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    setReplyContent("");
-    setShowReply(false);
-    reloadComments && reloadComments();
+    try {
+      await dispatch(replyComment(comment.id, replyContent));
+      setReplyContent("");
+      setShowReply(false);
+      reloadComments && reloadComments();
+    } catch (err) {
+      alert("Lỗi trả lời: " + (err?.response?.data?.message || "Vui lòng thử lại"));
+    }
   };
 
-  // Sửa comment
   const handleEdit = async (e) => {
     e.preventDefault();
     if (!editContent.trim()) return;
-    await axios.put(
-      `http://localhost:8080/api/v1/comments/${comment.id}`,
-      { content: editContent },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    setEditMode(false);
-    reloadComments && reloadComments();
+    try {
+      await dispatch(updateComment(comment.id, editContent));
+      setEditMode(false);
+      reloadComments && reloadComments();
+    } catch (err) {
+      alert("Lỗi sửa: " + (err?.response?.data?.message || "Vui lòng thử lại"));
+    }
   };
 
-  // Xóa comment
   const handleDelete = async () => {
     if (!window.confirm("Bạn có chắc muốn xóa bình luận này?")) return;
-    await axios.delete(`http://localhost:8080/api/v1/comments/${comment.id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    reloadComments && reloadComments();
+    try {
+      await dispatch(deleteComment(comment.id));
+      reloadComments && reloadComments();
+    } catch (err) {
+      alert("Lỗi xóa: " + (err?.response?.data?.message || "Vui lòng thử lại"));
+    }
+  };
+
+  const handleReact = async (reactionType) => {
+    if (!reactionType) return;
+    try {
+      await dispatch(reactComment(comment.id, reactionType));
+      await Promise.all([
+        dispatch(getMyCommentReaction(comment.id)),
+        dispatch(getCommentReactions(comment.id)),
+      ]);
+    } catch (err) {
+      alert("Lỗi cảm xúc: " + (err?.response?.data?.message || "Vui lòng thử lại"));
+    }
+  };
+
+  const handleUnreact = async () => {
+    try {
+      await dispatch(unreactComment(comment.id));
+      await Promise.all([
+        dispatch(getMyCommentReaction(comment.id)),
+        dispatch(getCommentReactions(comment.id)),
+      ]);
+    } catch (err) {
+      alert("Lỗi bỏ cảm xúc: " + (err?.response?.data?.message || "Vui lòng thử lại"));
+    }
   };
 
   return (
@@ -72,14 +134,12 @@ export default function CommentItem({
             <span className="font-semibold text-sm text-gray-800">
               {comment.user?.fullName}
             </span>
-            {/* Thời gian */}
             <span className="text-xs text-gray-400">
               {comment.createdDate
                 ? new Date(comment.createdDate).toLocaleString()
                 : ""}
             </span>
           </div>
-          {/* Nội dung hoặc input sửa */}
           {editMode ? (
             <form className="flex gap-2 mt-1" onSubmit={handleEdit}>
               <input
@@ -114,7 +174,33 @@ export default function CommentItem({
             >
               Trả lời
             </button>
-            {/* Chỉ cho phép sửa/xóa nếu là chủ comment */}
+            <div className="flex items-center gap-2">
+              <select
+                className="border rounded-full px-2 py-0.5 text-xs bg-gray-100"
+                value={myReaction?.reactionType || ""}
+                onChange={(e) => handleReact(e.target.value)}
+                disabled={reactionLoading}
+              >
+                <option value="">Cảm xúc</option>
+                {REACTION_ORDER.map((reactionType) => (
+                  <option key={reactionType} value={reactionType}>
+                    {REACTION_EMOJIS[reactionType]} {reactionType}
+                  </option>
+                ))}
+              </select>
+              {myReaction?.reactionType && (
+                <button
+                  className="hover:underline font-medium text-blue-600"
+                  onClick={handleUnreact}
+                  disabled={reactionLoading}
+                >
+                  Bỏ cảm xúc
+                </button>
+              )}
+              <span className="text-xs text-gray-400">
+                {reactions?.length || 0} cảm xúc
+              </span>
+            </div>
             {(currentUserId === comment.user?.id ||
               comment.user?.id === currentUserId) && (
               <>
@@ -149,7 +235,6 @@ export default function CommentItem({
           )}
         </div>
       </div>
-      {/* Đệ quy hiển thị replies */}
       {children.length > 0 && (
         <div className="mt-2">
           {children.map((r) => (
