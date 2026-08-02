@@ -31,3 +31,18 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Ignore documentation and agent artifacts
+agents.md
+agent.md
+PROJECT_CONTEXT.md
+Project context.md
+ERROR_ANALYSIS_AND_FIX_PLAN.md
+CODEBASE_DOCUMENTATION.md
+UI_DESIGN.md
+# Local inspection and logs
+inspect.json
+logs/
+# Local env files
+.env
+.env.*

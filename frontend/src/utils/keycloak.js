@@ -1,157 +1,135 @@
-import Keycloak from 'keycloak-js';
-import keycloakConfig from '../config/keycloak';
+/**
+ * Keycloak singleton instance + helpers.
+ *
+ * ─── VẤN ĐỀ VỚI BẢN GỐC ───────────────────────────────────────────────────
+ *
+ * 1. `onLoad: 'login-required'`  → App BẮT BUỘC đăng nhập ngay khi load.
+ *    Mọi truy cập vào bất kỳ page nào (kể cả /login) đều bị redirect sang
+ *    Keycloak. Điều này sai vì:
+ *    - Trang /login của React sẽ không bao giờ hiển thị
+ *    - User không thể xem gì trước khi login
+ *    Fix: dùng `onLoad: 'check-sso'` → chỉ check session hiện có, không force login
+ *
+ * 2. `pkceMethod: 'S256'` là đúng – PKCE bảo vệ Authorization Code flow
+ *    Giữ nguyên.
+ *
+ * 3. `initPromise` singleton pattern là đúng – tránh khởi tạo nhiều lần.
+ *    Giữ nguyên.
+ *
+ * ─── FLOW CHUẨN ────────────────────────────────────────────────────────────
+ *
+ *  App load
+ *    → initKeycloak() với check-sso
+ *      → Nếu có session cũ: authenticated = true → sync với backend
+ *      → Nếu không có session: authenticated = false → hiển thị app bình thường
+ *          → User click "Login" → login() → redirect sang Keycloak
+ *          → Keycloak xác thực xong → redirect về app → initKeycloak() lại
+ *          → authenticated = true → sync với backend
+ *
+ * ─── TOKEN REFRESH ─────────────────────────────────────────────────────────
+ *
+ * axios interceptor gọi updateToken(5) trước mỗi request:
+ *   - Nếu token hết hạn trong vòng 5 giây → Keycloak tự refresh bằng iframe
+ *   - Nếu refresh_token cũng hết hạn → throw error → logout
+ * ────────────────────────────────────────────────────────────────────────────
+ */
+import Keycloak from "keycloak-js";
 
-// Initialize Keycloak instance
+const keycloakConfig = {
+  url: process.env.REACT_APP_KEYCLOAK_URL || "http://localhost:8088",
+  realm: process.env.REACT_APP_KEYCLOAK_REALM || "social-media-realm",
+  clientId: process.env.REACT_APP_KEYCLOAK_CLIENT_ID || "social-media-frontend",
+};
+
 const keycloak = new Keycloak(keycloakConfig);
 
-// Helper functions for Keycloak operations
-export const keycloakService = {
-  // Initialize Keycloak
-  init: async () => {
-    try {
-      const authenticated = await keycloak.init({
-        onLoad: keycloakConfig.onLoad,
-        pkceMethod: keycloakConfig.pkceMethod,
-        checkLoginIframe: keycloakConfig.checkLoginIframe,
-        silentCheckSsoRedirectUri: keycloakConfig.silentCheckSsoRedirectUri,
-        responseMode: keycloakConfig.responseMode,
-        responseType: keycloakConfig.responseType,
+let initPromise = null;
+
+/**
+ * Khởi tạo Keycloak.
+ *
+ * Dùng `check-sso` thay vì `login-required`:
+ *   - check-sso: kiểm tra xem có SSO session cũ không, không force login
+ *   - login-required: force redirect sang Keycloak nếu chưa login (sai cho SPA)
+ *
+ * `silentCheckSsoRedirectUri`: Keycloak dùng iframe ẩn để check session
+ * mà không làm gián đoạn UX. File này phải tồn tại trong /public/.
+ *
+ * @returns {Promise<boolean>} true nếu user đã authenticated
+ */
+export const initKeycloak = () => {
+  if (initPromise) return initPromise;
+
+  initPromise = keycloak
+      .init({
+        onLoad: "check-sso",
+        silentCheckSsoRedirectUri:
+            window.location.origin + "/silent-check-sso.html",
+        checkLoginIframe: false,
+        pkceMethod: "S256",
+      })
+      .catch((error) => {
+        initPromise = null; // reset để có thể retry
+        throw error;
       });
-      return authenticated;
-    } catch (error) {
-      console.error('Keycloak initialization failed:', error);
-      throw error;
-    }
-  },
 
-  // Login
-  login: () => {
-    keycloak.login();
-  },
-
-  // Logout
-  logout: () => {
-    keycloak.logout({ redirectUri: window.location.origin });
-  },
-
-  // Get access token
-  getToken: () => {
-    return keycloak.token;
-  },
-
-  // Get refresh token
-  getRefreshToken: () => {
-    return keycloak.refreshToken;
-  },
-
-  // Check if authenticated
-  isAuthenticated: () => {
-    return keycloak.authenticated;
-  },
-
-  // Get user info
-  getUserInfo: () => {
-    return keycloak.tokenParsed;
-  },
-
-  // Get user ID
-  getUserId: () => {
-    return keycloak.subject;
-  },
-
-  // Get user email
-  getUserEmail: () => {
-    return keycloak.tokenParsed?.email;
-  },
-
-  // Get user name
-  getUserName: () => {
-    return keycloak.tokenParsed?.preferred_username || keycloak.tokenParsed?.name;
-  },
-
-  // Get user roles
-  getUserRoles: () => {
-    return keycloak.tokenParsed?.roles || [];
-  },
-
-  // Check if user has role
-  hasRole: (role) => {
-    const roles = keycloak.tokenParsed?.roles || [];
-    return roles.includes(role);
-  },
-
-  // Check if user has any of the specified roles
-  hasAnyRole: (roles) => {
-    const userRoles = keycloak.tokenParsed?.roles || [];
-    return roles.some(role => userRoles.includes(role));
-  },
-
-  // Update token (refresh if needed)
-  updateToken: async (minValidity = 30) => {
-    try {
-      return await keycloak.updateToken(minValidity);
-    } catch (error) {
-      console.error('Failed to refresh token:', error);
-      throw error;
-    }
-  },
-
-  // Get token parsed
-  getTokenParsed: () => {
-    return keycloak.tokenParsed;
-  },
-
-  // Get realm access
-  getRealmAccess: () => {
-    return keycloak.tokenParsed?.realm_access;
-  },
-
-  // Get resource access
-  getResourceAccess: () => {
-    return keycloak.tokenParsed?.resource_access;
-  },
-
-  // Get client roles
-  getClientRoles: (clientId) => {
-    return keycloak.tokenParsed?.resource_access?.[clientId]?.roles || [];
-  },
-
-  // Check if user has client role
-  hasClientRole: (clientId, role) => {
-    const roles = keycloak.tokenParsed?.resource_access?.[clientId]?.roles || [];
-    return roles.includes(role);
-  },
+  return initPromise;
 };
 
-// Token refresh interval (refresh token every 4 minutes)
-let tokenRefreshInterval = null;
+/** Redirect user sang Keycloak login page. */
+export const login = () => keycloak.login();
 
-// Setup automatic token refresh
-export const setupTokenRefresh = () => {
-  if (tokenRefreshInterval) {
-    clearInterval(tokenRefreshInterval);
-  }
+/**
+ * Logout: revoke session tại Keycloak và redirect về /login.
+ * Keycloak sẽ xóa cookie session – sau đó initKeycloak() sẽ trả về false.
+ */
+export const logout = () =>
+    keycloak.logout({ redirectUri: window.location.origin + "/login" });
 
-  tokenRefreshInterval = setInterval(async () => {
-    try {
-      const refreshed = await keycloak.updateToken(60); // Refresh if token expires in less than 60 seconds
-      if (refreshed) {
-        console.log('Token refreshed successfully');
-      }
-    } catch (error) {
-      console.error('Failed to refresh token:', error);
-      // If refresh fails, redirect to login
-      keycloakService.logout();
-    }
-  }, 240000); // Check every 4 minutes
-};
+/**
+ * Redirect sang Keycloak registration page.
+ * Sau khi register xong, Keycloak tự redirect về app (theo redirectUri đã config).
+ */
+export const register = () => keycloak.register();
 
-// Cleanup token refresh
-export const cleanupTokenRefresh = () => {
-  if (tokenRefreshInterval) {
-    clearInterval(tokenRefreshInterval);
-    tokenRefreshInterval = null;
-  }
-};
+/** Access token hiện tại (JWT string). */
+export const getToken = () => keycloak.token;
+
+/**
+ * Refresh token nếu sẽ hết hạn trong `minValidity` giây.
+ *
+ * @param {number} minValidity - số giây còn lại tối thiểu
+ * @returns {Promise<boolean>} true nếu token đã được refresh, false nếu vẫn còn hạn
+ */
+export const updateToken = (minValidity = 5) =>
+    keycloak.updateToken(minValidity);
+
+/** Lấy thông tin user từ Keycloak UserInfo endpoint. */
+export const getUserInfo = () => keycloak.loadUserInfo();
+
+/** Preferred username (username trong Keycloak). */
+export const getUsername = () => keycloak.tokenParsed?.preferred_username;
+
+/** Email claim từ JWT. */
+export const getEmail = () => keycloak.tokenParsed?.email;
+
+/** Full name (name claim = firstName + lastName). */
+export const getFullName = () => keycloak.tokenParsed?.name;
+
+/** Subject = Keycloak user UUID. */
+export const getUserId = () => keycloak.tokenParsed?.sub;
+
+/**
+ * Lấy tất cả realm roles từ JWT.
+ * Keycloak đặt roles tại: tokenParsed.realm_access.roles
+ */
+export const getRoles = () =>
+    keycloak.tokenParsed?.realm_access?.roles || [];
+
+/** Kiểm tra user có role cụ thể không. */
+export const hasRole = (role) => getRoles().includes(role);
+
+/** true nếu user đã authenticated với Keycloak. */
+export const isAuthenticated = () => keycloak.authenticated === true;
 
 export default keycloak;

@@ -1,6 +1,7 @@
 package com.nguyenthanhbang.Social_media.service.impl;
 
 import com.nguyenthanhbang.Social_media.client.UserClient;
+import com.nguyenthanhbang.Social_media.common.dto.ApiResponse;
 import com.nguyenthanhbang.Social_media.common.dto.UserSummaryResponse;
 import com.nguyenthanhbang.Social_media.common.event.CommentEvent;
 import com.nguyenthanhbang.Social_media.common.util.RequestHeaderUtil;
@@ -30,7 +31,7 @@ public class CommentLikeServiceImpl implements CommentLikeService {
 
     @Override
     public CommentLike reactComment(CommentLikeRequest request, Long commentId) {
-        Long userId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Long userId = getCurrentUserId();
         UserSummaryResponse userSummaryResponse = userClient.getUserById(userId).getData();
 
         Comment comment = commentRepository.findById(commentId)
@@ -67,7 +68,7 @@ public class CommentLikeServiceImpl implements CommentLikeService {
 
     @Override
     public void deleteReactComment(Long commentId) {
-        Long userId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Long userId = getCurrentUserId();
         CommentLike commentLike = commentLikeRepository.findByUserIdAndCommentId(userId, commentId)
                 .orElseThrow(() -> new EntityNotFoundException("Reaction not found"));
         commentLikeRepository.delete(commentLike);
@@ -75,7 +76,7 @@ public class CommentLikeServiceImpl implements CommentLikeService {
 
     @Override
     public CommentLike getReactByUserIdAndCommentId(Long commentId) {
-        Long userId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Long userId = getCurrentUserId();
         return commentLikeRepository.findByUserIdAndCommentId(userId, commentId).orElse(null);
     }
 
@@ -84,6 +85,18 @@ public class CommentLikeServiceImpl implements CommentLikeService {
         commentRepository.findById(commentId)
                 .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
         return commentLikeRepository.findByCommentId(commentId);
+    }
+
+    private Long getCurrentUserId() {
+        String email = RequestHeaderUtil.getUserEmail()
+                .orElseThrow(() -> new EntityNotFoundException("User not found - X-User-Email header missing"));
+        
+        ApiResponse<UserSummaryResponse> response = userClient.getUserByEmail(email);
+        if (response == null || response.getData() == null) {
+            throw new EntityNotFoundException("User not found with email: " + email);
+        }
+        
+        return response.getData().getId();
     }
 }
 

@@ -12,7 +12,7 @@ const WS_URL = `${API_URL.replace(/\/api\/v1\/?$/, "")}/ws/notifications`;
  * Custom hook that manages WebSocket connection for real-time notifications.
  * Connects when user is authenticated, disconnects on logout.
  */
-export default function useNotificationWebSocket() {
+export default function useNotificationWebSocket(keycloakInitialized = false) {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const clientRef = useRef(null);
@@ -29,7 +29,7 @@ export default function useNotificationWebSocket() {
   };
 
   useEffect(() => {
-    if (!user || !user.id) return;
+    if (!keycloakInitialized || !user || !user.id) return;
 
     // Fetch initial unread count
     dispatch(getUnreadCount());
@@ -82,7 +82,7 @@ export default function useNotificationWebSocket() {
         clientRef.current = null;
       }
     };
-  }, [user, dispatch]);
+  }, [keycloakInitialized, user, dispatch]);
 
   return clientRef;
 }

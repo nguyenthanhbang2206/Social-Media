@@ -1,9 +1,12 @@
 package com.nguyenthanhbang.Social_media.service.impl;
 
+import com.nguyenthanhbang.Social_media.client.UserClient;
+import com.nguyenthanhbang.Social_media.common.dto.ApiResponse;
 import com.nguyenthanhbang.Social_media.dto.request.GroupRequest;
 import com.nguyenthanhbang.Social_media.common.enumeration.GroupMembershipStatus;
 import com.nguyenthanhbang.Social_media.common.enumeration.GroupRole;
 import com.nguyenthanhbang.Social_media.common.util.RequestHeaderUtil;
+import com.nguyenthanhbang.Social_media.common.dto.UserSummaryResponse;
 import com.nguyenthanhbang.Social_media.model.Group;
 import com.nguyenthanhbang.Social_media.model.GroupMember;
 import com.nguyenthanhbang.Social_media.repository.GroupMemberRepository;
@@ -11,21 +14,24 @@ import com.nguyenthanhbang.Social_media.repository.GroupRepository;
 import com.nguyenthanhbang.Social_media.service.GroupService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
     private final GroupMemberRepository groupMemberRepository;
+    private final UserClient userClient;
 
     @Override
     public Group createGroup(GroupRequest request) {
-        Long userId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Long userId = getCurrentUserId();
         Group newGroup = new Group();
         newGroup.setName(request.getName());
         newGroup.setDescription(request.getDescription());
@@ -60,7 +66,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group updateGroup(Long id, GroupRequest request) {
         Group group = getGroupById(id);
-        Long userId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Long userId = getCurrentUserId();
         if(!group.getCreatorId().equals(userId)) {
             throw new IllegalStateException("You can not update this group");
         }
@@ -86,8 +92,20 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public List<Group> myGroups() {
-        Long userId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Long userId = getCurrentUserId();
         List<Long> groupIds = groupMemberRepository.myGroupIds(userId);
         return groupRepository.findAllById(groupIds);
+    }
+
+    private Long getCurrentUserId() {
+        String email = RequestHeaderUtil.getUserEmail()
+                .orElseThrow(() -> new EntityNotFoundException("User not found - X-User-Email header missing"));
+        
+        ApiResponse<UserSummaryResponse> response = userClient.getUserByEmail(email);
+        if (response == null || response.getData() == null) {
+            throw new EntityNotFoundException("User not found with email: " + email);
+        }
+        
+        return response.getData().getId();
     }
 }
