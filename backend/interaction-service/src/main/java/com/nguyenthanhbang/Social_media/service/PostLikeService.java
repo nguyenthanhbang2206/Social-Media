@@ -10,4 +10,5 @@ public interface PostLikeService {
     void deleteReactPost(Long postId);
     PostLike getReactByUserIdAndPostId(Long postId);
     List<PostLike> getReactByPost(Long postId);
+    void deleteLikesByPostId(Long postId);
 }

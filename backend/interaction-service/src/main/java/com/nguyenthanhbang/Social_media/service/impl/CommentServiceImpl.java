@@ -2,6 +2,7 @@ package com.nguyenthanhbang.Social_media.service.impl;
 
 import com.nguyenthanhbang.Social_media.client.PostClient;
 import com.nguyenthanhbang.Social_media.client.UserClient;
+import com.nguyenthanhbang.Social_media.common.dto.ApiResponse;
 import com.nguyenthanhbang.Social_media.common.dto.UserSummaryResponse;
 import com.nguyenthanhbang.Social_media.common.event.CommentEvent;
 import com.nguyenthanhbang.Social_media.common.util.RequestHeaderUtil;
@@ -15,7 +16,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Slf4j
@@ -29,7 +30,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment comment(Long postId, CommentRequest request) {
-        Long userId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Long userId = getCurrentUserId();
         UserSummaryResponse userSummaryResponse = userClient.getUserById(userId).getData();
 
         PostSummaryResponse post = postClient.getPostById(postId).getData();
@@ -79,7 +80,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Comment updateComment(Long commentId, CommentRequest request) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(()-> new EntityNotFoundException("Comment not found"));
-        Long userId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Long userId = getCurrentUserId();
         if (!comment.getUserId().equals(userId)) {
             throw new EntityNotFoundException("You do not have permission to update this comment");
         }
@@ -90,7 +91,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(()-> new EntityNotFoundException("Comment not found"));
-        Long userId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Long userId = getCurrentUserId();
         if (!comment.getUserId().equals(userId)) {
             throw new EntityNotFoundException("You do not have permission to delete this comment");
         }
@@ -101,7 +102,7 @@ public class CommentServiceImpl implements CommentService {
     public Comment reply(Long commentParentId, CommentRequest request) {
         Comment parentComment = commentRepository.findById(commentParentId)
                 .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
-        Long userId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Long userId = getCurrentUserId();
         UserSummaryResponse userSummaryResponse = userClient.getUserById(userId).getData();
 
         boolean blocked = Boolean.TRUE.equals(userClient.existsBlock(userId, parentComment.getUserId()).getData());
@@ -142,5 +143,23 @@ public class CommentServiceImpl implements CommentService {
     public List<Comment> getReliesOfComment(Long commentId) {
         commentRepository.findById(commentId).orElseThrow(()-> new EntityNotFoundException("Comment not found"));
         return commentRepository.findByParentCommentId(commentId);
+    }
+
+    private Long getCurrentUserId() {
+        String email = RequestHeaderUtil.getUserEmail()
+                .orElseThrow(() -> new EntityNotFoundException("User not found - X-User-Email header missing"));
+        
+        ApiResponse<UserSummaryResponse> response = userClient.getUserByEmail(email);
+        if (response == null || response.getData() == null) {
+            throw new EntityNotFoundException("User not found with email: " + email);
+        }
+        
+        return response.getData().getId();
+    }
+    @Override
+    @Transactional
+    public void deleteCommentsByPostId(Long postId) {
+        log.info("Deleting comments for postId={}", postId);
+        commentRepository.deleteByPostId(postId);
     }
 }

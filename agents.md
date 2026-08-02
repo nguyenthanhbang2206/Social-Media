@@ -6,7 +6,13 @@
 - **Backend Services**: api-gateway, discovery-service, user-service, post-service, group-service, interaction-service, notification-service, common-library
 - **Frontend**: React with Redux for state management
 - **API Base URL**: http://localhost:8080/api/v1
-- **Authentication**: JWT access token + refresh token cookie
+- **Authentication**: Keycloak OAuth2 (Token Relay approach)
+  - API Gateway validates Keycloak JWT tokens using OAuth2 Resource Server
+  - API Gateway extracts user info from Keycloak token and forwards via headers (X-User-Id, X-User-Email, X-User-Name, X-User-FullName, X-User-Roles)
+  - Downstream services read headers from RequestHeaderUtil for user context
+  - Internal service communication uses X-Internal-Secret header
+  - Frontend uses keycloak-js for authentication
+  - User data synced from Keycloak to local database via /api/v1/auth/sync endpoint
 
 ## Completed API Integrations
 
@@ -20,7 +26,9 @@ All API integrations follow the pattern:
 
 #### Currently Integrated APIs:
 
-1. **Auth** (`/api/auth`) - Login, Register, Logout, Get Profile
+1. **Auth** (`/api/auth`) - Keycloak sync endpoint (/sync), Get Profile
+   - Login/Register/Logout are handled by Keycloak directly
+   - `/api/v1/auth/sync` syncs user data from Keycloak to local database
 2. **Notification** (`/api/notifications`) - Get notifications, mark as read, unread count
 3. **Post** (`/api/posts`) - CRUD posts, reactions, file upload
 4. **User** (`/api/users`) - Get user by ID, search users, update profile
@@ -32,6 +40,34 @@ All API integrations follow the pattern:
 10. **Group** (`/api/groups`) - CRUD groups, search groups, get my groups
 11. **GroupMember** (`/api/groups/{id}/members`) - Join/leave, approve/reject members, manage roles
 12. **AdminUser** (`/api/admin/users`) - Get all users, update user (admin only)
+
+## Keycloak Configuration
+
+- **Keycloak URL**: http://localhost:8088
+- **Realm**: social-media-realm
+- **Frontend Client**: social-media-frontend (public client)
+- **Roles**: USER, ADMIN
+- **Token Relay Approach**: API Gateway validates Keycloak tokens and forwards user context via headers
+
+### Keycloak Setup Files
+
+- `backend/docker-compose.yml` - Keycloak and keycloak-db services
+- `backend/keycloak-realm-config.json` - Realm configuration
+- `backend/KEYCLOAK_SETUP.md` - Setup instructions
+
+### Frontend Keycloak Integration
+
+- `frontend/src/utils/keycloak.js` - Keycloak utility functions
+- `frontend/src/pages/Login.jsx` - Keycloak login flow
+- `frontend/src/pages/Register.jsx` - Keycloak registration flow
+- `frontend/src/App.js` - Keycloak initialization
+- `frontend/src/config/api.js` - Axios interceptor with Keycloak token refresh
+
+### Backend Keycloak Integration
+
+- `api-gateway` - OAuth2 Resource Server for JWT validation, UserContextFilter for header forwarding
+- `user-service` - User sync endpoint, keycloakUserId field in User entity
+- Other services - Read user context from headers via RequestHeaderUtil
 
 ## Frontend AdminUser Notes
 
@@ -55,6 +91,28 @@ All API integrations follow the pattern:
 ## Backend Resilience Note
 
 - Removed an unnecessary internal user-service call from `post-service` `getPostByUserId`; the method now directly queries posts by `userId` and computes totals.
+
+## Spring Security Removal (Token Relay Architecture)
+
+- Removed `spring-boot-starter-security` dependency from:
+  - `common-library/pom.xml` (shared library)
+  - `post-service/pom.xml`
+  - `notification-service/pom.xml`
+  - `group-service/pom.xml`
+  - `interaction-service/pom.xml`
+  - `user-service/pom.xml`
+- Deleted security configuration classes from common-library:
+  - `CustomAccessDeniedHandler.java`
+  - `CustomAuthenticationEntryPoint.java`
+- Deleted security configuration classes from user-service:
+  - `SecurityConfiguration.java`
+  - `InternalAuthFilter.java`
+- Updated `JpaAuditingConfig.java` in user-service to use RequestHeaderUtil instead of Spring Security
+- Updated `UserServiceImpl.java` in user-service to remove PasswordEncoder dependency
+- Updated `BlockServiceImpl.java` in user-service to replace AccessDeniedException with IllegalStateException
+- Downstream services now rely solely on API Gateway for authentication via Token Relay approach
+- API Gateway validates Keycloak JWT tokens and forwards user context via headers (X-User-Id, X-User-Email, X-User-Name, X-User-FullName, X-User-Roles)
+- Internal service communication uses X-Internal-Secret header for validation
 
 ## Frontend Layout Components
 
@@ -303,59 +361,6 @@ The Redux store includes the following reducers:
 - ✅ Added error handling for joinGroup in GroupMember/Action.js and GroupDetail.jsx to handle backend 500 errors
 - ✅ Fixed backend authentication issue between group-service and user-service - Created FeignHeaderConfig.java in group-service and added internal.auth.secret configuration to application.properties
 - ✅ Fixed approve member with undefined userId - Added validation in GroupDetail.jsx handleApprove, handleRejectMember, handleDeleteMember, and handleChangeRole to prevent calling API with undefined userId
-
-## Keycloak Migration (Production-Ready Architecture)
-- ✅ Created comprehensive migration plan (KEYCLOAK_MIGRATION_PLAN.md)
-- ✅ Created Docker compose for Keycloak with PostgreSQL (docker-compose.keycloak.yml)
-- ✅ Created Keycloak realm configuration with clients, roles, and permissions (keycloak-realm-config.json)
-- ✅ Migrated API Gateway to Keycloak:
-  - application-keycloak.yml with OAuth2 configuration
-  - SecurityConfigurationKeycloak.java with JWT validation
-  - UserContextFilter.java to extract user info and forward to services
-  - gateway-config-keycloak.yml with route configuration
-  - Updated pom.xml with OAuth2 dependencies
-- ✅ Migrated User Service to Keycloak:
-  - application-keycloak.yml with OAuth2 configuration
-  - SecurityConfigurationKeycloak.java with JWT validation
-  - Updated pom.xml with OAuth2 dependencies
-- ✅ Migrated Post Service to Keycloak:
-  - application-keycloak.yml with OAuth2 configuration
-  - SecurityConfigurationKeycloak.java with JWT validation
-- ✅ Migrated Group Service to Keycloak:
-  - application-keycloak.yml with OAuth2 configuration
-  - SecurityConfigurationKeycloak.java with JWT validation
-- ✅ Migrated Interaction Service to Keycloak:
-  - application-keycloak.yml with OAuth2 configuration
-  - SecurityConfigurationKeycloak.java with JWT validation
-- ✅ Migrated Notification Service to Keycloak:
-  - application-keycloak.yml with OAuth2 configuration
-  - SecurityConfigurationKeycloak.java with JWT validation
-- ✅ Migrated Frontend to Keycloak:
-  - keycloak.js configuration
-  - keycloak.js utility functions with token refresh
-  - axiosWithKeycloak.js with automatic token refresh
-  - KeycloakProvider.jsx React context
-  - silent-check-sso.html for silent SSO
-- ✅ Created migration summary document (KEYCLOAK_MIGRATION_SUMMARY.md)
-
-**Architecture:**
-- Hybrid approach with JWKS caching (gateway + service-level validation)
-- Single realm: social-media
-- Clients: web-app, mobile-app, service accounts for all services
-- Resource-based permissions (user:read, post:create, etc.)
-- RS256 asymmetric keys
-- Short-lived access tokens (5 minutes)
-- Refresh token rotation (7 days)
-- OAuth2 client credentials for service-to-service
-
-**Next Steps:**
-1. Deploy Keycloak: `docker-compose -f docker-compose.keycloak.yml up -d`
-2. Import realm configuration to Keycloak Admin Console
-3. Enable keycloak profile for each service
-4. Update frontend to use KeycloakProvider and axiosWithKeycloak
-5. Remove old authentication code
-6. Migrate existing users to Keycloak
-7. Test authentication and authorization flows
 
 ## Remaining Tasks
 

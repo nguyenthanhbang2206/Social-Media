@@ -2,7 +2,8 @@ package com.nguyenthanhbang.Social_media.service.impl;
 
 import com.nguyenthanhbang.Social_media.client.GroupClient;
 import com.nguyenthanhbang.Social_media.client.InteractionClient;
-import com.nguyenthanhbang.Social_media.client.UserServiceClient;
+import com.nguyenthanhbang.Social_media.client.UserClient;
+import com.nguyenthanhbang.Social_media.common.dto.ApiResponse;
 import com.nguyenthanhbang.Social_media.common.dto.GroupSummaryResponse;
 import com.nguyenthanhbang.Social_media.common.dto.PostInteractionCountResponse;
 import com.nguyenthanhbang.Social_media.common.dto.UserSummaryResponse;
@@ -10,10 +11,12 @@ import com.nguyenthanhbang.Social_media.common.enumeration.GroupMembershipStatus
 import com.nguyenthanhbang.Social_media.common.enumeration.GroupPrivacy;
 import com.nguyenthanhbang.Social_media.common.enumeration.PostType;
 import com.nguyenthanhbang.Social_media.common.enumeration.PrivacyLevel;
+import com.nguyenthanhbang.Social_media.common.event.PostDeletedEvent;
 import com.nguyenthanhbang.Social_media.common.util.RequestHeaderUtil;
 import com.nguyenthanhbang.Social_media.dto.request.CreatePostRequest;
 import com.nguyenthanhbang.Social_media.dto.request.PostMediaRequest;
 import com.nguyenthanhbang.Social_media.dto.request.UpdatePostRequest;
+import com.nguyenthanhbang.Social_media.event.PostDeletedPublisher;
 import com.nguyenthanhbang.Social_media.model.Post;
 import com.nguyenthanhbang.Social_media.model.PostMedia;
 import com.nguyenthanhbang.Social_media.repository.PostMediaRepository;
@@ -40,12 +43,14 @@ public class PostServiceImpl implements PostService {
     private final PostShareRepository postShareRepository;
     private final GroupClient groupClient;
     private final InteractionClient interactionClient;
-    private final UserServiceClient userServiceClient;
+    private final UserClient userClient;
+    private final PostDeletedPublisher postDeletedPublisher;
 
     @Override
     public Post createPost(Long groupId, CreatePostRequest request) {
-        Long userId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
-        UserSummaryResponse userSummaryResponse = userServiceClient.getUserById(userId).join();
+        Long userId = getCurrentUserId();
+        ApiResponse<UserSummaryResponse> userResponse = userClient.getUserById(userId);
+        UserSummaryResponse userSummaryResponse = userResponse != null ? userResponse.getData() : null;
         Post post = new Post();
         post.setContent(request.getContent());
         PrivacyLevel privacy = request.getPrivacy() == null ? PrivacyLevel.PUBLIC : request.getPrivacy();
@@ -93,7 +98,7 @@ public class PostServiceImpl implements PostService {
     public Post updatePost(Long groupId, Long postId, UpdatePostRequest request) {
         log.info("Update post");
         Post post = this.getPostById(postId);
-        Long userId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Long userId = getCurrentUserId();
         if(!userId.equals(post.getUserId())){
             throw new EntityNotFoundException("You do not have permission to update this post");
         }
@@ -251,6 +256,9 @@ public class PostServiceImpl implements PostService {
             item.setActive(false);
             postMediaRepository.save(item);
         });
+        postDeletedPublisher.publishPostDeleted(PostDeletedEvent.builder()
+                        .postId(postId)
+                .build());
     }
 
     private boolean isUserPost(PostType postType) {
@@ -264,5 +272,18 @@ public class PostServiceImpl implements PostService {
         post.setTotalComments(totalComments);
         post.setTotalReactions(totalReactions);
         post.setTotalShares(postShareRepository.countByPostId(post.getId()));
+    }
+
+    private Long getCurrentUserId() {
+        // Use email to lookup user since X-User-Id is no longer sent (it was UUID, not Long)
+        String email = RequestHeaderUtil.getUserEmail()
+                .orElseThrow(() -> new EntityNotFoundException("User not found - X-User-Email header missing"));
+        
+        ApiResponse<UserSummaryResponse> response = userClient.getUserByEmail(email);
+        if (response == null || response.getData() == null) {
+            throw new EntityNotFoundException("User not found with email: " + email);
+        }
+        
+        return response.getData().getId();
     }
 }

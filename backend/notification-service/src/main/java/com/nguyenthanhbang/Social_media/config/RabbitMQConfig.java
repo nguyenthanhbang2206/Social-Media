@@ -11,26 +11,8 @@ import org.springframework.context.annotation.Configuration;
 
 import static com.nguyenthanhbang.Social_media.common.config.RabbitMQConfig.*;
 
-@Configuration
+@Configuration("notificationRabbitMQConfig")
 public class RabbitMQConfig {
-
-    @Bean
-    public Jackson2JsonMessageConverter jsonMessageConverter() {
-        return new Jackson2JsonMessageConverter();
-    }
-
-    @Bean
-    public TopicExchange interactionExchange(){
-        return new TopicExchange(INTERACTION_EXCHANGE);
-    }
-    @Bean
-    public TopicExchange userExchange(){
-        return new TopicExchange(USER_EXCHANGE);
-    }
-    @Bean
-    public TopicExchange groupExchange(){
-        return new TopicExchange(GROUP_EXCHANGE);
-    }
 
 
     @Bean
@@ -57,7 +39,7 @@ public class RabbitMQConfig {
             @Qualifier("interactionExchange") TopicExchange interactionExchange,
             @Qualifier("postNotificationQueue") Queue postNotificationQueue
     ){
-        return BindingBuilder.bind(postNotificationQueue).to(interactionExchange).with("post.*");
+        return BindingBuilder.bind(postNotificationQueue).to(interactionExchange).with("post.reacted");
     }
 
     @Bean
