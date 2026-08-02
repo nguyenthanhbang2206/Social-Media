@@ -43,9 +43,11 @@ export const joinGroup = (groupId) => async (dispatch) => {
     });
     return res.data.data;
   } catch (error) {
+    const errorMessage = error.response?.data?.message || error.message;
+    console.error("Error joining group:", errorMessage);
     dispatch({
       type: JOIN_GROUP_FAILURE,
-      payload: error.response?.data?.message || error.message,
+      payload: errorMessage,
     });
     throw error;
   }
@@ -173,6 +175,15 @@ export const getMembershipStatus = (groupId) => async (dispatch) => {
     });
     return res.data.data;
   } catch (error) {
+    // If user is not a member, set status to null or appropriate default
+    // Backend throws EntityNotFoundException when user is not a member
+    if (error.response?.status === 500 || error.response?.status === 404) {
+      dispatch({
+        type: GET_MEMBERSHIP_STATUS_SUCCESS,
+        payload: null, // User is not a member
+      });
+      return null;
+    }
     dispatch({
       type: GET_MEMBERSHIP_STATUS_FAILURE,
       payload: error.response?.data?.message || error.message,
@@ -192,6 +203,14 @@ export const checkIsAdmin = (groupId) => async (dispatch) => {
     });
     return res.data.data;
   } catch (error) {
+    // If user is not a member or not admin, set to false
+    if (error.response?.status === 500 || error.response?.status === 404) {
+      dispatch({
+        type: CHECK_IS_ADMIN_SUCCESS,
+        payload: false, // User is not an admin
+      });
+      return false;
+    }
     dispatch({
       type: CHECK_IS_ADMIN_FAILURE,
       payload: error.response?.data?.message || error.message,

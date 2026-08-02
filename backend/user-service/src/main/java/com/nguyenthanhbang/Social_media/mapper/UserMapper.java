@@ -1,5 +1,6 @@
 package com.nguyenthanhbang.Social_media.mapper;
 
+import com.nguyenthanhbang.Social_media.common.dto.UserSummaryResponse;
 import com.nguyenthanhbang.Social_media.dto.response.UserResponse;
 import com.nguyenthanhbang.Social_media.model.User;
 import org.mapstruct.Mapper;
@@ -11,4 +12,5 @@ public interface UserMapper {
 
     UserResponse toUserResponse(User user);
     List<UserResponse> toUserResponses(List<User> users);
+    UserSummaryResponse toUserSummaryResponse(User user);
 }

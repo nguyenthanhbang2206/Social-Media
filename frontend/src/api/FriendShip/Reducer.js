@@ -29,6 +29,9 @@ const initialState = {
   friends: [],
   friendRequests: [],
   friendStatus: null,
+  friendsFetchedForUserId: null,
+  friendsLastFetchedAt: null,
+  friendRequestsLastFetchedAt: null,
   loading: false,
   error: null,
   actionLoading: false,
@@ -60,14 +63,26 @@ export default function friendshipReducer(state = initialState, action) {
     case GET_FRIENDS_REQUEST:
       return { ...state, loading: true, error: null };
     case GET_FRIENDS_SUCCESS:
-      return { ...state, loading: false, friends: action.payload };
+      return {
+        ...state,
+        loading: false,
+        friends: action.payload,
+        friendsFetchedForUserId:
+          action.meta?.userId ?? state.friendsFetchedForUserId,
+        friendsLastFetchedAt: Date.now(),
+      };
     case GET_FRIENDS_FAILURE:
       return { ...state, loading: false, error: action.payload };
 
     case GET_FRIEND_REQUESTS_RECEIVED_REQUEST:
       return { ...state, loading: true, error: null };
     case GET_FRIEND_REQUESTS_RECEIVED_SUCCESS:
-      return { ...state, loading: false, friendRequests: action.payload };
+      return {
+        ...state,
+        loading: false,
+        friendRequests: action.payload,
+        friendRequestsLastFetchedAt: Date.now(),
+      };
     case GET_FRIEND_REQUESTS_RECEIVED_FAILURE:
       return { ...state, loading: false, error: action.payload };
 

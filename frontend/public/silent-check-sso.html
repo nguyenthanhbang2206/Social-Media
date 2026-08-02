@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Silent SSO Check</title>
+</head>
+<body>
+<script>
+    /**
+     * File này PHẢI đặt tại public/silent-check-sso.html
+     *
+     * Keycloak dùng iframe ẩn để check SSO session mà không redirect toàn trang.
+     * Iframe load file này, sau đó postMessage kết quả về parent window.
+     *
+     * Nếu thiếu file này, Keycloak sẽ log lỗi:
+     *   "Silent check-sso iframe redirect failed"
+     * và fallback về không authenticated (dù user đang có session).
+     */
+    parent.postMessage(location.href, location.origin);
+</script>
+</body>
+</html>

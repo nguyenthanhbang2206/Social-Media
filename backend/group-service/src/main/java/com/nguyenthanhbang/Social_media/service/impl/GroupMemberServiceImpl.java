@@ -1,9 +1,14 @@
 package com.nguyenthanhbang.Social_media.service.impl;
 
+import com.nguyenthanhbang.Social_media.client.*;
+import com.nguyenthanhbang.Social_media.common.dto.ApiResponse;
+import com.nguyenthanhbang.Social_media.common.dto.UserSummaryResponse;
 import com.nguyenthanhbang.Social_media.common.enumeration.GroupMembershipStatus;
 import com.nguyenthanhbang.Social_media.common.enumeration.GroupPrivacy;
 import com.nguyenthanhbang.Social_media.common.enumeration.GroupRole;
+import com.nguyenthanhbang.Social_media.common.event.GroupEvent;
 import com.nguyenthanhbang.Social_media.common.util.RequestHeaderUtil;
+import com.nguyenthanhbang.Social_media.event.GroupPublisher;
 import com.nguyenthanhbang.Social_media.model.Group;
 import com.nguyenthanhbang.Social_media.model.GroupMember;
 import com.nguyenthanhbang.Social_media.repository.GroupMemberRepository;
@@ -11,6 +16,7 @@ import com.nguyenthanhbang.Social_media.service.GroupMemberService;
 import com.nguyenthanhbang.Social_media.service.GroupService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,12 +26,18 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class GroupMemberServiceImpl implements GroupMemberService {
     private final GroupMemberRepository groupMemberRepository;
     private final GroupService groupService;
+    private final GroupPublisher groupPublisher;
+    private final UserClient userClient;
+
     @Override
     public void joinGroup(Long groupId) {
-        Long userId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Long userId = getCurrentUserId();
+        UserSummaryResponse userSummaryResponse = userClient.getUserById(userId).getData();
+
         Group group = groupService.getGroupById(groupId);
         Optional<GroupMember> optionalGroupMember = groupMemberRepository.findByGroupIdAndUserId(groupId, userId);
         if(optionalGroupMember.isPresent()) {
@@ -39,7 +51,11 @@ public class GroupMemberServiceImpl implements GroupMemberService {
                 existingGroupMember.setStatus(GroupMembershipStatus.PENDING);
                 existingGroupMember.setRequestedAt(LocalDateTime.now());
                 existingGroupMember.setRole(GroupRole.MEMBER);
+                existingGroupMember.setJoinedAt(null);
+                existingGroupMember.setIsApproved(false);
                 groupMemberRepository.save(existingGroupMember);
+
+
             }
         }
         else {
@@ -48,27 +64,43 @@ public class GroupMemberServiceImpl implements GroupMemberService {
             if(group.getPrivacy().equals(GroupPrivacy.PUBLIC)){
                 status = GroupMembershipStatus.APPROVED;
                 isApproved = true;
+
             }
 
-                GroupMember groupMember = GroupMember.builder()
-                    .groupId(groupId)
-                    .userId(userId)
-                    .role(GroupRole.MEMBER)
-                    .requestedAt(LocalDateTime.now())
-                    .status(status)
-                    .joinedAt(isApproved ? LocalDateTime.now() : null)
-                    .isApproved(isApproved)
-                    .build();
+            GroupMember groupMember = GroupMember.builder()
+                .groupId(groupId)
+                .userId(userId)
+                .role(GroupRole.MEMBER)
+                .requestedAt(LocalDateTime.now())
+                .status(status)
+                .joinedAt(isApproved ? LocalDateTime.now() : null)
+                .isApproved(isApproved)
+                .build();
             groupMemberRepository.save(groupMember);
         }
 
+        if(group.getPrivacy() == GroupPrivacy.PRIVATE){
+            GroupEvent groupEvent = GroupEvent
+                    .builder()
+                    .recipientId(group.getCreatorId())
+                    .groupImage(group.getGroupImage())
+                    .eventType(GroupEvent.GroupEventType.REQUESTED)
+                    .privacy(group.getPrivacy())
+                    .name(group.getName())
+                    .actorName(userSummaryResponse.getFullName())
+                    .ownerId(group.getCreatorId())
+                    .actorId(userId)
+                    .build();
+            log.info("-----------------publish group event , type = {} ,---------", groupEvent.getEventType());
+            groupPublisher.publishGroupEvent(groupEvent, "group.requested");
+        }
 
     }
 
     @Override
     public void leaveGroup(Long groupId) {
         Group group = groupService.getGroupById(groupId);
-        Long userId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Long userId = getCurrentUserId();
         GroupMember groupMember = groupMemberRepository.findByGroupIdAndUserId(groupId, userId).orElseThrow(()->new EntityNotFoundException("Group member not found"));
         if(group.getCreatorId().equals(userId)){
             throw new RuntimeException("Admin can not leave group");
@@ -81,7 +113,9 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 
     @Override
     public void approveMember(Long groupId, Long userId) {
-        Long currentUserId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Long currentUserId = getCurrentUserId();
+        Group group = groupService.getGroupById(groupId);
+
         if(!this.isAdmin(groupId, currentUserId)) {
             throw new RuntimeException("You do not have permission to approve this member");
         }
@@ -93,11 +127,24 @@ public class GroupMemberServiceImpl implements GroupMemberService {
         groupMember.setIsApproved(true);
         groupMember.setStatus(GroupMembershipStatus.APPROVED);
         groupMemberRepository.save(groupMember);
+        //        approved
+        GroupEvent groupEvent = GroupEvent
+                .builder()
+                .recipientId(groupMember.getUserId())
+                .actorId(group.getCreatorId())
+                .groupImage(group.getGroupImage())
+                .eventType(GroupEvent.GroupEventType.APPROVED)
+                .privacy(group.getPrivacy())
+                .name(group.getName())
+                .ownerId(group.getCreatorId())
+                .build();
+        log.info("-----------------publish group event , type = {} ,---------", groupEvent.getEventType());
+        groupPublisher.publishGroupEvent(groupEvent, "group.approved");
     }
 
     @Override
     public void rejectMember(Long groupId, Long userId) {
-        Long currentUserId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Long currentUserId = getCurrentUserId();
         if(!this.isAdmin(groupId, currentUserId)) {
             throw new RuntimeException("You do not have permission to reject this member");
         }
@@ -114,7 +161,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     @Override
     public void deleteMember(Long groupId, Long userId) {
         Group group = groupService.getGroupById(groupId);
-        Long currentUserId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Long currentUserId = getCurrentUserId();
         GroupMember groupMember = groupMemberRepository.findByGroupIdAndUserId(groupId, userId).orElseThrow(()->new EntityNotFoundException("Group member not found"));
         if(!this.isAdmin(groupId, currentUserId)) {
             throw new RuntimeException("You do not have permission to delete this member");
@@ -131,7 +178,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     @Override
     public GroupMember changeRole(Long groupId, Long userId, GroupRole role) {
         GroupMember groupMember = groupMemberRepository.findByGroupIdAndUserIdAndRoleIn(groupId, userId, Arrays.asList(GroupRole.ADMIN, GroupRole.MEMBER)).orElseThrow(()-> new EntityNotFoundException("Group member not found"));
-        Long currentUserId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Long currentUserId = getCurrentUserId();
         Group group = groupService.getGroupById(groupId);
         if(!group.getCreatorId().equals(currentUserId)){
             throw new IllegalStateException("You are not owner of this group");
@@ -148,7 +195,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 
     @Override
     public List<GroupMember> getPendingMembers(Long groupId) {
-        Long userId = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Long userId = getCurrentUserId();
         if(!this.isAdmin(groupId, userId)) {
             throw new IllegalStateException("You can not view pending member");
         }
@@ -158,7 +205,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 
     @Override
     public GroupMembershipStatus getMembershipStatus(Long groupId) {
-        Long userId  = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Long userId  = getCurrentUserId();
         groupService.getGroupById(groupId);
         GroupMember groupMember = groupMemberRepository.findByGroupIdAndUserId(groupId, userId).orElseThrow(()-> new EntityNotFoundException("Group member not found"));
         return groupMember.getStatus();
@@ -166,12 +213,24 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 
     @Override
     public boolean isCurrentUserAdmin(Long groupId) {
-        Long userId  = RequestHeaderUtil.getUserId().orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Long userId  = getCurrentUserId();
         return isAdmin(groupId, userId);
     }
 
 
     private boolean isAdmin(Long groupId, Long userId) {
         return groupMemberRepository.existsByGroupIdAndUserIdAndRole(groupId, userId, GroupRole.ADMIN);
+    }
+
+    private Long getCurrentUserId() {
+        String email = RequestHeaderUtil.getUserEmail()
+                .orElseThrow(() -> new EntityNotFoundException("User not found - X-User-Email header missing"));
+        
+        ApiResponse<UserSummaryResponse> response = userClient.getUserByEmail(email);
+        if (response == null || response.getData() == null) {
+            throw new EntityNotFoundException("User not found with email: " + email);
+        }
+        
+        return response.getData().getId();
     }
 }
