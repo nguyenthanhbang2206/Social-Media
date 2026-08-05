@@ -7,7 +7,12 @@ import lombok.*;
 @Builder
 @Getter
 @Setter
+@ToString
 public class FriendEvent {
+    @Builder.Default
+    private String eventId = java.util.UUID.randomUUID().toString();
+    @Builder.Default
+    private java.time.Instant timestamp = java.time.Instant.now();
     private String action;
 
     private Long actorId;
@@ -17,5 +22,4 @@ public class FriendEvent {
     private String actorAvatar;
 
     private Long recipientId;
-
 }

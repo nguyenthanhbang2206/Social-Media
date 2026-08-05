@@ -48,3 +48,10 @@ logs/
 .env.*
 .windsurfinstructions
 **/.windsurfinstructions
+
+ # Local inspection and logs
+ inspect.json
+-logs/
++**/logs/
++*.log
++*.log.*
