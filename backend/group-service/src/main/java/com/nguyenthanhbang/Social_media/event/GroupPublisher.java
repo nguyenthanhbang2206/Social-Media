@@ -1,8 +1,8 @@
 package com.nguyenthanhbang.Social_media.event;
 
 import com.nguyenthanhbang.Social_media.common.event.GroupEvent;
+import com.nguyenthanhbang.Social_media.common.outbox.service.OutboxService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import static com.nguyenthanhbang.Social_media.common.config.RabbitMQConfig.GROUP_EXCHANGE;
@@ -11,9 +11,9 @@ import static com.nguyenthanhbang.Social_media.common.config.RabbitMQConfig.GROU
 @RequiredArgsConstructor
 public class GroupPublisher {
 
-    private final RabbitTemplate rabbitTemplate;
+    private final OutboxService outboxService;
 
     public void publishGroupEvent(GroupEvent groupEvent, String routingKey){
-        rabbitTemplate.convertAndSend(GROUP_EXCHANGE, routingKey, groupEvent);
+        outboxService.saveToOutbox(GROUP_EXCHANGE, routingKey, groupEvent);
     }
 }
