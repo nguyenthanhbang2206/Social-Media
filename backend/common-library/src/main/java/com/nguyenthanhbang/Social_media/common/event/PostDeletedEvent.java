@@ -8,5 +8,9 @@ import lombok.*;
 @Builder
 @ToString
 public class PostDeletedEvent {
+    @Builder.Default
+    private String eventId = java.util.UUID.randomUUID().toString();
+    @Builder.Default
+    private java.time.Instant timestamp = java.time.Instant.now();
     private Long postId;
 }
