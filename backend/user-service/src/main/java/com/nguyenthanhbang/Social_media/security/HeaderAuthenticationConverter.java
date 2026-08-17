@@ -16,23 +16,7 @@ import com.nguyenthanhbang.Social_media.common.event.UserUpdateEvent;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Chuyển đổi các header X-User-* (được API Gateway inject sau khi validate JWT Keycloak)
- * thành Spring Security Authentication object.
- *
- * ─── Auto-provisioning ─────────────────────────────────────────────────────
- * Trường hợp: user đã tồn tại trong Keycloak nhưng chưa có bản ghi trong local DB
- * (ví dụ: admin tạo user trực tiếp trên Keycloak Admin Console, hoặc data bị mất).
- *
- * Khi đó, converter sẽ tự động tạo User mới trong local DB dựa trên header.
- * Đây là cơ chế "lazy sync" – không cần job đồng bộ định kỳ.
- * ────────────────────────────────────────────────────────────────────────────
- *
- * Headers đọc vào:
- *   X-User-Id    → Keycloak subject UUID
- *   X-User-Email → email claim từ JWT
- *   X-User-Role  → role được extract bởi Gateway từ realm_access.roles
- */
+
 @Component
 @RequiredArgsConstructor
 @Slf4j

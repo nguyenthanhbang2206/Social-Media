@@ -26,19 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * THAY ĐỔI DUY NHẤT so với bản gốc: implement syncUserFromKeycloak().
- *
- * Bản gốc bị cắt đứt tại comment "//keycloak" và thiếu hoàn toàn method
- * này — khiến class không compile được (không implement đủ abstract method
- * của interface UserService).
- *
- * Toàn bộ phần còn lại giữ nguyên 100% so với bản gốc:
- *   - dùng `new User()` + setter (không dùng builder) — đúng với bản gốc
- *   - giữ các @Value keycloak.* và RestTemplate dependency (bản gốc có)
- *   - giữ getUserLogin() throw ngay nếu không tìm thấy user (bản gốc throw)
- *   - KHÔNG thêm auto-provision vào getUserLogin() — đó là thay đổi ngoài scope
- */
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -156,16 +144,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.search(keyword);
     }
 
-    /**
-     * PHẦN BỊ THIẾU TRONG BẢN GỐC — đây là lý do không compile được.
-     *
-     * Idempotent: nếu user đã tồn tại theo email → trả về ngay, không tạo trùng.
-     * Gọi khi Keycloak đã xác thực user nhưng local DB chưa có bản ghi
-     * (ví dụ: admin tạo user trực tiếp trên Keycloak Console).
-     *
-     * Dùng `new User()` + setter nhất quán với pattern của createUser() bên trên,
-     * KHÔNG dùng builder (active nằm ở BaseEntity không có @Builder).
-     */
+  
     @Override
     @Transactional
     public User syncUserFromKeycloak(CreateUserRequest request) {

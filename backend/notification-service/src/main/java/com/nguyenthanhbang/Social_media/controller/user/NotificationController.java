@@ -23,10 +23,7 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
-    /**
-     * POST /api/v1/notifications
-     * Used by other services to create notifications.
-     */
+   
     @PostMapping
     public ResponseEntity<ApiResponse<NotificationResponse>> createNotification(
             @Valid @RequestBody NotificationRequest request) {
@@ -39,10 +36,7 @@ public class NotificationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    /**
-     * DELETE /api/v1/notifications?actorId=1&referenceId=2&type=LIKE
-     * Used by other services to remove notifications when actions are undone.
-     */
+ 
     @DeleteMapping
     public ResponseEntity<ApiResponse<Void>> deleteByReference(
             @RequestParam("actorId") Long actorId,
@@ -57,10 +51,7 @@ public class NotificationController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * GET /api/v1/notifications?page=0&size=20
-     * Get paginated notifications for the current user.
-     */
+ 
     @GetMapping
     public ResponseEntity<ApiResponse<Page<NotificationResponse>>> getMyNotifications(
             @RequestParam(defaultValue = "0", name = "page") int page,
@@ -75,10 +66,7 @@ public class NotificationController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * GET /api/v1/notifications/unread-count
-     * Get unread notification count for the current user.
-     */
+    
     @GetMapping("/unread-count")
     public ResponseEntity<ApiResponse<UnreadCountResponse>> getUnreadCount() {
         long count = notificationService.getUnreadCount();
@@ -90,10 +78,7 @@ public class NotificationController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * PATCH /api/v1/notifications/{id}/read
-     * Mark a single notification as read.
-     */
+ 
     @PatchMapping("/{id}/read")
     public ResponseEntity<ApiResponse<NotificationResponse>> markAsRead(@PathVariable("id") Long id) {
         NotificationResponse notification = notificationService.markAsRead(id);
@@ -105,10 +90,7 @@ public class NotificationController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * PATCH /api/v1/notifications/read-all
-     * Mark all notifications as read for the current user.
-     */
+    
     @PatchMapping("/read-all")
     public ResponseEntity<ApiResponse<Void>> markAllAsRead() {
         notificationService.markAllAsRead();
@@ -120,10 +102,7 @@ public class NotificationController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * DELETE /api/v1/notifications/{id}
-     * Soft-delete a notification.
-     */
+   
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteNotification(@PathVariable("id") Long id) {
         notificationService.deleteNotification(id);

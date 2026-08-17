@@ -3,9 +3,7 @@ package com.nguyenthanhbang.Social_media.common.dto;
 import com.nguyenthanhbang.Social_media.common.enumeration.NotificationType;
 import lombok.*;
 
-/**
- * Shared DTO used by other microservices to create notifications.
- */
+
 @Getter
 @Setter
 @NoArgsConstructor

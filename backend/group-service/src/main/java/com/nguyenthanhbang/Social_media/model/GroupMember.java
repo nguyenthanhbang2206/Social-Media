@@ -6,7 +6,6 @@ import com.nguyenthanhbang.Social_media.common.model.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Where;
-//group 1:n group user n:1 user
 import java.time.LocalDateTime;
 
 @Entity

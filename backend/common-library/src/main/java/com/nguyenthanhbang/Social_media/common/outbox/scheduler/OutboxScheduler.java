@@ -28,7 +28,6 @@ public class OutboxScheduler {
     @Scheduled(fixedDelayString = "${outbox.scheduler.delay-ms:2000}")
     @Transactional
     public void processOutbox() {
-        // Retrieve and lock up to 10 PENDING messages using SELECT FOR UPDATE SKIP LOCKED
         List<OutboxMessage> messages = outboxRepository.findMessagesForProcessing(OutboxStatus.PENDING.name(), 10);
         if (messages.isEmpty()) {
             return;
@@ -38,14 +37,11 @@ public class OutboxScheduler {
 
         for (OutboxMessage message : messages) {
             try {
-                // Deserialize payload back to its original class type
                 Class<?> clazz = Class.forName(message.getClassName());
                 Object event = objectMapper.readValue(message.getPayload(), clazz);
 
-                // Publish to RabbitMQ
                 rabbitTemplate.convertAndSend(message.getExchange(), message.getRoutingKey(), event);
 
-                // Update outbox message status to COMPLETED
                 message.setStatus(OutboxStatus.COMPLETED);
                 message.setProcessedAt(Instant.now());
                 message.setErrorMessage(null);

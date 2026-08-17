@@ -12,24 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-/**
- * VẤN ĐỀ TÌM THẤY: UserController gốc thiếu endpoint GET /users/email/{email}.
- *
- * 4 service khác (group-service, interaction-service, post-service,
- * notification-service) đều cần gọi sang user-service để resolve user
- * theo EMAIL (không phải id) – đây là pattern bắt buộc vì mỗi service
- * chỉ nhận được X-User-Email từ Gateway (Keycloak JWT email claim),
- * không có sẵn Long id local của user-service.
- *
- * Method getUserByEmail(String) đã có sẵn trong UserService interface và
- * UserServiceImpl (xem service/impl/UserServiceImpl.java), nhưng KHÔNG
- * được expose qua bất kỳ REST endpoint nào trong bản gốc → Feign client
- * ở các service khác sẽ luôn nhận lỗi 404 nếu cố gọi.
- *
- * Đã thêm @GetMapping("/users/email/{email}") bên dưới, dùng đúng
- * UserMapper hiện có để giữ format response nhất quán với các endpoint
- * khác trong cùng file.
- */
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
@@ -60,13 +43,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * MỚI: endpoint còn thiếu trong bản gốc, cần thiết để UserClient
-     * (Feign) ở các service khác gọi userClient.getUserByEmail(email)
-     * hoạt động được. Không có endpoint này, request sẽ trả 404 và toàn
-     * bộ flow tạo post/comment/group-member sẽ fail khi cần resolve user
-     * hiện tại theo email.
-     */
+ 
     @GetMapping("/users/email/{email}")
     public ResponseEntity<ApiResponse<UserResponse>> getUserByEmail(@PathVariable("email") String email) {
         User user = userService.getUserByEmail(email);
